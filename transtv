@@ -24,7 +24,11 @@ APPDIR="/opt/galaxymediatools"
 STIME=$(date +%s)
 CTS=`eval date +%Y%m%d`
 cd "$APPDIR"
+<<<<<<< HEAD
   git pull origin master
+=======
+  if [ (git pull origin master | grep "Already up-to-date.") != "Already up-to-date." ]; then
+>>>>>>> a6f56181ea13cacfd10194f04f57f235270bdf62
   rm -r /var/lock/gtrans.lock &> /dev/null  
   bash /opt/galaxymediatools/transtv
   exit 0
