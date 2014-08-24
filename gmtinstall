@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ ! -f /etc/galaxymediatools.conf ]; then
+cp /opt/galaxymediatools/galaxytranstools.conf.sample /etc/galaxytranstools.conf
+else
+echo -e "Config file already exists. Not overwriting."
+fi
+chmod ug+wrx /opt/galaxymediatools/pushover.sh
+chmod ug+wrx /opt/galaxymediatools/transproctv
+chmod ug+wrx /opt/galaxymediatools/transmantv
+chmod ug+wrx /opt/galaxymediatools/nontransdir
+chmod ug+wrx /opt/galaxymediatools/transprocmovie
+ln -s /opt/galaxymediatools/transtv /usr/local/bin/transtv &> /dev/null
+ln -s /opt/galaxymediatools/transmantv /usr/local/bin/transmantv &> /dev/null
+ln -s /opt/galaxymediatools/nontransdir /usr/local/bin/nontransdir &> /dev/null
+ln -s /opt/galaxymediatools/transmovie /usr/local/bin/transmovie &> /dev/null
+echo -e "Installation complete"
+echo -e "Make sure you edit /etc/galaxymediatools.conf!"

@@ -1,0 +1,20 @@
+#
+# Galaxy Transcoding Tools Config File
+#
+# Directory which to store log files
+LOGDIR="/var/log"
+# Base directory where transcoding files are searched
+TVDIR="/video/TVShows"
+# Pushover notifications application key
+POAK="1niX9veMfynaGCvhbETnggtUFerfD8"
+# Pushover notifications user key
+POUK="6t5A4ejy7dY6HgVBeEhouYHw6yUFpH"
+# SSH user@hostname login information to plex server
+SSHINFO="root@172.25.1.26"
+# Plex category
+PLEXCAT="4"
+# Auto TV transcode search options
+# eg. "-mtime +7 -mtime -14 -size +800M" Older then 7 days, Younger then 14 days, Over 800 Meg
+ATTRANS="-mtime +14 -mtime -30 -size +200M"
+# Auto movie transcode search options
+AMTRANS="-mtime +14 -mtime -120 -size +900M"

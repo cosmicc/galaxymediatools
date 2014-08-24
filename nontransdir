@@ -1,0 +1,7 @@
+files=$(find -L "." -type f ! -name "*.ntrans.*" ! -name "*.trans.*")
+echo "$files" | while read f; do
+EXT=${f: -3}
+fne="${f%.*}"
+mv "$f" "$fne.ntrans.$EXT"
+done
+
