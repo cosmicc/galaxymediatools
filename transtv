@@ -25,13 +25,15 @@ STIME=$(date +%s)
 CTS=`eval date +%Y%m%d`
 cd "$APPDIR"
 
-if [[ "$1" -eq "-h" ]] || [[ "$1" -eq "--help" ]]; then
+if [ "$1" -eq "-h" ] || [ "$1" -eq "--help" ]; then
+        echo " "
         echo "Galaxy Media Tools - Automatic TV Transcoder"
 	echo " "
-	echo "-h or --help - Help"
-	echo "-v - Console output"
-	echo "-u - Upgrade from git only"
-	echo "-v -s - Simulation only"
+	echo "-h or --help : Help"
+	echo "-v : Console output"
+	echo "-u : Upgrade from git only"
+	echo "-v -s : Simulation only"
+        echo " "
         exit 0
 fi
 sleep 3
