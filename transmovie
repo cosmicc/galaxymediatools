@@ -1,24 +1,5 @@
 #!/bin/bash
 
-control_c()
-{
-  echo -en "\n*** Ouch! Exiting ***\n"
-  rm -rf /var/lock/gtrans.lock &> /dev/null
-  exit $?
-}
- 
-function gettime {
-TTIME=$(($2 - $1))
-MIN=$((TTIME / 60))
-HRS=$((MIN / 60))
-MINR=$((MIN % 60))
-if [ "$HRS" != "0" ]; then
-echo -e "$HRS Hours and $MINR Minutes"
-else
-echo -e "$MIN Minutes"
-fi
-}
-
 APPDIR="/opt/galaxymediatools"
 if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo " "
@@ -31,42 +12,8 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo " "
         exit 0
 fi
-sleep 3
-UPG=$(git pull origin master | grep "Already")
-if [ "$UPG" != "Already up-to-date." ]; then
-  echo "upgrading"
-  git pull origin master
-  bash "$APPDIR/transmovie"
-  exit 0
-else
-echo "no upgrade needed"
-fi
-
-if [ "$1" == "-u" ]; then
- echo -e "Upgrade only. Exiting"
- exit 0
-fi
-
-if [ ! -f "/etc/galaxymediatools.conf" ]; then
- echo -e "No config file found. Exiting."
- exit 1
-else
- source /etc/galaxymediatools.conf
-fi
-if [ "$LOGDIR" == "" ] || [ "$TVDIR" == "" ] || [ "$TRANSDIR" == "" ] || [ "$POAK" == "" ] || [ "$POUK" == "" ] || [ "$SSHINFO" == "" ] || [ "$PLEXCAT" == "" ]; then
-echo -e "No config information found in config file. Exiting."
-exit 1
-fi
-STIME=$(date +%s)
-CTS=`eval date +%Y%m%d`
+source /opt/galaxymediatools/precheck
 LOGF="$LOGDIR/TVTrans-$CTS.txt"
-if mkdir "/var/lock/gtrans.lock"; then
-trap control_c SIGINT
-else
-echo -e "Process locked. Lock file detected. Can only run 1 transcode script at a time. Exiting."
-printf "Process locked. Lock file detected. Can only run 1 transcode script at a time. Exiting. \n" >> $LOGF
-exit 1
-fi
 if [ "$1" == "-v" ]; then echo "Script starting up"
 fi
 touch $LOGF 
@@ -213,6 +160,5 @@ fi
 echo -e "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
 if [ "$1" == "-v" ]; then echo "Script ended."
 fi
-rm -r /var/lock/gtrans.lock &> /dev/null
 if [ "$2" != "-s" ]; then pm-suspend
 fi

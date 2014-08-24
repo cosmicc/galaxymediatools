@@ -1,10 +1,10 @@
 #!/bin/bash
 
-APPNAME="remotetrans"
+APPNAME="remotestart"
 
 if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo " "
-        echo "Galaxy Media Tools - Remote Transcoder"
+        echo "Galaxy Media Tools - Remote WoL Transcode Server"
         echo " "
         echo "-h or --help : Help"
         echo "-u : Upgrade from git only"
@@ -16,9 +16,4 @@ source /opt/galaxymediatools/precheck
 
 echo "Waking transcode server"
 wakeonlan $TSMAC
-echo "Waiting for startup..."
-sleep 10
-
-echo "Starting remote Auto TransTV."
-#ssh $SSHTINFO 'sudo /opt/galaxymediatools/transtv & &> /dev/null' &> /dev/null
-echo -e "Remote auto tv transcode started."
+echo -e "Transcode server started"
