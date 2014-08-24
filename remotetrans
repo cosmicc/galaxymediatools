@@ -1,4 +1,3 @@
 #!/bin/bash
-
 ssh $SSHTINFO 'sudo /opt/galaxymediatools/transtv & &> /dev/null' &> /dev/null
 echo -e "Remote auto tv transcode started."

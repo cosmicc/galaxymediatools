@@ -32,15 +32,15 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         exit 0
 fi
 sleep 3
-UPG=$(git pull origin master | grep "Already")
-if [ "$UPG" != "Already up-to-date." ]; then
-  echo "upgrading"
-  git pull origin master
-  bash "$APPDIR/transmantv -v"
-  exit 0
-else
-echo "no upgrade needed"
-fi
+#UPG=$(git pull origin master | grep "Already")
+#if [ "$UPG" != "Already up-to-date." ]; then
+#  echo "upgrading"
+#  git pull origin master
+#  bash "$APPDIR/transmantv -v"
+#  exit 0
+#else
+#echo "no upgrade needed"
+#fi
 
 if [ "$1" == "-u" ]; then
  echo -e "Upgrade only. Exiting"
@@ -128,11 +128,11 @@ for f in "${file[@]}"; do
    fi
    if [ "$HEIGHT" -gt "406" ]; then
     printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file (Resized) Frames: $FRAMES - $fil\n" >> $LOGF
-    ffmpegsw="-c:v libx264 -preset slow -sn -crf 22 -profile:v high -vf scale=720:400 -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
+    ffmpegsw="-c:v libx264 -preset slow -sn -crf $TVQUAL -profile:v high -vf scale=720:400 -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
     asd="(Resized)"
     else
     printf "`eval date +%m/%d/%y"-"%H:%M` - 05 Processing video file (Not-Resized) Frames: $FRAMES - $fil\n" >> $LOGF
-    ffmpegsw="-c:v libx264 -preset slow -sn -crf 22 -profile:v high -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
+    ffmpegsw="-c:v libx264 -preset slow -sn -crf $TVQUAL -profile:v high -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
     asd="(Not Resized)"
    fi
    TSTIME=$(date +%s)

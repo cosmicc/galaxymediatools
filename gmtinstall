@@ -6,10 +6,10 @@ else
 echo -e "Config file already exists. Not overwriting."
 fi
 chmod ug+wrx /opt/galaxymediatools/pushover.sh
-chmod ug+wrx /opt/galaxymediatools/transproctv
+chmod ug+wrx /opt/galaxymediatools/transtv
 chmod ug+wrx /opt/galaxymediatools/transmantv
 chmod ug+wrx /opt/galaxymediatools/nontransdir
-chmod ug+wrx /opt/galaxymediatools/transprocmovie
+chmod ug+wrx /opt/galaxymediatools/transmovie
 ln -s /opt/galaxymediatools/transtv /usr/local/bin/transtv &> /dev/null
 ln -s /opt/galaxymediatools/transmantv /usr/local/bin/transmantv &> /dev/null
 ln -s /opt/galaxymediatools/nontransdir /usr/local/bin/nontransdir &> /dev/null
