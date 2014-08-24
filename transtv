@@ -24,10 +24,7 @@ APPDIR="/opt/galaxymediatools"
 STIME=$(date +%s)
 CTS=`eval date +%Y%m%d`
 cd "$APPDIR"
-if [[ `git status --porcelain` ]]; then
-  echo -e "Git upgrade detected, upgrading and restarting application."
-  printf "`eval date +%m/%d/%y"-"%H:%M` - !! Git Upgrade detected, upgrading and restarting. \n" >> $LOGF
-  git pull origin master
+  if [ (git pull origin master | grep "Already up-to-date.") != "Already up-to-date." ]; then
   rm -r /var/lock/gtrans.lock &> /dev/null  
   bash /opt/galaxymediatools/transtv
   exit 0
