@@ -24,7 +24,7 @@ if [ ! -f "/etc/galaxymediatools.conf" ]; then
  echo -e "No config file found. Exiting."
  exit 1
 else
- source /etc/galaxytranstools.conf
+ source /etc/galaxymediatools.conf
 fi
 if [ "$LOGDIR" == "" ] || [ "$TVDIR" == "" ] || [ "$TRANSDIR" == "" ] || [ "$POAK" == "" ] || [ "$POUK" == "" ] || [ "$SSHINFO" == "" ] || [ "$PLEXCAT" == "" ]; then
 echo -e "No config information found in config file. Exiting."
