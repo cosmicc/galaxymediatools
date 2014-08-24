@@ -22,3 +22,7 @@ PLEXCAT="4"
 ATTRANS="-mtime +14 -mtime -30 -size +200M"
 # Auto movie transcode search options
 AMTRANS="-mtime +14 -mtime -120 -size +900M"
+# TV ffmpeg transcoding quality
+TVQUAL="21"
+# Movie ffmpeg transcoding quality
+MOVIEQUAL="21"
