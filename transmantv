@@ -20,13 +20,15 @@ fi
 }
 
 APPDIR="/opt/galaxymediatools"
-if [[ "$1" -eq "-h" ]] || [[ "$1" -eq "--help" ]]; then
-        echo "Galaxy Media Tools - Manual TV Transcoder"
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo " "
-        echo "-h or --help - Help"
-        echo "-v - Console output"
-        echo "-u - Upgrade from git only"
-        echo "-v -s - Simulation only"
+        echo "Galaxy Media Tools - Menual TV Transcoder"
+        echo " "
+        echo "-h or --help : Help"
+        echo "-v : Console output"
+        echo "-u : Upgrade from git only"
+        echo "-v -s : Simulation only"
+        echo " "
         exit 0
 fi
 sleep 3
