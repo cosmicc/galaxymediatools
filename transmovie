@@ -17,8 +17,33 @@ echo -e "$HRS Hours and $MINR Minutes"
 else
 echo -e "$MIN Minutes"
 fi
-
 }
+
+APPDIR="/opt/galaxymediatools"
+if [[ "$1" -eq "-h" ]] || [[ "$1" -eq "--help" ]]; then
+        echo "Galaxy Media Tools - Automatic Movie Transcoder"
+        echo " "
+        echo "-h or --help - Help"
+        echo "-v - Console output"
+        echo "-u - Upgrade from git only"
+        echo "-v -s - Simulation only"
+        exit 0
+fi
+sleep 3
+UPG=$(git pull origin master | grep "Already")
+if [ "$UPG" != "Already up-to-date." ]; then
+  echo "upgrading"
+  git pull origin master
+  bash "$APPDIR/transmovie"
+  exit 0
+else
+echo "no upgrade needed"
+fi
+
+if [ "$1" == "-u" ]; then
+ echo -e "Upgrade only. Exiting"
+ exit 0
+fi
 
 if [ ! -f "/etc/galaxymediatools.conf" ]; then
  echo -e "No config file found. Exiting."
@@ -30,7 +55,6 @@ if [ "$LOGDIR" == "" ] || [ "$TVDIR" == "" ] || [ "$TRANSDIR" == "" ] || [ "$POA
 echo -e "No config information found in config file. Exiting."
 exit 1
 fi
-APPDIR="/opt/galaxymediatools"
 STIME=$(date +%s)
 CTS=`eval date +%Y%m%d`
 LOGF="$LOGDIR/TVTrans-$CTS.txt"

@@ -24,11 +24,31 @@ APPDIR="/opt/galaxymediatools"
 STIME=$(date +%s)
 CTS=`eval date +%Y%m%d`
 cd "$APPDIR"
+
+if [[ "$1" -eq "-h" ]] || [[ "$1" -eq "--help" ]]; then
+        echo "Galaxy Media Tools - Automatic TV Transcoder"
+	echo " "
+	echo "-h or --help - Help"
+	echo "-v - Console output"
+	echo "-u - Upgrade from git only"
+	echo "-v -s - Simulation only"
+        exit 0
+fi
+sleep 3
+UPG=$(git pull origin master | grep "Already")
+if [ "$UPG" != "Already up-to-date." ]; then
+  echo "upgrading"
   git pull origin master
-  if [ (git pull origin master | grep "Already up-to-date.") != "Already up-to-date." ]; then
-  rm -r /var/lock/gtrans.lock &> /dev/null  
-  bash /opt/galaxymediatools/transtv
+  bash $APPDIR/transtv
   exit 0
+else
+echo "no upgrade needed"
+fi
+
+if [ "$1" == "-u" ]; then
+ echo -e "Upgrade only. Exiting"
+ exit 0
+fi
 
 if [ ! -f "/etc/galaxymediatools.conf" ]; then
  echo -e "No config file found. Exiting."
