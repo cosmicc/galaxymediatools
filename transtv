@@ -24,14 +24,10 @@ APPDIR="/opt/galaxymediatools"
 STIME=$(date +%s)
 CTS=`eval date +%Y%m%d`
 cd "$APPDIR"
-if [[ `git status --porcelain` ]]; then
-  echo -e "Git upgrade detected, upgrading and restarting application."
-  printf "`eval date +%m/%d/%y"-"%H:%M` - !! Git Upgrade detected, upgrading and restarting. \n" >> $LOGF
   git pull origin master
   rm -r /var/lock/gtrans.lock &> /dev/null  
   bash /opt/galaxymediatools/transtv
   exit 0
-fi
 
 if [ ! -f "/etc/galaxymediatools.conf" ]; then
  echo -e "No config file found. Exiting."
