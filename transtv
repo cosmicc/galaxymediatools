@@ -25,7 +25,7 @@ STIME=$(date +%s)
 CTS=`eval date +%Y%m%d`
 cd "$APPDIR"
 
-if [ "$1" -eq "-h" ] || [ "$1" -eq "--help" ]; then
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo " "
         echo "Galaxy Media Tools - Automatic TV Transcoder"
 	echo " "
