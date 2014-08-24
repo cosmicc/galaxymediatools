@@ -9,8 +9,10 @@ TVDIR="/video/TVShows"
 POAK="1niX9veMfynaGCvhbETnggtUFerfD8"
 # Pushover notifications user key
 POUK="6t5A4ejy7dY6HgVBeEhouYHw6yUFpH"
-# SSH user@hostname login information to plex server
-SSHINFO="root@172.25.1.26"
+# SSH user@hostname login information to transcode server (requires passwordless SSH login)
+SSHTINFO="user@192.168.1.10"
+# SSH user@hostname login information to plex server (requires passwordless SSH login)
+SSHINFO="user@192.168.1.15"
 # Plex category
 PLEXCAT="4"
 # Auto TV transcode search options
