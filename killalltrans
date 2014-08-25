@@ -1,0 +1,5 @@
+killall transtv &> /dev/null
+killall tranmantv &> /dev/null
+killall transmovie &> /dev/null
+echo -e "All transcoding processes stopped."
+
