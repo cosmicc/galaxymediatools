@@ -1,7 +1,19 @@
+if [ "$1" == "-h" ] ||  [ "$1" == "--help" ]; then
+echo "Mark all files in recursive directories non-transcodable"
+echo " "
+echo "-s : Simulate (Only show renamed files, dont actually rename them"
+exit 0
+fi
 files=$(find -L "." -type f ! -name "*.ntrans.*" ! -name "*.trans.*")
 echo "$files" | while read f; do
 EXT=${f: -3}
 fne="${f%.*}"
+if [ "$1" == "-s" ]; then
+echo "$f -> $fne.ntrans.$EXT"
+else
 mv "$f" "$fne.ntrans.$EXT"
+echo "$f -> $fne.ntrans.$EXT"
+fi
 done
+echo "Complete."
 
