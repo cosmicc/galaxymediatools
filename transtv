@@ -69,7 +69,15 @@ for f in "${file[@]}"; do
    if [ "$1" == "-v" ]; then echo -e "Copying file locally..."
    fi
    printf "`eval date +%m/%d/%y"-"%H:%M` - 04 Copying file from filer to local for transcoding $fne\n" >> $LOGF
-   if [ "$2" != "-s" ]; then cp -f "$f" "$TRANSDIR"
+   if [ "$2" != "-s" ]; then 
+   cp -f "$f" "$TRANSDIR"
+   if [ "$1" == "-v" ]; then echo -e "Checking video file integrity"
+   fi
+   ISINTEG=`ffmpeg -v error -t 30 -i "$TRANSDIR/$fil" -y "$TRANSDIR/isinteg.$EXT"`
+   if [ "$ISINTEG" == "" ]; then
+   if [ "$1" == "-v" ]; then echo -e "Video file passed integrity test."
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 05 File passed video integrity test - $fne\n" >> $LOGF
+   rm -r "$TRANSDIR/isinteg.$EXT"
    FRAMES=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
    HEIGHT=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep height | sed -e 's/height=//'`
    else
@@ -149,17 +157,28 @@ for f in "${file[@]}"; do
   else
    printf "`eval date +%m/%d/%y"-"%H:%M` - 20 Skipping file already transcoded - $fil \n" >> $LOGF
  fi
+  if [ "$1" == "-v" ]; then echo "File FAILED integrity test!! Purging file and marking for re-download"
+  fi
+  if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "File failed integrity test!! $fil - Marking for redownload"
+  fi
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fil \n" >> $LOGF
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fil \n" >> $LOGF
+  printf "$f \n" >> "$LOGDIR/re-downloads.txt"
+  #rm -r "$f"
+  rm -r "$TRANSDIR/isinteg.$EXT"
+  rm -r "$TRANSDIR/$fil"
+fi
 done
 TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
 rm -r $TRANSDIR/* &> /dev/null
-echo -e "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover completion notification\n" >> $LOGF
+printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover completion notification\n" >> $LOGF
 if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Auto TV Transcode Script Complete - Total Elapsed: $ETIME"
 fi
-echo -e "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server full video analyze  \n" >> $LOGF
+printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server full video analyze  \n" >> $LOGF
 if [ "$2" != "-s" ]; then ssh $SSHINFO 'sudo su plex -c "plexscan -b -a -c $PLEXCAT &> /dev/null &"' > /dev/null &
 fi
-echo -e "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
+printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
 if [ "$1" == "-v" ]; then echo "Script ended."
 fi
 FTIME=$((TTIME-STIME))
