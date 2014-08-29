@@ -1,5 +1,7 @@
-killall transtv &> /dev/null
-killall tranmantv &> /dev/null
-killall transmovie &> /dev/null
+killall -w transtv &> /dev/null
+killall -w tranmantv &> /dev/null
+killall -w transmovie &> /dev/null
+killall -w ffmpeg &> /dev/null
+rm -r /var/lock/gtrans.lock &> /dev/null
 echo -e "All transcoding processes stopped."
 

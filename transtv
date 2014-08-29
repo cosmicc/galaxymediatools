@@ -74,11 +74,11 @@ for f in "${file[@]}"; do
    if [ "$1" == "-v" ]; then echo -e "Checking video file integrity"
    fi
    rm -r "$TRANSDIR/isinteg.*" &> /dev/null
-   ISINTEG=`eval ffmpeg -v error -t 5 -i \"$TRANSDIR/$fil\" -y \"$TRANSDIR/isinteg.$EXT\" < /dev/null`
+   ISINTEG=`eval ffmpeg -v error -t 10 -i \"$TRANSDIR/$fil\" -y \"$TRANSDIR/isinteg.$EXT\" < /dev/null`
    if [ "$ISINTEG" == "" ]; then
    if [ "$1" == "-v" ]; then echo -e "Video file passed integrity test."
    fi
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 05 File passed video integrity test - $fne\n" >> $LOGF
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 06 File passed video integrity test - $fne\n" >> $LOGF
    rm -r "$TRANSDIR/isinteg.$EXT"
    FRAMES=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
    HEIGHT=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep height | sed -e 's/height=//'`
@@ -163,6 +163,7 @@ for f in "${file[@]}"; do
   fi
   if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "File failed integrity test!! $fil - Marking for redownload"
   fi
+else
   printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fil \n" >> $LOGF
   printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fil \n" >> $LOGF
   printf "$f \n" >> "$LOGDIR/re-downloads.txt"
