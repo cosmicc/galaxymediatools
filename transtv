@@ -73,9 +73,11 @@ for f in "${file[@]}"; do
    cp -f "$f" "$TRANSDIR"
    if [ "$1" == "-v" ]; then echo -e "Checking video file integrity"
    fi
-   ISINTEG=`ffmpeg -v error -t 30 -i "$TRANSDIR/$fil" -y "$TRANSDIR/isinteg.$EXT"`
+   rm -r "$TRANSDIR/isinteg.*" &> /dev/null
+   ISINTEG=`eval ffmpeg -v error -t 5 -i \"$TRANSDIR/$fil\" -y \"$TRANSDIR/isinteg.$EXT\" < /dev/null`
    if [ "$ISINTEG" == "" ]; then
    if [ "$1" == "-v" ]; then echo -e "Video file passed integrity test."
+   fi
    printf "`eval date +%m/%d/%y"-"%H:%M` - 05 File passed video integrity test - $fne\n" >> $LOGF
    rm -r "$TRANSDIR/isinteg.$EXT"
    FRAMES=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
@@ -165,8 +167,8 @@ for f in "${file[@]}"; do
   printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fil \n" >> $LOGF
   printf "$f \n" >> "$LOGDIR/re-downloads.txt"
   #rm -r "$f"
-  rm -r "$TRANSDIR/isinteg.$EXT"
-  rm -r "$TRANSDIR/$fil"
+  rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
+  rm -r "$TRANSDIR/$fil" &> /dev/null
 fi
 done
 TTIME=$(date +%s)
