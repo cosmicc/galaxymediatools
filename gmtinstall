@@ -10,9 +10,13 @@ chmod ug+wrx /opt/galaxymediatools/transtv
 chmod ug+wrx /opt/galaxymediatools/transmantv
 chmod ug+wrx /opt/galaxymediatools/nontransdir
 chmod ug+wrx /opt/galaxymediatools/transmovie
+chmod ug+wrx /opt/galaxymediatools/killalltrans
+chmod ug+wrx /opt/galaxymediatools/1080to720
 ln -s /opt/galaxymediatools/transtv /usr/local/bin/transtv &> /dev/null
 ln -s /opt/galaxymediatools/transmantv /usr/local/bin/transmantv &> /dev/null
 ln -s /opt/galaxymediatools/nontransdir /usr/local/bin/nontransdir &> /dev/null
 ln -s /opt/galaxymediatools/transmovie /usr/local/bin/transmovie &> /dev/null
+ln -s /opt/galaxymediatools/killalltrans /usr/local/bin/killalltrans &> /dev/null
+ln -s /opt/galaxymediatools/1080to720 /usr/local/bin/1080to720 &> /dev/null
 echo -e "Installation complete"
 echo -e "Make sure you edit /etc/galaxymediatools.conf!"
