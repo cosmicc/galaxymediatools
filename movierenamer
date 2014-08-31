@@ -1,0 +1,91 @@
+#!/bin/bash
+source /etc/galaxymediatools.conf
+if [ "$1" == "" ]; then
+echo "No filename specified. Exiting"
+exit 1
+fi
+if [ ! -f "$1" ]; then
+echo "No file exists qith that name. Exiting"
+exit 1
+fi
+echo "Testing video integrity..."
+EXT=${1: -3}
+ISINTEG=`eval ffmpeg -v error -i \"$MOVIEDIR/$1\" -vframes 50 -y \"$TRANSDIR/isinteg.rename.$EXT\" < /dev/null`
+rm -r "$TRANSDIR/isinteg.rename.$EXT"
+ if [ "$ISINTEG" == "" ]; then
+  echo -e "Video file passed integrity test."
+ else
+  echo -e "Video FAILED integrity test."
+  exit 1
+ fi
+VRESCHK=`echo "$1" | awk -F'[][]' '{print $2}'`
+SCHK=`echo "$1" | sed 's/.*\]\([^]]*\)\[.*/\1/g'`
+echo $SCHK
+if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] && [ "$VRESCHK" != "480p" ] && [ "$VRESCHK" != "SD" ]; then
+ WIDTH=`ffprobe -select_streams v -show_streams "$MOVIEDIR/$1" 2>/dev/null | grep width | sed -e 's/width=//'`
+ HEIGHT=`ffprobe -select_streams v -show_streams "$MOVIEDIR/$1" 2>/dev/null | grep height | sed -e 's/height=//'`
+ VCODEC=`ffprobe -select_streams v -show_streams "$MOVIEDIR/$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//'`
+ CTS=`ffprobe -select_streams v -show_streams "$MOVIEDIR/$1" 2>/dev/null | grep codec_tag_string | sed -e 's/codec_tag_string=//'`
+ ACODEC=`ffprobe -select_streams a -show_streams "$MOVIEDIR/$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//'`
+ ACHANS=`ffprobe -select_streams a -show_streams "$MOVIEDIR/$1" 2>/dev/null | grep channels | sed -e 's/channels=//'`
+ YEAR=`echo "$1" | grep -oE '\([[:alnum:]]*?\)' | sed 's/[()]//g'`
+ MNAME=`echo "$1" | sed -e 's/([^()]*)//g' | sed -e 's/\[[^][]*\]//g' | sed 's/....$//' | sed -e 's/^ *//' -e 's/ *$//'`
+ if [ "$WIDTH" == "1920" ]; then
+  VRES="1080p"
+ elif [ "$WIDTH" == "1280" ]; then
+  VRES="720p"
+ elif [ "$WIDTH" == "720" ]; then
+  if [ "$HEIGHT" -gt "570" ]; then
+   VRES="576p"
+  else
+   VRES="480p"
+  fi
+ elif [ "$WIDTH" -lt "720" ]; then
+  VRES="SD"	
+ fi
+ if [ "$VCODEC" == "mpeg4" ]; then
+  VCODEC=`echo $CTS | awk '{print tolower($0)}'`
+ fi
+ if [ "$HEIGHT" == "" ]; then
+  echo "Cannot determine video HEIGHT. Exiting."
+  exit 1
+ fi
+ if [ "$WIDTH" == "" ]; then
+  echo "Cannot determine video WIDTH. Exiting."
+  exit 1
+ fi
+ if [ "$VCODEC" == "" ]; then
+  echo "Cannot determine video codec. Exiting."
+  exit 1
+ fi
+ if [ "$ACODEC" == "" ]; then
+  echo "Cannot determine audio codec. Exiting."
+  exit 1
+ fi
+ if [ "$ACHANS" == "" ]; then
+  echo "Cannot determine audio channels. Exiting."
+  exit 1
+ fi
+ if [ "$YEAR" == "" ]; then
+  echo "$1 missing year, enter year :"
+  read YEAR
+ fi
+ echo "Video Info:"
+ echo "----------------------------------"
+ echo "Video Codec: $VCODEC"
+ echo "Resolution: $WIDTH"x"$HEIGHT ($VRES)"
+ echo "Audio Codec: $ACODEC $ACHANS Channels"
+ echo "Year of title: $YEAR"
+ echo "----------------------------------"
+ FNAME=`echo "$1 -> $MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC-$ACHANS"ch"].$EXT" | sed 's/ \+/ /g'`
+ echo "$1 -> $FNAME"
+ if [ "$2" != "-s" ]; then
+  mv "$1" "$FNAME"
+ else
+  echo "SIMULATION MODE - No renaming applied."
+  echo $VRESCHK
+ fi
+else
+echo "Video file formatted properly. Skipping."
+fi
+#sed 's/\]\ \[/\]\[/g' removes space between brackets
