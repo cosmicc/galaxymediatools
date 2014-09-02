@@ -73,7 +73,7 @@ for f in "${file[@]}"; do
    if [ "$1" == "-v" ]; then echo -e "Checking video file integrity"
    fi
    rm -r "$TRANSDIR/isinteg.*" &> /dev/null
-   `ffmpeg -v error -i \"$TRANSDIR/$fil\" -vframes 50 -y \"$TRANSDIR/isinteg.$EXT\" < /dev/null`
+   ffmpeg -v error -i "$TRANSDIR/$fil" -vframes 50 -y "$TRANSDIR/isinteg.$EXT" < /dev/null`
    if [ "$?" == "0" ]; then
    if [ "$1" == "-v" ]; then echo -e "Video file passed integrity test."
    fi
