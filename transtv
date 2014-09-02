@@ -50,7 +50,6 @@ fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Starting transcode process on ${#file[@]} files \n" >> $LOGF
 j=0
 for f in "${file[@]}"; do
- j=$(($j+1))
  fil=${f##*/}
  EXT=${f: -3}
  transc=`echo "$f" | cut -d "." -f3`
@@ -171,6 +170,7 @@ for f in "${file[@]}"; do
   rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
   rm -r "$TRANSDIR/$fil" &> /dev/null
 fi
+j=$(($j+1))
 done
 TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
