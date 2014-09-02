@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APPNAME="transtv"
+APPNAME=$(basename $0)
 
 if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo " "
@@ -73,8 +73,8 @@ for f in "${file[@]}"; do
    if [ "$1" == "-v" ]; then echo -e "Checking video file integrity"
    fi
    rm -r "$TRANSDIR/isinteg.*" &> /dev/null
-   ISINTEG=`eval ffmpeg -v error -i \"$TRANSDIR/$fil\" -vframes 250 -y \"$TRANSDIR/isinteg.$EXT\" < /dev/null`
-   if [ "$ISINTEG" == "" ]; then
+   `eval ffmpeg -v error -i \"$TRANSDIR/$fil\" -vframes 250 -y \"$TRANSDIR/isinteg.$EXT\" < /dev/null`
+   if [ "$?" == "0" ]; then
    if [ "$1" == "-v" ]; then echo -e "Video file passed integrity test."
    fi
    printf "`eval date +%m/%d/%y"-"%H:%M` - 06 File passed video integrity test - $fne\n" >> $LOGF
