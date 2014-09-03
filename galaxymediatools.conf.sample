@@ -9,17 +9,23 @@ TVDIR="/video/TVShows"
 POAK="1niX9veMfynaGCvhbETnggtUFerfD8"
 # Pushover notifications user key
 POUK="6t5A4ejy7dY6HgVBeEhouYHw6yUFpH"
-# SSH user@hostname login information to transcode server (requires passwordless SSH login)
-SSHTINFO="user@192.168.1.10"
+# SSH user@hostname login information to transcode server 1 (requires passwordless SSH login)
+T1INFO="user@192.168.1.10"
 # MAC address of transcode server
-TSMAC="01:4d:a2:fa:08:3c"
+T1MAC="01:4d:a2:fa:08:3c"
+# SSH user@hostname login information to transcode server 2 (requires passwordless SSH login)
+T2INFO="user@192.168.1.10"
+# MAC address of transcode server
+T2MAC="01:4d:a2:fa:08:3c"
 # SSH user@hostname login information to plex server (requires passwordless SSH login)
 SSHINFO="user@192.168.1.15"
-# Plex category
+# Plex TV category
 PLEXCAT="4"
+# Plex Movie category
+PLEXMCAT="12"
 # Auto TV transcode search options
 # eg. "-mtime +7 -mtime -14 -size +800M" Older then 7 days, Younger then 14 days, Over 800 Meg
-ATTRANS="-mtime +14 -mtime -30 -size +200M"
+ATTRANS="-mtime +14 -mtime -30 -size +300M"
 # Auto movie transcode search options
 AMTRANS="-mtime +14 -mtime -120 -size +900M"
 # TV ffmpeg transcoding quality
