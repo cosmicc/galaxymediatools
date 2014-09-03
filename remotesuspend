@@ -1,0 +1,34 @@
+#!/bin/bash
+
+APPNAME=$(basename $0)
+
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        echo " "
+        echo "Galaxy Media Tools - Remote Suspend Transcode Server"
+        echo " "
+        echo "-h or --help : Help"
+        echo "-u : Upgrade from git only"
+        echo " "
+        exit 0
+fi
+
+if [ "$1" == "" ]; then
+	echo "Argument missing. Specify which server to suspend [server1] [server2]"
+	exit 1
+fi
+
+source /opt/galaxymediatools/precheck
+
+if [ "$1" == "server1" ]; then
+ echo "Waking transcode server 1"
+ ssh $T1INFO 'sudo pm-suspend' &
+ echo -e "Transcode server 1 suspended"
+ exit 0
+elif [ "$1" == "server2" ]; then
+ echo "Waking transcode server 2"
+ ssh $T2INFO 'sudo pm-suspend' &
+ echo -e "Transcode server 2 suspended"
+ exit 0
+fi
+echo "No server exists with that name"
+exit 1

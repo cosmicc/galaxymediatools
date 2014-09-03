@@ -1,0 +1,36 @@
+#!/bin/bash
+
+APPNAME=$(basename $0)
+
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        echo " "
+        echo "Galaxy Media Tools - Remote WoL Transcode Server"
+        echo " "
+        echo "-h or --help : Help"
+        echo "-u : Upgrade from git only"
+        echo " "
+        exit 0
+fi
+
+if [ "$1" == "" ]; then
+	echo "Argument missing. Specify which server to start-up [server1] [server2]"
+	exit 1
+fi
+
+source /opt/galaxymediatools/precheck
+
+if [ "$1" == "server1" ]; then
+ echo "Waking transcode server 1"
+ wakeonlan $T1MAC
+ sleep 3
+ echo -e "Transcode server 1 started"
+ exit 0
+elif [ "$1" == "server2" ]; then
+ echo "Waking transcode server 2"
+ wakeonlan $T2MAC
+ sleep 3
+ echo -e "Transcode server 2 started"
+ exit 0
+fi
+echo "No server exists with that name"
+exit 1
