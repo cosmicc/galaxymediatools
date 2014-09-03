@@ -1,10 +1,14 @@
 #
-# Galaxy Transcoding Tools Config File
+# Galaxy Media Tools Config File
 #
 # Directory which to store log files
-LOGDIR="/var/log"
+LOGDIR="/video/Incoming/logs"
 # Base directory where transcoding files are searched
-TVDIR="/video/TVShows"
+TVDIR="/video/TV Series"
+# Base directory where transcoding files are searched
+MOVIEDIR="/video/Movies"
+# Directory in which to transcode in locally
+TRANSDIR="/TRANSCODE"
 # Pushover notifications application key
 POAK="1niX9veMfynaGCvhbETnggtUFerfD8"
 # Pushover notifications user key
@@ -18,7 +22,7 @@ T2INFO="user@192.168.1.10"
 # MAC address of transcode server
 T2MAC="01:4d:a2:fa:08:3c"
 # SSH user@hostname login information to plex server (requires passwordless SSH login)
-SSHINFO="user@192.168.1.15"
+PLEXINFO="user@192.168.1.15"
 # Plex TV category
 PLEXCAT="4"
 # Plex Movie category
