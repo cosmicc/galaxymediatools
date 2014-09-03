@@ -20,7 +20,7 @@ ln -s /opt/galaxymediatools/nontransdir /usr/local/bin/nontransdir &> /dev/null
 ln -s /opt/galaxymediatools/transmovie /usr/local/bin/transmovie &> /dev/null
 ln -s /opt/galaxymediatools/killalltrans /usr/local/bin/killalltrans &> /dev/null
 ln -s /opt/galaxymediatools/1080to720 /usr/local/bin/1080to720 &> /dev/null
-ln -s /opt/galaxymediatools/1080to720 /usr/local/bin/remotewake &> /dev/null
-ln -s /opt/galaxymediatools/1080to720 /usr/local/bin/remotesuspend &> /dev/null
+ln -s /opt/galaxymediatools/remotewake /usr/local/bin/remotewake &> /dev/null
+ln -s /opt/galaxymediatools/remotewake /usr/local/bin/remotesuspend &> /dev/null
 echo -e "Installation complete"
 echo -e "Make sure you edit /etc/galaxymediatools.conf!"
