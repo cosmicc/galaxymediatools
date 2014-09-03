@@ -1,0 +1,53 @@
+#!/bin/bash
+
+abort()
+{
+    echo >&2 '
+***************
+*** ABORTED ***
+***************
+'
+    echo "An error occurred. Exiting..." >&2
+    exit 1
+}
+
+trap 'abort' 0
+
+set -e
+
+mkdir /opt/galaxymediatools/ffmpeginstall
+cd /opt/galaxymediatools/ffmpeginstall
+apt-get install libfftw3-dev pkg-config autoconf automake libtool unzip
+wget http://downloads.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
+wget http://217.20.164.161/~tipok/aacplus/libaacplus-2.0.2.tar.gz
+#wget http://ffmpeg.gusari.org/uploads/libaacplus-2.0.2.tar.gz
+git clone git://git.videolan.org/x264.git
+git clone git://source.ffmpeg.org/ffmpeg.git
+
+cd libaacplus-2.0.2
+./autogen.sh --enable-shared --enable-static
+make
+make install
+ldconfig
+cd ..
+
+cd x264
+./configure --enable-static --enable-shared
+make
+make install
+ldconfig
+cd ..
+
+cd ffmpeg
+./configure --enable-gpl --enable-libx264 --enable-libmp3lame --enable-nonfree --enable-libaacplus
+make
+make install
+
+trap : 0
+echo >&2 '
+************
+*** DONE *** 
+************
+'
+
+
