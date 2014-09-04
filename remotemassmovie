@@ -27,7 +27,7 @@ fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
   echo -e "Transcode server $T1NAME started"
  fi
  echo "Starting remote TV Transcode on $T1NAME"
- ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/massmovierenamer -v"
+ ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/massmovierenamer -v -s"
  echo -e "Remote mass movie renamer started on $T1NAME"
  exit 0
  elif [ "$1" == "$T2NAME" ]; then
@@ -40,7 +40,7 @@ fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
   echo -e "Transcode server $T2NAME started"
  fi
  echo "Starting remote TV Transcode on $T2NAME"
- ssh $T2INFO "sudo screen -dm sudo /opt/galaxymediatools/massmovierenamer &"
+ ssh $T2INFO "sudo screen -dm sudo /opt/galaxymediatools/massmovierenamer -v -s"
  echo -e "Remote mass movie renamer started on $T2NAME"
  exit 0
 fi
