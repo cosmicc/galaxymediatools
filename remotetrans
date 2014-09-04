@@ -1,9 +1,8 @@
 #!/bin/bash
-APPNAME="remotetrans"
 
 if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo " "
-        echo "Galaxy Media Tools - Remote Transcoder"
+        echo "Galaxy Media Tools - Remote TV Transcoder"
         echo " "
         echo "-h or --help : Help"
         echo "-u : Upgrade from git only"
@@ -11,13 +10,32 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         exit 0
 fi
 
+if [ "$1" == "" ]; then
+        echo "Argument missing. Specify which server to transcode on"
+        exit 1
+fi
+
 source /opt/galaxymediatools/precheck
 
-echo "Waking transcode server"
-wakeonlan $TSMAC
-echo "Waiting for startup..."
-sleep 10
+if [ "$1" == "$T1NAME" ]; then
+ echo "Waking transcode server $T1NAME"
+ wakeonlan $T1MAC
+ echo "Waiting for startup..."
+ sleep 10
+ echo -e "Transcode server $T1NAME started"
+ echo "Starting remote TV Transcode on $T1NAME"
+ssh $T1INFO 'sudo /opt/galaxymediatools/transtv & &> /dev/null' &> /dev/null
+echo -e "Remote auto tv transcode started on $T1NAME"
+elif [ "$1" == "T2NAME" ]; then
+ echo "Waking transcode server $T2NAME"
+ wakeonlan $T2MAC
+ echo "Waiting for startup..."
+ sleep 10
+ echo -e "Transcode server $T2NAME started"
+ echo "Starting remote TV Transcode on $T2NAME"
+ssh $T2INFO 'sudo /opt/galaxymediatools/transtv & &> /dev/null' &> /dev/null
+echo -e "Remote auto tv transcode started on $T2NAME"
+fi
+echo "No server exists with that name"
+exit 1
 
-echo "Starting remote Auto TransTV."
-#ssh $SSHTINFO 'sudo /opt/galaxymediatools/transtv & &> /dev/null' &> /dev/null
-echo -e "Remote auto tv transcode started."
