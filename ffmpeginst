@@ -13,8 +13,8 @@ abort()
 
 trap 'abort' 0
 
+rm -r /opt/galaxymediatools/ffmpeginstall
 set -e
-
 mkdir /opt/galaxymediatools/ffmpeginstall
 cd /opt/galaxymediatools/ffmpeginstall
 apt-get install make libfftw3-dev pkg-config autoconf automake libtool unzip yasm -y
