@@ -101,11 +101,11 @@ for f in "${file[@]}"; do
      echo "----------------------------------"
      FNAME=`echo "$f -> $MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC-$ACHANS"ch"].$EXT" | sed 's/ \+/ /g'`
      echo "$f -> $FNAME"
+     printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Movie Renamed - $fil -> $FNAME \n" >> $LOGF
      if [ "$2" != "-s" ]; then
       mv "$f" "$FNAME"
      else
       echo "SIMULATION MODE - No renaming applied."
-      echo $VRESCHK
      fi
     else
      echo "$fil is missing year, marking file in missingyear log "
