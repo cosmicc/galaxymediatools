@@ -1,6 +1,6 @@
 #!/bin/bash
 source /etc/galaxymediatools.conf
-
+source /opt/galaxymediatools/precheck
 LOGF="$LOGDIR/MassMovieRename-$CTS.txt"
 if [ "$1" == "-v" ]; then echo "Script starting up"
 fi
@@ -112,7 +112,7 @@ for f in "${file[@]}"; do
      printf "$f \n" >> "$LOGDIR/missingyear.txt"
     fi
    #else
-   # echo "$fil is formatted properly already"
+   # echo "$fil is formatted properly already skipping"
    #fi 
    else
     echo "File FAILED integrity test!! Purging file and marking for re-download"
