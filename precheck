@@ -26,8 +26,6 @@ fi
 
 APPDIR="/opt/galaxymediatools"
 STIME=$(date +%s)
-T1IP=`sed -e 's#.*@\(\)#\1#' <<< "$T1INFO"`
-T2IP=`sed -e 's#.*@\(\)#\1#' <<< "$T2INFO"`
 CTS=`eval date +%Y%m%d`
 cd "$APPDIR"
 sleep 3
@@ -52,6 +50,8 @@ if [ ! -f "/etc/galaxymediatools.conf" ]; then
 else
  source /etc/galaxymediatools.conf
 fi
+T1IP=`sed -e 's#.*@\(\)#\1#' <<< "$T1INFO"`
+T2IP=`sed -e 's#.*@\(\)#\1#' <<< "$T2INFO"`
 if [ "$LOGDIR" == "" ] || [ "$TVDIR" == "" ] || [ "$TRANSDIR" == "" ] || [ "$POAK" == "" ] || [ "$POUK" == "" ] || [ "$SSHINFO" == "" ] || [ "$PLEXCAT" == "" ]; then
 echo -e "No config information found in config file. Exiting."
 exit 1

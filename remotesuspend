@@ -18,7 +18,8 @@ fi
 source /opt/galaxymediatools/precheck
 
 if [ "$1" == "$T1NAME" ]; then
- if [ ! "`ping -c 1 $T1IP`" ]; then
+ fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
+  if [ "$?" != "0" ]; then
   echo "$T1NAME server already suspended."
   exit 1
  else
@@ -28,7 +29,8 @@ if [ "$1" == "$T1NAME" ]; then
   exit 0
  fi
 elif [ "$1" == "$T2NAME" ]; then
- if [ ! "`ping -c 1 $T2IP`" ]; then
+ fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
+  if [ "$?" != "0" ]; then
    echo "$T2NAME server already suspended."
    exit 1
  else
