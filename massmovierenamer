@@ -13,7 +13,7 @@ rm -r $TRANSDIR/* &> /dev/null
 else
 mkdir $TRANSDIR
 fi
-rm *.idx & rm *.sub & rm *.srt & rm *.nfo & rm *.txt &> /dev/null
+rm -rf *.idx &> /dev/null & rm -rf *.sub &> /dev/null & rm -rf *.srt &> /dev/null & rm -rf *.nfo &> /dev/null & rm -rf *.txt &> /dev/null
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process \n" >> $LOGF
 if [ "$1" == "-v" ]; then echo "Building file index..."
 fi
