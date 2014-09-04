@@ -28,7 +28,7 @@ fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process on $THISSERVER \n" >> $LOGF
 if [ "$1" == "-v" ]; then echo "Building file index..."
 fi
-if [ -f "$LOGDIR/FILEINDEX" ]; then
+if [ -f "$LOGDIR/FILEINDEX_$THISSERVER" ]; then
 rm -f $LOGDIR/FILEINDEX_$THISSERVER
 fi
 if [ "$2" == "-r" ]; then
