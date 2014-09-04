@@ -13,10 +13,14 @@ TRANSDIR="/TRANSCODE"
 POAK="1niX9veMfynaGCvhbETnggtUFerfD8"
 # Pushover notifications user key
 POUK="6t5A4ejy7dY6HgVBeEhouYHw6yUFpH"
+# Transcode server 1 name
+T1NAME="Server1"
 # SSH user@hostname login information to transcode server 1 (requires passwordless SSH login)
 T1INFO="user@192.168.1.10"
 # MAC address of transcode server
 T1MAC="01:4d:a2:fa:08:3c"
+# Transcode server 2 name
+T1NAME="Server2"
 # SSH user@hostname login information to transcode server 2 (requires passwordless SSH login)
 T2INFO="user@192.168.1.10"
 # MAC address of transcode server
