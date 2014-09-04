@@ -18,15 +18,25 @@ fi
 source /opt/galaxymediatools/precheck
 
 if [ "$1" == "$T1NAME" ]; then
- echo "Waking transcode server $T1NAME"
- ssh $T1INFO 'sudo pm-suspend' &
- echo -e "Transcode server $T1NAME suspended"
- exit 0
+ if [ ! "`ping -c 1 $T1IP`" ]; then
+  echo "$T1NAME server already suspended."
+  exit 1
+ else
+  echo "Waking transcode server $T1NAME"
+  ssh $T1INFO 'sudo pm-suspend' &
+  echo -e "Transcode server $T1NAME suspended"
+  exit 0
+ fi
 elif [ "$1" == "$T2NAME" ]; then
- echo "Waking transcode server $T2NAME"
- ssh $T2INFO 'sudo pm-suspend' &
- echo -e "Transcode server $T2NAME suspended"
- exit 0
+ if [ ! "`ping -c 1 $T2IP`" ]; then
+   echo "$T2NAME server already suspended."
+   exit 1
+ else
+  echo "Waking transcode server $T2NAME"
+  ssh $T2INFO 'sudo pm-suspend' &
+  echo -e "Transcode server $T2NAME suspended"
+  exit 0
+ fi
 fi
 echo "No server exists with that name"
 exit 1

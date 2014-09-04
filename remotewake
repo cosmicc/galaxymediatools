@@ -18,17 +18,27 @@ fi
 source /opt/galaxymediatools/precheck
 
 if [ "$1" == "$T1NAME" ]; then
- echo "Waking transcode server $T1NAME"
- wakeonlan $T1MAC
- sleep 3
- echo -e "Transcode server $TNAME started"
- exit 0
+  if [ "`ping -c 1 $T1IP`" ]; then
+   echo "$T1NAME server already running."
+   exit 1
+ else
+  echo "Waking transcode server $T1NAME"
+  wakeonlan $T1MAC
+  sleep 3
+  echo -e "Transcode server $TNAME started"
+  exit 0
+ fi
 elif [ "$1" == "$T2NAME" ]; then
- echo "Waking transcode server $T2NAME"
- wakeonlan $T2MAC
- sleep 3
- echo -e "Transcode server $T2NAME started"
- exit 0
+ if [ "`ping -c 1 $T2IP`" ]; then
+   echo "$T2NAME server already running."
+   exit 1
+ else
+  echo "Waking transcode server $T2NAME"
+  wakeonlan $T2MAC
+  sleep 3
+  echo -e "Transcode server $T2NAME started"
+  exit 0
+ fi
 fi
 echo "No server exists with that name"
 exit 1

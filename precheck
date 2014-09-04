@@ -26,6 +26,8 @@ fi
 
 APPDIR="/opt/galaxymediatools"
 STIME=$(date +%s)
+T1IP=`sed -e 's#.*@\(\)#\1#' <<< "$T1INFO"`
+T2IP=`sed -e 's#.*@\(\)#\1#' <<< "$T2INFO"`
 CTS=`eval date +%Y%m%d`
 cd "$APPDIR"
 sleep 3
