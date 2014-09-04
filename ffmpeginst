@@ -15,16 +15,16 @@ trap 'abort' 0
 
 set -e
 
-#mkdir /opt/galaxymediatools/ffmpeginstall
+mkdir /opt/galaxymediatools/ffmpeginstall
 cd /opt/galaxymediatools/ffmpeginstall
 apt-get install make libfftw3-dev pkg-config autoconf automake libtool unzip yasm -y
-#wget http://downloads.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
-#wget http://217.20.164.161/~tipok/aacplus/libaacplus-2.0.2.tar.gz
-#wget http://ffmpeg.gusari.org/uploads/libaacplus-2.0.2.tar.gz
-#git clone git://git.videolan.org/x264.git
-#git clone git://source.ffmpeg.org/ffmpeg.git
+wget http://downloads.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
+wget http://217.20.164.161/~tipok/aacplus/libaacplus-2.0.2.tar.gz
+wget http://ffmpeg.gusari.org/uploads/libaacplus-2.0.2.tar.gz
+git clone git://git.videolan.org/x264.git
+git clone git://source.ffmpeg.org/ffmpeg.git
 
-#tar -xzf lame-3.99.5.tar.gz
+tar -xzf lame-3.99.5.tar.gz
 cd lame-3.99.5
 ./configure
 make
@@ -32,7 +32,7 @@ make install
 ldconfig
 cd ..
 
-#tar -xzf libaacplus-2.0.2.tar.gz
+tar -xzf libaacplus-2.0.2.tar.gz
 cd libaacplus-2.0.2
 ./autogen.sh --enable-shared --enable-static
 make
