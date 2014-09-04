@@ -71,7 +71,7 @@ for f in "${file[@]}"; do
    if [ "$1" == "-v" ]; then echo -e "Checking video file integrity"
    fi
    rm -r "$TRANSDIR/isinteg.*" &> /dev/null
-   ffmpeg -v error -i "$TRANSDIR/$fil" -vframes 250 -y "$TRANSDIR/isinteg.$EXT" < /dev/null
+   ffmpeg -v error -i "$TRANSDIR/$fil" -vframes 50 -y "$TRANSDIR/isinteg.$EXT" < /dev/null
    if [ "$?" == "0" ]; then
    if [ "$1" == "-v" ]; then echo -e "Video file passed integrity test."
    fi
@@ -79,9 +79,6 @@ for f in "${file[@]}"; do
    rm -r "$TRANSDIR/isinteg.$EXT"
    FRAMES=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
    HEIGHT=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep height | sed -e 's/height=//'`
-   else
-   HEIGHT="200"
-   fi
    if [ "$HEIGHT" -gt "406" ]; then
     printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file (Resized) Frames: $FRAMES - $fil\n" >> $LOGF
     ffmpegsw="-c:v libx264 -preset slow -sn -crf $TVQUAL -profile:v high -vf scale=720:400 -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
@@ -168,6 +165,7 @@ for f in "${file[@]}"; do
   rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
   rm -r "$TRANSDIR/$fil" &> /dev/null
   fi
+ fi
 fi
 j=$(($j+1))
 done
