@@ -15,22 +15,31 @@ source /opt/galaxymediatools/precheck
 cp -f /etc/galaxymediatools.conf $LOGDIR
  fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
   if [ "$?" != "0" ]; then
+   WASSLEEPING1="1"
    echo "Waking transcode server $T1NAME"
    wakeonlan $T1MAC
    sleep 10
    echo -e "Transcode server $T1NAME started"
   fi
-  echo "Copying config file to $T1NAME"
  ssh $T1INFO "sudo cp -f $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf && sudo $APPDIR/gitpull"
   echo "Config file copied to $T1NAME"
+ if [ "$WASSLEEPING1" == "1" ]; then
+  echo "Transcoder server $T1NAME was sleeping, putting back to sleep."
+  ssh $T1INFO 'sudo pm-suspend' &
+ fi
+
  fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
   if [ "$?" != "0" ]; then
+  WASSLEEPING2="1"
    echo "Waking transcode server $T2NAME"
    wakeonlan $T2MAC
    sleep 10
    echo -e "Transcode server $T2NAME started"
   fi
-  echo "Copying config file to $T2NAME"
  ssh $T2INFO "sudo cp -f $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf && sudo $APPDIR/gitpull"
   echo "Config file copied to $T2NAME"
+ if [ "$WASSLEEPING2" == "1" ]; then
+  echo "Transcoder server $T2NAME was sleeping, putting back to sleep."
+  ssh $T2INFO 'sudo pm-suspend' &  
+ fi
 
