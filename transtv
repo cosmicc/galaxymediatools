@@ -146,7 +146,7 @@ for f in "${file[@]}"; do
     if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "TV Transcode Finished - $asd ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME - Original kept, Non Transcodable" &> /dev/null
     fi
    fi
-   if [ "$2" != "-s" ]; then ssh $SSHINFO -q 'sudo su plex -c "plexscan -s -c $PLEXCAT &> /dev/null &"' &> /dev/null &
+   if [ "$2" != "-s" ]; then ssh $PLEXINFO -q 'sudo su plex -c "plexscan -s -c $PLEXCAT &> /dev/null &"' &> /dev/null &
    fi
    #else
     #printf "`eval date +%m/%d/%y"-"%H:%M` - 10 Skipping mp4 file under sized, marking file non transcodable - $fil \n" >> $LOGF
@@ -178,7 +178,7 @@ printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover completion notificat
 if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Auto TV Transcode Script Complete - Total Elapsed: $ETIME"
 fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server full video analyze  \n" >> $LOGF
-if [ "$2" != "-s" ]; then ssh $SSHINFO 'sudo su plex -c "plexscan -b -a -c $PLEXCAT &> /dev/null &"' > /dev/null &
+if [ "$2" != "-s" ]; then ssh $PLEXINFO 'sudo su plex -c "plexscan -b -a -c $PLEXCAT &> /dev/null &"' > /dev/null &
 fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
 if [ "$1" == "-v" ]; then echo "Script ended."

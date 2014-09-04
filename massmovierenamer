@@ -132,10 +132,10 @@ printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover completion notificat
 if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass Movie Rename Script Complete - Total Elapsed: $ETIME"
 fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server movie section update  \n" >> $LOGF
-if [ "$2" != "-s" ]; then ssh $SSHINFO 'sudo su plex -c "plexscan -b -a -c $PLEXMCAT &> /dev/null &"' > /dev/null &
-fi
-printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
 if [ "$1" == "-v" ]; then echo "Script ended."
 fi
+if [ "$2" != "-s" ]; then ssh $PLEXINFO -q 'sudo su plex -c "plexscan -s -c $PLEXMCAT &> /dev/null &"' &> /dev/null &
+   fi
+printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
 pm-suspend
 #sed 's/\]\ \[/\]\[/g' removes space between brackets
