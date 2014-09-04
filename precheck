@@ -27,22 +27,22 @@ fi
 APPDIR="/opt/galaxymediatools"
 STIME=$(date +%s)
 CTS=`eval date +%Y%m%d`
-cd "$APPDIR"
-sleep 3
-UPG=$(git pull origin master | grep "Already")
-if [ "$UPG" != "Already up-to-date." ]; then
-  echo "upgrading"
-  git pull origin master
-  bash $APPDIR/$APPNAME
-  exit 0
-else
-echo "no upgrade needed"
-fi
+#cd "$APPDIR"
+#sleep 3
+#UPG=$(git pull origin master | grep "Already")
+#if [ "$UPG" != "Already up-to-date." ]; then
+#  echo "upgrading"
+#  git pull origin master
+#  bash $APPDIR/$APPNAME
+#  exit 0
+#else
+#echo "no upgrade needed"
+#fi
 
-if [ "$1" == "-u" ]; then
- echo -e "Upgrade only. Exiting"
- exit 0
-fi
+#if [ "$1" == "-u" ]; then
+# echo -e "Upgrade only. Exiting"
+# exit 0
+#fi
 
 if [ ! -f "/etc/galaxymediatools.conf" ]; then
  echo -e "No config file found. Exiting."
