@@ -37,10 +37,3 @@ echo $T2IP
  ssh $T2INFO "sudo cp -f $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf"
   echo "Config file copied to $T2NAME"
 
-trap : 0
-echo >&2 '
-************
-*** DONE ***
-************
-'
-
