@@ -59,73 +59,72 @@ for f in "${file[@]}"; do
  fi
  if [ "$1" == "-v" ]; then echo -e "Copying file locally..."; fi
  printf "`eval date +%m/%d/%y"-"%H:%M` - 04 Copying file from filer to local for transcoding on $THISSERVER $fne\n" >> $LOGF
- if [ "$2" != "-s" ]; then 
-  cp -f "$f" "$TRANSDIR"
-  if [ "$1" == "-v" ]; then echo -e "Checking video file integrity"; fi
-  rm -r "$TRANSDIR/isinteg.*" &> /dev/null
-  ffmpeg -v error -i "$TRANSDIR/$fil" -vframes 50 -y "$TRANSDIR/isinteg.$EXT" < /dev/null
-  if [ "$?" == "0" ]; then
-   if [ "$1" == "-v" ]; then echo -e "Video file passed integrity test."; fi
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 06 File passed video integrity test on $THISSERVER - $fne\n" >> $LOGF
-   rm -r "$TRANSDIR/isinteg.$EXT"
-   FRAMES=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
-   HEIGHT=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep height | sed -e 's/height=//'`
-   if [ "$HEIGHT" -gt "406" ]; then
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file (Resized) Frames: $FRAMES on $THISSERVER - $fil\n" >> $LOGF
-    ffmpegsw="-c:v libx264 -preset slow -sn -crf $TVQUAL -profile:v high -vf scale=720:400 -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
-    asd="(Resized)"
-   else
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 05 Processing video file (Not-Resized) Frames: $FRAMES on $THISSERVER - $fil\n" >> $LOGF
-    ffmpegsw="-c:v libx264 -preset slow -sn -crf $TVQUAL -profile:v high -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
-    asd="(Not Resized)"
+ if [ "$2" != "-s" ]; then cp -f "$f" "$TRANSDIR"; fi
+ if [ "$1" == "-v" ]; then echo -e "Checking video file integrity"; fi
+ rm -r "$TRANSDIR/isinteg.*" &> /dev/null
+ ffmpeg -v error -i "$TRANSDIR/$fil" -vframes 50 -y "$TRANSDIR/isinteg.$EXT" < /dev/null
+ if [ "$?" == "0" ]; then
+  if [ "$1" == "-v" ]; then echo -e "Video file passed integrity test."; fi
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 06 File passed video integrity test on $THISSERVER - $fne\n" >> $LOGF
+  rm -r "$TRANSDIR/isinteg.$EXT"
+  FRAMES=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
+  HEIGHT=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep height | sed -e 's/height=//'`
+  if [ "$HEIGHT" -gt "406" ]; then
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file (Resized) Frames: $FRAMES on $THISSERVER - $fil\n" >> $LOGF
+   ffmpegsw="-c:v libx264 -preset slow -sn -crf $TVQUAL -profile:v high -vf scale=720:400 -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
+   asd="(Resized)"
+  else
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 05 Processing video file (Not-Resized) Frames: $FRAMES on $THISSERVER - $fil\n" >> $LOGF
+   ffmpegsw="-c:v libx264 -preset slow -sn -crf $TVQUAL -profile:v high -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
+   asd="(Not Resized)"
+  fi
+  TSTIME=$(date +%s)
+  if [ "$1" == "-v" ]; then echo -e "* Transcoding file: $fil"; fi
+  if [ "$2" != "-s" ]; then nice -n -10 ffmpeg -i "$TRANSDIR/$fil" $ffmpegsw "$TRANSDIR/$fng.trans.mp4" < /dev/null &> /dev/null; fi
+  TETIME=$(date +%s)
+  GTIME=$(gettime "$TSTIME" "$TETIME")
+  SOSIZE=$((OSIZE/1000000))
+  NSIZE=$(wc -c "$TRANSDIR/$fng.trans.mp4" | cut -f 1 -d ' ')
+  SNSIZE=$((NSIZE/1000000))
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 02 Transcoding Finished on $THISSERVER. ($SOSIZE->$SNSIZE) $fleft Left, Elapsed time: $GTIME - $fil \n" >> $LOGF
+  if [ ! -f "$TRANSDIR/$fng.trans.mp4" ]; then
+   if [ "$1" == "-v" ]; then echo -e "PROBLEM!! No transcoded file found, something is wrong. Exiting."; fi
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 99 PROBLEM!! No transcoded file found, something went wrong on $THISSERVER. Exiting. $fil\n" >> $LOGF
+   exit 1
+  fi
+  if [ "$NSIZE" -lt "25000000" ];then
+   rm -r "$TRANSDIR/$fne.trans.mp4"
+   rm -r "$TRANSDIR/$fil"
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 98 PROBLEM!! Transcoded file under 25 Meg, something went wrong on $THISSERVER, Exiting. $fil\n" >> $LOGF
+   if [ "$1" == "-v" ]; then echo -e "PROBLEM!! Transcoded file under 25 Meg, something went wrong, Exiting."; fi
+   exit 1
+  fi
+  if [ "$OSIZE" -gt "$NSIZE" ] && [ "$NSIZE" -gt "10000000" ]; then
+   if [ "$1" == "-v" ]; then echo -e "Copying transcoded file back $fng.trans.mp4"; fi
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 09 Transcoded file is smaller as intended on $THISSERVER- Deleting original $fil\n" >> $LOGF
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 03 Copying transcoded file back to filer on $THISSERVER - $fng.trans.mp4\n" >> $LOGF
+   if [ "$2" != "-s" ]; then 
+    cp -f "$TRANSDIR/$fng.trans.mp4" "$fne.trans.mp4"
+    rm -f "$f"
+    rm -f "$TRANSDIR/$fng.trans.mp4"
+    rm -f "$TRANSDIR/$fil"
+   fi 
+   if [ "$1" == "-v" ]; then echo -e "Transcoding finished on $THISSERVER, $asd ($SOSIZE->$SNSIZE) Original replaced, $fleft Left, elapsed time: $GTIME"; fi
+   if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Transcode Finished on $THISSERVER $asd ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME - Original replaced - $fleft Left." &> /dev/null; fi
+  else
+   if [ "$2" != "-s" ]; then rm -f "$TRANSDIR/$fng.trans.mp4"; fi
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 80 Transcoded file is BIGGER! on $THISSERVER - Deleting transcode $fne.trans.mp4\n" >> $LOGF
+   if [ "$2" != "-s" ]; then 
+    mv "$f" "$fne.ntrans.$EXT"
+    rm -f "$TRANSDIR/$fil"
+    rm -f "$TRANSDIR/$fng.trans.mp4"
    fi
-   TSTIME=$(date +%s)
-   if [ "$1" == "-v" ]; then echo -e "* Transcoding file: $fil"; fi
-   if [ "$2" != "-s" ]; then nice -n -10 ffmpeg -i "$TRANSDIR/$fil" $ffmpegsw "$TRANSDIR/$fng.trans.mp4" < /dev/null &> /dev/null; fi
-   TETIME=$(date +%s)
-   GTIME=$(gettime "$TSTIME" "$TETIME")
-   SOSIZE=$((OSIZE/1000000))
-   NSIZE=$(wc -c "$TRANSDIR/$fng.trans.mp4" | cut -f 1 -d ' ')
-   SNSIZE=$((NSIZE/1000000))
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 02 Transcoding Finished on $THISSERVER. ($SOSIZE->$SNSIZE) $fleft Left, Elapsed time: $GTIME - $fil \n" >> $LOGF
-   if [ ! -f "$TRANSDIR/$fng.trans.mp4" ]; then
-    if [ "$1" == "-v" ]; then echo -e "PROBLEM!! No transcoded file found, something is wrong. Exiting."; fi
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 99 PROBLEM!! No transcoded file found, something went wrong on $THISSERVER. Exiting. $fil\n" >> $LOGF
-    exit 1
-   fi
-   if [ "$NSIZE" -lt "25000000" ];then
-    rm -r "$TRANSDIR/$fne.trans.mp4"
-    rm -r "$TRANSDIR/$fil"
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 98 PROBLEM!! Transcoded file under 25 Meg, something went wrong on $THISSERVER, Exiting. $fil\n" >> $LOGF
-    if [ "$1" == "-v" ]; then echo -e "PROBLEM!! Transcoded file under 25 Meg, something went wrong, Exiting."; fi
-    exit 1
-   fi
-   if [ "$OSIZE" -gt "$NSIZE" ] && [ "$NSIZE" -gt "10000000" ]; then
-    if [ "$1" == "-v" ]; then echo -e "Copying transcoded file back $fng.trans.mp4"; fi
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 09 Transcoded file is smaller as intended on $THISSERVER- Deleting original $fil\n" >> $LOGF
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 03 Copying transcoded file back to filer on $THISSERVER - $fng.trans.mp4\n" >> $LOGF
-    if [ "$2" != "-s" ]; then 
-     cp -f "$TRANSDIR/$fng.trans.mp4" "$fne.trans.mp4"
-     rm -f "$f"
-     rm -f "$TRANSDIR/$fng.trans.mp4"
-     rm -f "$TRANSDIR/$fil"
-    fi 
-    if [ "$1" == "-v" ]; then echo -e "Transcoding finished on $THISSERVER, $asd ($SOSIZE->$SNSIZE) Original replaced, $fleft Left, elapsed time: $GTIME"; fi
-    if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Transcode Finished on $THISSERVER $asd ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME - Original replaced - $fleft Left." &> /dev/null; fi
-   else
-    if [ "$2" != "-s" ]; then rm -f "$TRANSDIR/$fng.trans.mp4"; fi
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 80 Transcoded file is BIGGER! on $THISSERVER - Deleting transcode $fne.trans.mp4\n" >> $LOGF
-    if [ "$2" != "-s" ]; then 
-     mv "$f" "$fne.ntrans.$EXT"
-     rm -f "$TRANSDIR/$fil"
-     rm -f "$TRANSDIR/$fng.trans.mp4"
-    fi
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 80 Marking original file non transcodable on $THISSERVER - $fne.ntrans.$EXT\n" >> $LOGF
-    if [ "$1" == "-v" ]; then echo -e "Transcoding finished, $asd ($SOSIZE->$SNSIZE) Original kept, elapsed time: $GTIME"; fi
-    if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Transcode Finished on $THISSERVER - $asd ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME - Original kept, Non Transcodable - $fleft Left." &> /dev/null; fi
-   fi
-   if [ "$2" != "-s" ]; then ssh $PLEXINFO -q 'sudo su plex -c "plexscan -s -c $PLEXCAT &> /dev/null &"' &> /dev/null; fi
- fi
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 80 Marking original file non transcodable on $THISSERVER - $fne.ntrans.$EXT\n" >> $LOGF
+   if [ "$1" == "-v" ]; then echo -e "Transcoding finished, $asd ($SOSIZE->$SNSIZE) Original kept, elapsed time: $GTIME"; fi
+   if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Transcode Finished on $THISSERVER - $asd ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME - Original kept, Non Transcodable - $fleft Left." &> /dev/null; fi
+  fi
+  if [ "$2" != "-s" ]; then ssh $PLEXINFO -q 'sudo su plex -c "plexscan -s -c $PLEXCAT &> /dev/null &"' &> /dev/null & 
+  fi
  else
   if [ "$1" == "-v" ]; then echo "File FAILED integrity test!! Purging file and marking for re-download"; fi
   if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "File FAILED integrity test! on $THISSERVER $fil - Marking for redownload"; fi
@@ -145,7 +144,8 @@ rm -r $TRANSDIR/* &> /dev/null
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover completion notification on $THISSERVER \n" >> $LOGF
 if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Auto TV Transcode Script Complete on $THISSERVER - Total Elapsed: $ETIME"; fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server full video analyze on $THISSERVER \n" >> $LOGF
-if [ "$2" != "-s" ]; then ssh $PLEXINFO 'sudo su plex -c "plexscan -b -a -c $PLEXCAT &> /dev/null &"' > /dev/null &; fi
+if [ "$2" != "-s" ]; then ssh $PLEXINFO 'sudo su plex -c "plexscan -b -a -c $PLEXCAT &> /dev/null &"' > /dev/null & 
+fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End on $THISSERVER- Elapsed Time: $ETIME\n" >> $LOGF
 if [ "$1" == "-v" ]; then echo "Script ended."; fi
 FTIME=$((TTIME-STIME))
