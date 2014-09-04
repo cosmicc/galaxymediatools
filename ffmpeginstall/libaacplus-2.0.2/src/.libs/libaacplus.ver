@@ -1,0 +1,8 @@
+{ global:
+aacplusEncGetCurrentConfiguration;
+aacplusEncSetConfiguration;
+aacplusEncOpen;
+aacplusEncGetDecoderSpecificInfo;
+aacplusEncEncode;
+aacplusEncClose;
+local: *; };
