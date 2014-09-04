@@ -17,6 +17,7 @@ rm *.idx & rm *.sub & rm *.srt & rm *.nfo & rm *.txt &> /dev/null
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process \n" >> $LOGF
 if [ "$1" == "-v" ]; then echo "Building file index..."
 fi
+sleep 5
 if [ -f "$LOGDIR/MOVIEINDEX" ]; then
 rm -f $LOGDIR/MOVIEINDEX
 fi
@@ -93,16 +94,9 @@ for f in "${file[@]}"; do
      exit 1
     fi
     if [ "$YEAR" != "" ]; then
-     echo "Video Info:"
-     echo "----------------------------------"
-     echo "Video Codec: $VCODEC"
-     echo "Resolution: $WIDTH"x"$HEIGHT ($VRES)"
-     echo "Audio Codec: $ACODEC $ACHANS Channels"
-     echo "Year of title: $YEAR"
-     echo "----------------------------------"
-     FNAME=`echo "$f -> $MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC-$ACHANS"ch"].$EXT" | sed 's/ \+/ /g'`
-     echo "$f -> $FNAME"
+     FNAME=`echo "$MOVIEDIR\$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC-$ACHANS"ch"].$EXT" | sed 's/ \+/ /g'`
      printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Movie Renamed - $fil -> $FNAME \n" >> $LOGF
+     echo "$f -> $FNAME"
      if [ "$2" != "-s" ]; then
       mv "$f" "$FNAME"
      else
