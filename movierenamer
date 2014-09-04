@@ -10,14 +10,11 @@ exit 1
 fi
 echo "Testing video integrity..."
 EXT=${1: -3}
-ISINTEG=`eval ffmpeg -v error -i \"$MOVIEDIR/$1\" -vframes 50 -y \"$TRANSDIR/isinteg.rename.$EXT\" < /dev/null`
-rm -r "$TRANSDIR/isinteg.rename.$EXT"
- if [ "$ISINTEG" == "" ]; then
+rm -r "$TRANSDIR/isinteg.rename.$EXT" &> /dev/null
+ffmpeg -v error -i "$1" -vframes 250 -y "$TRANSDIR/isinteg.rename.$EXT" < /dev/null
+rm -r "$TRANSDIR/isinteg.rename.$EXT" &> /dev/null
+  if [ "$?" == "0" ]; then
   echo -e "Video file passed integrity test."
- else
-  echo -e "Video FAILED integrity test."
-  exit 1
- fi
 VRESCHK=`echo "$1" | awk -F'[][]' '{print $2}'`
 SCHK=`echo "$1" | sed 's/.*\]\([^]]*\)\[.*/\1/g'`
 echo $SCHK
@@ -87,5 +84,14 @@ if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] &&
  fi
 else
 echo "Video file formatted properly. Skipping."
+fi
+else
+  echo "File FAILED integrity test!! Purging file and marking for re-download"
+if [ "$2" != "-s" ]; then
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $1 \n" >> $LOGF
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $1 \n" >> $LOGF
+  printf "$1 \n" >> "$LOGDIR/re-downloads.txt"
+  rm -r "$1"
+fi
 fi
 #sed 's/\]\ \[/\]\[/g' removes space between brackets

@@ -1,0 +1,140 @@
+#!/bin/bash
+source /etc/galaxymediatools.conf
+
+LOGF="$LOGDIR/MassMovieRename-$CTS.txt"
+if [ "$1" == "-v" ]; then echo "Script starting up"
+fi
+touch $LOGF 
+printf "`eval date +%m/%d/%y"-"%H:%M` - *** Script Start \n" >> $LOGF
+if [ "$1" == "-v" ]; then echo "Resetting transcode directory $TRANSDIR"
+fi
+if [ -d $TRANSDIR ]; then
+rm -r $TRANSDIR/* &> /dev/null
+else
+mkdir $TRANSDIR
+fi
+printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process \n" >> $LOGF
+if [ "$1" == "-v" ]; then echo "Building file index..."
+fi
+if [ -f "$LOGDIR/MOVIEINDEX" ]; then
+rm -f $LOGDIR/MOVIEINDEX
+fi
+find "$MOVIEDIR" -type f  | cat $f | sort >> $LOGDIR/MOVIEINDEX
+i=0
+while read sfile
+do
+    if [[ -f $sfile ]]; then
+        file[$i]=$sfile
+        i=$(($i+1))
+    fi
+done < $LOGDIR/MOVIEINDEX
+printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover script start-up notification\n" >> $LOGF
+if [ "$1" == "-v" ]; then echo "Sending pushover notification"
+fi
+if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass Movie Rename Script Starting - ${#file[@]} Files to proccess" &> /dev/null
+fi
+j=0
+for f in "${file[@]}"; do
+ fil=${f##*/}
+ echo "Testing video integrity..."
+ EXT=${f: -3}
+ rm -r "$TRANSDIR/isinteg.rename.$EXT" &> /dev/null
+ ffmpeg -v error -i "$f" -vframes 50 -y "$TRANSDIR/isinteg.rename.$EXT" < /dev/null
+ rm -r "$TRANSDIR/isinteg.rename.$EXT" &> /dev/null
+ if [ "$?" == "0" ]; then
+  echo -e "Video file passed integrity test."
+  VRESCHK=`echo "$f" | awk -F'[][]' '{print $2}'`
+  SCHK=`echo "$f" | sed 's/.*\]\([^]]*\)\[.*/\1/g'`
+  echo $SCHK
+   #if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] && [ "$VRESCHK" != "480p" ] && [ "$VRESCHK" != "SD" ]; then
+    WIDTH=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep width | sed -e 's/width=//'`
+    HEIGHT=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep height | sed -e 's/height=//'`
+    VCODEC=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//'`
+    CTS=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep codec_tag_string | sed -e 's/codec_tag_string=//'`
+    ACODEC=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//'`
+    ACHANS=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep channels | sed -e 's/channels=//'`
+    YEAR=`echo "$f" | grep -oE '\([[:alnum:]]*?\)' | sed 's/[()]//g'`
+    MNAME=`echo "$f" | sed -e 's/([^()]*)//g' | sed -e 's/\[[^][]*\]//g' | sed 's/....$//' | sed -e 's/^ *//' -e 's/ *$//'`
+    if [ "$WIDTH" == "1920" ]; then
+     VRES="1080p"
+    elif [ "$WIDTH" == "1280" ]; then
+     VRES="720p"
+    elif [ "$WIDTH" == "720" ]; then
+     if [ "$HEIGHT" -gt "570" ]; then
+      VRES="576p"
+     else
+      VRES="480p"
+     fi
+    elif [ "$WIDTH" -lt "720" ]; then
+     VRES="SD"	
+    fi
+    if [ "$VCODEC" == "mpeg4" ]; then
+     VCODEC=`echo $CTS | awk '{print tolower($0)}'`
+    fi
+    if [ "$HEIGHT" == "" ]; then
+     echo "Cannot determine video HEIGHT. Exiting."
+     exit 1
+    fi
+    if [ "$WIDTH" == "" ]; then
+     echo "Cannot determine video WIDTH. Exiting."
+     exit 1
+    fi
+    if [ "$VCODEC" == "" ]; then
+     echo "Cannot determine video codec. Exiting."
+     exit 1
+    fi
+    if [ "$ACODEC" == "" ]; then
+     echo "Cannot determine audio codec. Exiting."
+     exit 1
+    fi
+    if [ "$ACHANS" == "" ]; then
+     echo "Cannot determine audio channels. Exiting."
+     exit 1
+    fi
+    if [ "$YEAR" != "" ]; then
+     echo "Video Info:"
+     echo "----------------------------------"
+     echo "Video Codec: $VCODEC"
+     echo "Resolution: $WIDTH"x"$HEIGHT ($VRES)"
+     echo "Audio Codec: $ACODEC $ACHANS Channels"
+     echo "Year of title: $YEAR"
+     echo "----------------------------------"
+     FNAME=`echo "$f -> $MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC-$ACHANS"ch"].$EXT" | sed 's/ \+/ /g'`
+     echo "$f -> $FNAME"
+     if [ "$2" != "-s" ]; then
+      mv "$f" "$FNAME"
+     else
+      echo "SIMULATION MODE - No renaming applied."
+      echo $VRESCHK
+     fi
+    else
+     echo "$fil is missing year, marking file in missingyear log "
+     printf "$f \n" >> "$LOGDIR/missingyear.txt"
+    fi
+   #else
+   # echo "$fil is formatted properly already"
+   #fi 
+   else
+    echo "File FAILED integrity test!! Purging file and marking for re-download"
+    if [ "$2" != "-s" ]; then 
+    $APPDIR/pushover.sh -T $POAK -U $POUK "Movie FAILED integrity test!! Purging file and marking for re-download - $fil"
+    fi
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fil \n" >> $LOGF
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fil \n" >> $LOGF
+    printf "$f \n" >> "$LOGDIR/re-downloads.txt"
+  #rm -r "$f"
+   fi
+done
+TTIME=$(date +%s)
+   ETIME=$(gettime "$STIME" "$TTIME")
+rm -r $TRANSDIR/* &> /dev/null
+printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover completion notification\n" >> $LOGF
+if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass Movie Rename Script Complete - Total Elapsed: $ETIME"
+fi
+printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server movie section update  \n" >> $LOGF
+if [ "$2" != "-s" ]; then ssh $SSHINFO 'sudo su plex -c "plexscan -b -a -c $PLEXMCAT &> /dev/null &"' > /dev/null &
+fi
+printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
+if [ "$1" == "-v" ]; then echo "Script ended."
+fi
+#sed 's/\]\ \[/\]\[/g' removes space between brackets
