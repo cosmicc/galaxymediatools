@@ -137,4 +137,5 @@ fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
 if [ "$1" == "-v" ]; then echo "Script ended."
 fi
+pm-suspend
 #sed 's/\]\ \[/\]\[/g' removes space between brackets
