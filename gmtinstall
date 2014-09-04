@@ -17,6 +17,7 @@ chmod ug+wrx /opt/galaxymediatools/remotewake
 chmod ug+wrx /opt/galaxymediatools/remotesuspend
 chmod ug+wrx /opt/galaxymediatools/remotetranstv
 chmod ug+wrx /opt/galaxymediatools/pushconfig
+chmod ug+wrx /opt/galaxymediatools/checkts
 ln -s /opt/galaxymediatools/transtv /usr/local/bin/transtv &> /dev/null
 ln -s /opt/galaxymediatools/transmantv /usr/local/bin/transmantv &> /dev/null
 ln -s /opt/galaxymediatools/nontransdir /usr/local/bin/nontransdir &> /dev/null
@@ -26,5 +27,6 @@ ln -s /opt/galaxymediatools/1080to720 /usr/local/bin/1080to720 &> /dev/null
 ln -s /opt/galaxymediatools/remotewake /usr/local/bin/remotewake &> /dev/null
 ln -s /opt/galaxymediatools/remotesuspend /usr/local/bin/remotesuspend &> /dev/null
 ln -s /opt/galaxymediatools/remotetranstv /usr/local/bin/remotetranstv &> /dev/null
+ln -s /opt/galaxymediatools/checkts /usr/local/bin/checkts &> /dev/null
 echo -e "Installation complete"
 echo -e "Make sure you edit /etc/galaxymediatools.conf!"
