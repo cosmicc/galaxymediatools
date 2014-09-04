@@ -30,7 +30,7 @@ if [ "$1" == "$T1NAME" ]; then
   exit 1
  else
   echo "Waking transcode server $T1NAME"
-  ssh $T1INFO 'sudo pm-suspend' &
+  ssh $T1INFO "sudo $APPDIR/gitpull" &
   echo -e "Transcode server $T1NAME suspended"
   exit 0
  fi

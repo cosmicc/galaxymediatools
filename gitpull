@@ -1,4 +1,5 @@
 #!/bin/bash
+cd /opt/galaxymediatools"
 UPG=$(git pull origin master | grep "Already")
 if [ "$UPG" != "Already up-to-date." ]; then
   echo "upgrading"
