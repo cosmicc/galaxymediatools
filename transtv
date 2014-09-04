@@ -144,7 +144,7 @@ for f in "${file[@]}"; do
     printf "`eval date +%m/%d/%y"-"%H:%M` - 80 Marking original file non transcodable on $THISSERVER - $fne.ntrans.$EXT\n" >> $LOGF
     if [ "$1" == "-v" ]; then echo -e "Transcoding finished, $asd ($SOSIZE->$SNSIZE) Original kept, elapsed time: $GTIME"
     fi
-    if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "TV Transcode Finished on $THISSERVER - $asd ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME - Original kept, Non Transcodable - Original replaced - $fleft Left." &> /dev/null
+    if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Transcode Finished on $THISSERVER - $asd ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME - Original kept, Non Transcodable - $fleft Left." &> /dev/null
     fi
    fi
    if [ "$2" != "-s" ]; then ssh $PLEXINFO -q 'sudo su plex -c "plexscan -s -c $PLEXCAT &> /dev/null &"' &> /dev/null &
