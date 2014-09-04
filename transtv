@@ -31,7 +31,7 @@ fi
 if [ -f "$LOGDIR/FILEINDEX" ]; then
 rm -f $LOGDIR/FILEINDEX
 fi
-find "$TVDIR" -type f ! -path "$EXPATH1/*" ! -path "$EXPATH2/*" ! -path "$EXPATH3/*" ! -path "$EXPATH4/*" ! -path "$EXPATH5/*" ! -name "*.ntrans.*" ! -name "*.trans.*" $ATTRANS | cat $1 | sort >> $LOGDIR/FILEINDEX
+find "$TVDIR" -type f ! -path "$EXPATH1/*" ! -path "$EXPATH2/*" ! -path "$EXPATH3/*" ! -path "$EXPATH4/*" ! -path "$EXPATH5/*" ! -path "$EXPATH6/*" ! -path "$EXPATH7/*" ! -path "$EXPATH8/*" ! -path "$EXPATH9/*" ! -name "*.ntrans.*" ! -name "*.trans.*" $ATTRANS | cat $1 | sort >> $LOGDIR/FILEINDEX
 i=0
 while read sfile
 do
