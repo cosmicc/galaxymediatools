@@ -12,7 +12,6 @@ fi
 
 source /opt/galaxymediatools/precheck
 
-
 cp -f /etc/galaxymediatools.conf $LOGDIR
  fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
   if [ "$?" != "0" ]; then
@@ -22,7 +21,7 @@ cp -f /etc/galaxymediatools.conf $LOGDIR
    echo -e "Transcode server $T1NAME started"
   fi
   echo "Copying config file to $T1NAME"
- ssh $T1INFO "sudo cp -f $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf && $APPDIR/gitpull"
+ ssh $T1INFO "sudo cp -f $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf && sudo $APPDIR/gitpull"
   echo "Config file copied to $T1NAME"
  fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
   if [ "$?" != "0" ]; then
@@ -32,6 +31,6 @@ cp -f /etc/galaxymediatools.conf $LOGDIR
    echo -e "Transcode server $T2NAME started"
   fi
   echo "Copying config file to $T2NAME"
- ssh $T2INFO "sudo cp -f $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf && $APPDIR/gitpull"
+ ssh $T2INFO "sudo cp -f $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf && sudo $APPDIR/gitpull"
   echo "Config file copied to $T2NAME"
 
