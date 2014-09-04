@@ -5,7 +5,7 @@ cp /opt/galaxymediatools/galaxymediatools.conf.sample /etc/galaxymediatools.conf
 else
 echo -e "Config file already exists. Not overwriting."
 fi
-apt-get install ssh fping wakeonlan -y
+apt-get install ssh fping wakeonlan sysstat -y
 chmod ug+wrx /opt/galaxymediatools/pushover.sh
 chmod ug+wrx /opt/galaxymediatools/transtv
 chmod ug+wrx /opt/galaxymediatools/transmantv
