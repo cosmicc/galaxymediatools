@@ -125,7 +125,6 @@ for f in "${file[@]}"; do
     if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Transcode Finished on $THISSERVER - $asd ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME - Original kept, Non Transcodable - $fleft Left." &> /dev/null; fi
    fi
    if [ "$2" != "-s" ]; then ssh $PLEXINFO -q 'sudo su plex -c "plexscan -s -c $PLEXCAT &> /dev/null &"' &> /dev/null &; fi
-  fi 
  else
   if [ "$1" == "-v" ]; then echo "File FAILED integrity test!! Purging file and marking for re-download"; fi
   if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "File FAILED integrity test! on $THISSERVER $fil - Marking for redownload"; fi
@@ -137,6 +136,7 @@ for f in "${file[@]}"; do
    rm -r "$TRANSDIR/$fil" &> /dev/null
   fi
   j=$(($j+1))
+fi
 fi
 done
 TTIME=$(date +%s)
