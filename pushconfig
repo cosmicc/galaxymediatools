@@ -1,0 +1,40 @@
+#!/bin/bash
+
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        echo " "
+        echo "Galaxy Media Tools - Push local config to Transcode Servers"
+        echo " "
+        echo "-h or --help : Help"
+        echo "-u : Upgrade from git only"
+        echo " "
+        exit 0
+fi
+
+source /opt/galaxymediatools/precheck
+
+cp -f /etc/galaxymediatools.conf $LOGDIR
+
+ fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
+  if [ "$?" != "0" ]; then
+   echo "Waking transcode server $T1NAME"
+   wakeonlan $T1MAC
+   sleep 10
+   echo -e "Transcode server $T1NAME started"
+  fi
+  echo "Copying config file to $T1NAME"
+ ssh $T1INFO 'sudo cp -f "$LOGDIR/galaxymediatools.conf" "/etc/galaxymediatools.conf"'
+  echo "Config file copied to $T1NAME"
+
+ fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
+  if [ "$?" != "0" ]; then
+   echo "Waking transcode server $T2NAME"
+   wakeonlan $T2MAC
+   sleep 10
+   echo -e "Transcode server $T2NAME started"
+  fi
+  echo "Copying config file to $T2NAME"
+ ssh $T2INFO 'sudo cp -f "$LOGDIR/galaxymediatools.conf" "/etc/galaxymediatools.conf"'
+  echo "Config file copied to $T2NAME"
+echo "Complete."
+
+

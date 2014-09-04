@@ -26,7 +26,7 @@ if [ "$1" == "$T1NAME" ]; then
   echo "Waking transcode server $T1NAME"
   wakeonlan $T1MAC
   sleep 3
-  echo -e "Transcode server $TNAME started"
+  echo -e "Transcode server $T1NAME started"
   exit 0
  fi
 elif [ "$1" == "$T2NAME" ]; then

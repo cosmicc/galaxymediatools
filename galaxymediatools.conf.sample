@@ -1,6 +1,8 @@
 #
 # Galaxy Media Tools Config File
 #
+# Name of THIS server
+THISSERVER="server1"
 # Directory which to store log files
 LOGDIR="/video/Incoming/logs"
 # Base directory where transcoding files are searched
@@ -40,3 +42,9 @@ AMTRANS="-mtime +14 -mtime -120 -size +900M"
 TVQUAL="21"
 # Movie ffmpeg transcoding quality
 MOVIEQUAL="21"
+# Exclude Paths from Auto TV Transcode
+EXPATH1="/exclude/path/1"
+EXPATH2="/exclude/path/2"
+EXPATH3="/exclude/path/3"
+EXPATH4="/exclude/path/4"
+EXPATH5="/exclude/path/5"

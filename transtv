@@ -1,7 +1,5 @@
 #!/bin/bash
 
-APPNAME=$(basename $0)
-
 if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo " "
         echo "Galaxy Media Tools - Automatic TV Transcoder"
