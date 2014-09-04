@@ -165,10 +165,11 @@ for f in "${file[@]}"; do
   fi
   printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fil \n" >> $LOGF
   printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fil \n" >> $LOGF
-  printf "$f \n" >> "$LOGDIR/re-downloads.txt"
+  if [ "$2" != "-s" ]; then printf "$f \n" >> "$LOGDIR/re-downloads.txt"
   rm -r "$f"
   rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
   rm -r "$TRANSDIR/$fil" &> /dev/null
+  fi
 fi
 j=$(($j+1))
 done
