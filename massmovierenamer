@@ -94,7 +94,7 @@ for f in "${file[@]}"; do
      exit 1
     fi
     if [ "$YEAR" != "" ]; then
-     FNAME=`echo "$MOVIEDIR\$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC-$ACHANS"ch"].$EXT" | sed 's/ \+/ /g'`
+     FNAME=`echo "$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC-$ACHANS"ch"].$EXT" | sed 's/ \+/ /g'`
      printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Movie Renamed - $fil -> $FNAME \n" >> $LOGF
      echo "$f -> $FNAME"
      if [ "$2" != "-s" ]; then
