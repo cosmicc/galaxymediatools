@@ -27,7 +27,11 @@ fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
   echo -e "Transcode server $T1NAME started"
  fi
  echo "Starting remote TV Transcode on $T1NAME"
+ if [ "$2" == "-r" ]; then
+ ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/transtv -v -r"
+ else
  ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/transtv -v"
+ fi
  echo -e "Remote auto tv transcode started on $T1NAME"
  exit 0
  elif [ "$1" == "$T2NAME" ]; then
