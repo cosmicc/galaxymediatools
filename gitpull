@@ -1,12 +1,5 @@
 #!/bin/bash
 cd /opt/galaxymediatools
-UPG=$(git pull origin master | grep "Already")
-if [ "$UPG" != "Already up-to-date." ]; then
-  echo "upgrading"
-  git pull origin master
-  bash $APPDIR/$APPNAME
-  exit 0
-else
-echo "no upgrade needed"
-fi
+git pull origin master
+exit 0
 
