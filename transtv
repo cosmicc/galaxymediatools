@@ -26,7 +26,7 @@ fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process on $THISSERVER \n" >> $LOGF
 if [ "$1" == "-v" ]; then echo "Building file index..."; fi
 if [ -f "$LOGDIR/FILEINDEX_$THISSERVER" ]; then rm -f $LOGDIR/FILEINDEX_$THISSERVER; fi
-FCOUNT=find "$TVDIR" -type f ! -path "$EXPATH1/*" ! -path "$EXPATH2/*" ! -path "$EXPATH3/*" ! -path "$EXPATH4/*" ! -path "$EXPATH5/*" ! -path "$EXPATH6/*" ! -path "$EXPATH7/*" ! -path "$EXPATH8/*" ! -path "$EXPATH9/*" ! -name "*.ntrans.*" ! -name "*.trans.*" $ATTRANS | wc -l
+FCOUNT=`find "$TVDIR" -type f ! -path "$EXPATH1/*" ! -path "$EXPATH2/*" ! -path "$EXPATH3/*" ! -path "$EXPATH4/*" ! -path "$EXPATH5/*" ! -path "$EXPATH6/*" ! -path "$EXPATH7/*" ! -path "$EXPATH8/*" ! -path "$EXPATH9/*" ! -name "*.ntrans.*" ! -name "*.trans.*" $ATTRANS | wc -l`
 FCOUNT=$((FCOUNT/2))
 if [ "$2" == "-r" ]; then
  find "$TVDIR" -type f ! -path "$EXPATH1/*" ! -path "$EXPATH2/*" ! -path "$EXPATH3/*" ! -path "$EXPATH4/*" ! -path "$EXPATH5/*" ! -path "$EXPATH6/*" ! -path "$EXPATH7/*" ! -path "$EXPATH8/*" ! -path "$EXPATH9/*" ! -name "*.ntrans.*" ! -name "*.trans.*" $ATTRANS | cat $1 | sort -r | head -$FCOUNT >> $LOGDIR/FILEINDEX_$THISSERVER
