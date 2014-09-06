@@ -1,5 +1,19 @@
 #!/bin/bash
-source /opt/galaxymediatools/precheck
+THISSERVER=`hostname`
+APPDIR="/opt/galaxymediatools"
+if [ ! -f "/etc/galaxymediatools.conf" ]; then
+ echo -e "No config file found. Exiting."
+ exit 1
+else
+ source /etc/galaxymediatools.conf
+fi
+T1IP=`sed -e 's#.*@\(\)#\1#' <<< "$T1INFO"`
+T2IP=`sed -e 's#.*@\(\)#\1#' <<< "$T2INFO"`
+if [ "$LOGDIR" == "" ] || [ "$TVDIR" == "" ] || [ "$TRANSDIR" == "" ] || [ "$POAK" == "" ] || [ "$POUK" == "" ] || [ "$SSHINFO" == "" ] || [ "$PLEXCAT" == "" ]; then
+echo -e "No config information found in config file. Exiting."
+exit 1
+fi
+
 echo "Pushing files to git repository..."
 git add *
 git commit -m "working"
