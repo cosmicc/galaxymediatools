@@ -16,12 +16,19 @@ if [ "$1" == "" ]; then
 fi
 
 source /opt/galaxymediatools/precheck
-
+clear
 if [ "$1" == "$T1NAME" ]; then
  fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
   if [ "$?" == "0" ]; then
-   echo "$T1NAME server is UP."
-   ssh $T1INFO 'sudo mpstat -P ALL & sudo iostat & sudo free -m & sleep 3 & sudo ps uxa | grep trans & sudo ps uxa | grep ffmpeg' 
+   ssh $T1INFO 'sudo mpstat -P ALL & sudo iostat & sudo free -m'
+   if (ssh $T1INFO '[ -d /var/lock/gtrans.lock ]'); then
+   T1ST="PROCESSING"
+   else
+   T1ST="IDLE"
+ fi
+ echo " "
+ echo "$T1NAME server is UP and $T1ST."
+ 
  else
   echo "$T1NAME server is DOWN."
   exit 0
@@ -31,11 +38,19 @@ fi
 if [ "$1" == "$T2NAME" ]; then
  fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
   if [ "$?" == "0" ]; then
-   echo "$T2NAME server is UP."
-   ssh $T2INFO 'sudo mpstat -P ALL & sudo iostat & sudo free -m & sleep 3 & sudo ps uxa | grep trans & sudo ps uxa | grep ffmpeg'
+   ssh $T2INFO 'sudo mpstat -P ALL & sudo iostat & sudo free -m'
+   if (ssh $T2INFO '[ -d /var/lock/gtrans.lock ]'); then
+   T2ST="PROCESSING"
+   else
+   T2ST="IDLE"
+ fi
+ echo " "
+ echo "$T2NAME server is UP and $T2ST."
+
  else
   echo "$T2NAME server is DOWN."
   exit 0
  fi
+ 
 fi
-
+echo " "
