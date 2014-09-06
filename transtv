@@ -18,9 +18,14 @@ if [ "$1" == "-gr" ] ||  [ "$2" == "-gr" ] ||  [ "$3" == "-gr" ]; then REV="yes"
 
 source /opt/galaxymediatools/precheck
 LOGF="$LOGDIR/ATV_$THISSERVER-$CTS.txt"
-echo "Auto TV Transcode Script Starting..."
-printf "`eval date +%m/%d/%y"-"%H:%M` - *** Auto TV Transcode Script Starting on $THISSERVER \n" >> $LOGF
-if [[ $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Auto TV Transcode Script Starting on $THISSERVER - ${#file[@]} Files to proccess" &> /dev/null; fi
+if [[ $SIM ]]; then TMODE="Simulation mode"
+elif [[ $REV ]]; then TMODE="Span Reverse mode"
+elif [[ $SPN ]]; then TMODE="Span Forward mode"
+else TMODE="Normal mode"
+fi
+echo "Auto TV Transcode Script Starting in $TMODE..."
+printf "`eval date +%m/%d/%y"-"%H:%M` - *** Auto TV Transcode Script in $TMODE Starting on $THISSERVER \n" >> $LOGF
+if [[ $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Auto TV Transcode Script Starting in $TMODE on $THISSERVER - ${#file[@]} Files to proccess" &> /dev/null; fi
 touch $LOGF
 echo "Resetting transcode directory $TRANSDIR..."
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Resetting Transcode directory on $THISSERVER \n" >> $LOGF
@@ -33,9 +38,9 @@ printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process on
 echo "Building index of files to process..."
 if [ -f "$LOGDIR/FILEINDEX_$THISSERVER" ]; then rm -f $LOGDIR/FILEINDEX_$THISSERVER; fi
 
-FINDVARS="$TVDIR -type f ! -path /"$EXPATH1/*/" ! -path /"$EXPATH2/*/" ! -path /"$EXPATH3/*"/ ! -path /"$EXPATH4/*/" ! -path /"$EXPATH5/*/" ! -path /"$EXPATH6/*/" ! -path /"$EXPATH7/*/" ! -path /"$EXPATH8/*/" ! -path /"$EXPATH9/*/" ! -name /"*.ntrans.*/" ! -name /"*.trans.*/" $ATTRANS"
+FINDVARS="$TVDIR -type f ! -path '$EXPATH1/*' ! -path '$EXPATH2/*' ! -path '$EXPATH3/*' ! -path '$EXPATH4/*' ! -path '$EXPATH5/*' ! -path '$EXPATH6/*' ! -path '$EXPATH7/*' ! -path '$EXPATH8/*' ! -path '$EXPATH9/*' ! -name '*.ntrans.*' ! -name '*.trans.*' $ATTRANS"
 
-FCNT=`find "$FINDVARS" | wc -l`
+FCNT=`find $FINDVARS | wc -l`
 FCOUNT1=$((FCNT/2))
 FRCOUNT=$((FCNT%2))
 if [ "$FRCOUNT" == "0" ]; then 
@@ -43,9 +48,9 @@ if [ "$FRCOUNT" == "0" ]; then
 else
  FCOUNT2=$((FCOUNT1+1))
 fi
-if [[ $REV ]]; then find "$FINDVARS" | cat $1 | sort -r | head -$FCOUNT1 >> $LOGDIR/FILEINDEX_$THISSERVER
-elif [[ $SPN ]]; then find "$FINDVARS" | cat $1 | sort | head -$FCOUNT2 >> $LOGDIR/FILEINDEX_$THISSERVER
-else find "$FINDVARS" | cat $1 | sort  >> $LOGDIR/FILEINDEX_$THISSERVER
+if [[ $REV ]]; then find $FINDVARS | cat $1 | sort -r | head -$FCOUNT1 >> $LOGDIR/FILEINDEX_$THISSERVER
+elif [[ $SPN ]]; then find $FINDVARS | cat $1 | sort | head -$FCOUNT2 >> $LOGDIR/FILEINDEX_$THISSERVER
+else find $FINDVARS | cat $1 | sort  >> $LOGDIR/FILEINDEX_$THISSERVER
 fi
 
 i=0
