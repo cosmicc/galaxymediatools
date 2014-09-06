@@ -4,9 +4,9 @@ if [ ! -f /etc/galaxymediatools.conf ]; then
 cp /opt/galaxymediatools/galaxymediatools.conf.sample /etc/galaxymediatools.conf
 else
 echo -e "Config file already exists. Not overwriting."
+exit 1
 fi
 apt-get install ssh fping wakeonlan sysstat screen pm-utils -y
-exit 1
 chmod ug+wrx /opt/galaxymediatools/pushover.sh
 chmod ug+wrx /opt/galaxymediatools/transtv
 chmod ug+wrx /opt/galaxymediatools/transmantv
@@ -18,8 +18,8 @@ chmod ug+wrx /opt/galaxymediatools/remotewake
 chmod ug+wrx /opt/galaxymediatools/remotesuspend
 chmod ug+wrx /opt/galaxymediatools/remotetranstv
 chmod ug+wrx /opt/galaxymediatools/remotecmd
-chmod ug+wrx /opt/galaxymediatools/checkts
-chmod ug+wrx /opt/galaxymediatools/statusts
+chmod ug+wrx /opt/galaxymediatools/checkserver
+chmod ug+wrx /opt/galaxymediatools/statusservers
 ln -s /opt/galaxymediatools/transtv /usr/local/bin/transtv &> /dev/null
 ln -s /opt/galaxymediatools/transmantv /usr/local/bin/transmantv &> /dev/null
 ln -s /opt/galaxymediatools/nontransdir /usr/local/bin/nontransdir &> /dev/null
@@ -29,8 +29,8 @@ ln -s /opt/galaxymediatools/1080to720 /usr/local/bin/1080to720 &> /dev/null
 ln -s /opt/galaxymediatools/remotewake /usr/local/bin/remotewake &> /dev/null
 ln -s /opt/galaxymediatools/remotesuspend /usr/local/bin/remotesuspend &> /dev/null
 ln -s /opt/galaxymediatools/remotetranstv /usr/local/bin/remotetranstv &> /dev/null
-ln -s /opt/galaxymediatools/checkts /usr/local/bin/checkts &> /dev/null
-ln -s /opt/galaxymediatools/statusts /usr/local/bin/statusts &> /dev/null
+ln -s /opt/galaxymediatools/checkserver /usr/local/bin/checkserver &> /dev/null
+ln -s /opt/galaxymediatools/statusservers /usr/local/bin/statusservers &> /dev/null
 ln -s /opt/galaxymediatools/remotecmd /usr/local/bin/remotecmd &> /dev/null
 echo -e "Installation complete"
 echo -e "Make sure you edit /etc/galaxymediatools.conf!"
