@@ -1,5 +1,6 @@
 #!/bin/bash
+source /opt/galaxymediatools/precheck
 cd /opt/galaxymediatools
-git pull origin master
+git pull origin $GITREPO
 exit 0
 

@@ -3,7 +3,7 @@ source /opt/galaxymediatools/precheck
 echo "Pushing files to git repository..."
 git add *
 git commit -m "working"
-git push origin master
+git push origin $GITREPO
 echo "Updating remote Servers..."
  fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
   if [ "$?" != "0" ]; then
