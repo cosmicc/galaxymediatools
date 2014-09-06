@@ -10,8 +10,20 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         exit 0
 fi
 
-source /opt/galaxymediatools/precheck
-
+THISSERVER=`hostname`
+APPDIR="/opt/galaxymediatools"
+if [ ! -f "/etc/galaxymediatools.conf" ]; then
+ echo -e "No config file found. Exiting."
+ exit 1
+else
+ source /etc/galaxymediatools.conf
+fi
+T1IP=`sed -e 's#.*@\(\)#\1#' <<< "$T1INFO"`
+T2IP=`sed -e 's#.*@\(\)#\1#' <<< "$T2INFO"`
+if [ "$LOGDIR" == "" ] || [ "$TVDIR" == "" ] || [ "$TRANSDIR" == "" ] || [ "$POAK" == "" ] || [ "$POUK" == "" ] || [ "$SSHINFO" == "" ] || [ "$PLEXCAT" == "" ]; then
+echo -e "No config information found in config file. Exiting."
+exit 1
+fi
 vi /etc/galaxymediatools.conf
 echo "Sending config to remote servers..."
 cp -f /etc/galaxymediatools.conf $LOGDIR
