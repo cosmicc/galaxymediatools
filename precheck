@@ -24,6 +24,7 @@ echo -e "$MIN Minutes"
 fi
 }
 
+THISSERVER=`hostname`
 APPDIR="/opt/galaxymediatools"
 STIME=$(date +%s)
 CTS=`eval date +%Y%m%d`

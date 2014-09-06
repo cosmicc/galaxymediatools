@@ -1,8 +1,8 @@
 #
 # Galaxy Media Tools Config File
 #
-# Name of THIS server
-THISSERVER="server1"
+# Which GIT repository branch to use
+GITREPO="master"
 # Directory which to store log files
 LOGDIR="/video/Incoming/logs"
 # Base directory where transcoding files are searched
