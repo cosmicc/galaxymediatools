@@ -46,7 +46,6 @@ trap control_c SIGINT
 trap appexit EXIT
 else
 echo -e "Process locked. Lock file detected. Can only run 1 transcode script at a time. Exiting."
-printf "Process locked. Lock file detected. Can only run 1 transcode script at a time. Exiting. \n" >> $LOGF
 exit 1
 fi
 
