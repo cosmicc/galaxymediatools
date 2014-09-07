@@ -33,7 +33,7 @@ echo "Conecting to remote Server $T1INFO..."
   ssh $T1INFO 'sudo pm-suspend' &
  fi
 
-echo "Connecting to remote Server $T1INFO..."
+echo "Connecting to remote Server $T2INFO..."
  fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
   if [ "$?" != "0" ]; then
   WASSLEEPING2="1"
