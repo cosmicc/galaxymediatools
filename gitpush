@@ -9,7 +9,7 @@ else
 fi
 T1IP=`sed -e 's#.*@\(\)#\1#' <<< "$T1INFO"`
 T2IP=`sed -e 's#.*@\(\)#\1#' <<< "$T2INFO"`
-if [ "$LOGDIR" == "" ] || [ "$TVDIR" == "" ] || [ "$TRANSDIR" == "" ] || [ "$POAK" == "" ] || [ "$POUK" == "" ] || [ "$SSHINFO" == "" ] || [ "$PLEXCAT" == "" ]; then
+if [ "$LOGDIR" == "" ] || [ "$TVDIR" == "" ] || [ "$TRANSDIR" == "" ] || [ "$POUK" == "" ] || [ "$PLEXINFO" == "" ] || [ "$PLEXCAT" == "" ]; then
 echo -e "No config information found in config file. Exiting."
 exit 1
 fi
