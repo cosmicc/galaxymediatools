@@ -28,22 +28,25 @@ checkwake()
 {
 fping -c1 -t300 $2 2>/dev/null 1>/dev/null
  if [ "$?" != "0" ]; then
-  return 3  
+  wake=3
  else
-  return 2
+  wake=2
  fi
 }
 
 killtrans()
 {
 checkwake $1 $2 $3
-if [ "$?" == "2" ]; then
+if [ "$wake" -eq 3 ]; then
 echo "Skipping server $1, Server is Sleeping."
 return 1
-elif [ "$?" == "3" ];
+elif [ "$wake" -eq 2 ]; then
 echo "Stopping all transcode processes on $1"
-ssh $4 "sudo screen -dm sudo /opt/galaxymediatools/killalltrans"
+ssh $4 "sudo /opt/galaxymediatools/killalltrans"
 echo -e "All Transcode processes stopped on $1"
+else
+echo "error code: $?"
+exit 1
 fi
 }
 
@@ -56,7 +59,7 @@ fi
 
 if [ "$1" == "$T1NAME" ]; then
 TNAME=$T1NAME; TIP=$T1IP; TMAC=$T1MAC; TINFO=$T1INFO
-elif [ "$1" == "$T1NAME" ];
+elif [ "$1" == "$T1NAME" ]; then
 TNAME=$T2NAME; TIP=$T2IP; TMAC=$T2MAC; TINFO=$T2INFO
 else
 echo "No server exists with that name"
