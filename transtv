@@ -56,9 +56,9 @@ else
  FCOUNT2=$((FCOUNT1+1))
 fi
 fi
-if [[ $REV ]]; then eval /usr/bin/find $FINDVARS -exec cat {} + | sort -r | head -$FCOUNT1 >> $LOGDIR/FILEINDEX_$THISSERVER
-elif [[ $SPN ]]; then eval /usr/bin/find $FINDVARS -exec cat {} + | sort | head -$FCOUNT2 >> $LOGDIR/FILEINDEX_$THISSERVER
-else eval /usr/bin/find $FINDVARS -exec cat {} + | sort  >> $LOGDIR/FILEINDEX_$THISSERVER
+if [[ $REV ]]; then eval /usr/bin/find $FINDVARS -exec cat {} \; | sort -r | head -$FCOUNT1 >> $LOGDIR/FILEINDEX_$THISSERVER
+elif [[ $SPN ]]; then eval /usr/bin/find $FINDVARS -exec cat {} \; | sort | head -$FCOUNT2 >> $LOGDIR/FILEINDEX_$THISSERVER
+else eval /usr/bin/find $FINDVARS -exec cat {} \; | sort  >> $LOGDIR/FILEINDEX_$THISSERVER
 fi
 i=0
 while read sfile
