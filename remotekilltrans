@@ -36,7 +36,7 @@ fping -c1 -t300 $2 2>/dev/null 1>/dev/null
 
 killtrans()
 {
-checkwake($1 $2 $3)
+checkwake $1 $2 $3
 if [ "$?" == "2" ]; then
 echo "Skipping server $1, Server is Sleeping."
 return 1
@@ -47,8 +47,8 @@ fi
 }
 
 if [ "$1" == "ALL" ]; then
-killtrans($T1NAME $T1IP $T1MAC $T1INFO)
-killtrans($T2NAME $T2IP $T2MAC $T2INFO)
+killtrans $T1NAME $T1IP $T1MAC $T1INFO 
+killtrans $T2NAME $T2IP $T2MAC $T2INFO 
 echo "Complete."
 exit 0
 fi
@@ -62,5 +62,5 @@ echo "No server exists with that name"
 exit 1
 fi
 
-killtrans($TNAME $TIP $TMAC $TINFO)
+killtrans $TNAME $TIP $TMAC $TINFO
 echo "Complete."
