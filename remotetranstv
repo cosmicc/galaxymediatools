@@ -5,7 +5,7 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo "Galaxy Media Tools - Remote TV Transcoder"
         echo " "
         echo "-h or --help : Help"
-        echo "-u : Upgrade from git only"
+        echo "-g : Span across multiple servers"
         echo " "
         exit 0
 fi
@@ -28,9 +28,9 @@ fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
  fi
  echo "Starting remote TV Transcode on $T1NAME"
  if [ "$2" == "-r" ]; then
- ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/transtv -v -r"
+ ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/transtv -gr"
  else
- ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/transtv -v"
+ ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/transtv -g"
  fi
  echo -e "Remote auto tv transcode started on $T1NAME"
  exit 0

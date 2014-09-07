@@ -38,9 +38,11 @@ printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process on
 echo "Building index of files to process..."
 if [ -f "$LOGDIR/FILEINDEX_$THISSERVER" ]; then rm -f $LOGDIR/FILEINDEX_$THISSERVER; fi
 
-FINDVARS="$TVDIR -type f ! -path '$EXPATH1/*' ! -path '$EXPATH2/*' ! -path '$EXPATH3/*' ! -path '$EXPATH4/*' ! -path '$EXPATH5/*' ! -path '$EXPATH6/*' ! -path '$EXPATH7/*' ! -path '$EXPATH8/*' ! -path '$EXPATH9/*' ! -name '*.ntrans.*' ! -name '*.trans.*' $ATTRANS"
+FINDVARS="\"$TVDIR\" -type f ! -path \"$EXPATH1/*\" ! -path \"$EXPATH2/*\" ! -path \"$EXPATH3/*\" ! -path \"$EXPATH4/*\" ! -path \"$EXPATH5/*\" ! -path \"$EXPATH6/*\" ! -path \"$EXPATH7/*\" ! -path \"$EXPATH8/*\" ! -path \"$EXPATH9/*\" ! -name *.ntrans.* ! -name *.trans.* $ATTRANS"
 
-FCNT=`find $FINDVARS | wc -l`
+FCNT=`eval /usr/bin/find "$FINDVARS" | wc -l`
+
+if [[ $SPN ]] || [[ $REV ]]; then
 FCOUNT1=$((FCNT/2))
 FRCOUNT=$((FCNT%2))
 if [ "$FRCOUNT" == "0" ]; then 
@@ -48,11 +50,11 @@ if [ "$FRCOUNT" == "0" ]; then
 else
  FCOUNT2=$((FCOUNT1+1))
 fi
-if [[ $REV ]]; then find $FINDVARS | cat $1 | sort -r | head -$FCOUNT1 >> $LOGDIR/FILEINDEX_$THISSERVER
-elif [[ $SPN ]]; then find $FINDVARS | cat $1 | sort | head -$FCOUNT2 >> $LOGDIR/FILEINDEX_$THISSERVER
-else find $FINDVARS | cat $1 | sort  >> $LOGDIR/FILEINDEX_$THISSERVER
 fi
-
+if [[ $REV ]]; then eval /usr/bin/find $FINDVARS | cat $1 | sort -r | head -$FCOUNT1 >> $LOGDIR/FILEINDEX_$THISSERVER
+elif [[ $SPN ]]; then eval /usr/bin/find $FINDVARS | cat $1 | sort | head -$FCOUNT2 >> $LOGDIR/FILEINDEX_$THISSERVER
+else eval find $FINDVARS | cat $1 | sort  >> $LOGDIR/FILEINDEX_$THISSERVER
+fi
 i=0
 while read sfile
 do
@@ -151,7 +153,7 @@ for f in "${file[@]}"; do
    fi
   fi
   echo "Running Plex Server TV Section Scan..."
-  if [[ $SIM ]]; then ssh $PLEXINFO -q 'sudo su plex -c "plexscan -s -c $PLEXCAT &> /dev/null &"' &> /dev/null &
+  if [[ $SIM ]]; then ssh $PLEXINFO 'sudo su plex -c "plexscan -s -c $PLEXCAT &> /dev/null &"' &> /dev/null &
   fi
  else
   echo "File FAILED integrity test!! Purging file and marking for re-download"
@@ -173,7 +175,7 @@ rm -r $TRANSDIR/* &> /dev/null
 echo "Starting Plex server TV section full video analyze..."
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server full video analyze on $THISSERVER \n" >> $LOGF
 
-if [[ $SIM ]]; then ssh $PLEXINFO 'sudo su plex -c "plexscan -b -a -c $PLEXCAT &> /dev/null &"' > /dev/null & 
+if [[ $SIM ]]; then ssh $PLEXINFO 'sudo su plex -c "plexscan -b -a -c $PLEXCAT &> /dev/null &"' &> /dev/null & 
 fi
 if [[ $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Auto TV Transcode Script Complete on $THISSERVER - Total Elapsed: $ETIME"; fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - *** Auto TV Transcode Script Complete on $THISSERVER- Elapsed Time: $ETIME\n" >> $LOGF
