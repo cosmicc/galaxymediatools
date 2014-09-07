@@ -40,6 +40,7 @@ checkwake $1 $2 $3
 if [ "$?" == "2" ]; then
 echo "Skipping server $1, Server is Sleeping."
 return 1
+elif [ "$?" == "3" ];
 echo "Stopping all transcode processes on $1"
 ssh $4 "sudo screen -dm sudo /opt/galaxymediatools/killalltrans"
 echo -e "All Transcode processes stopped on $1"
