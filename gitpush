@@ -18,7 +18,7 @@ echo "Pushing files to git repository..."
 git add *
 git commit -m "working"
 git push origin $GITREPO
-echo "Updating remote Servers..."
+echo "Conecting to remote Server $T1INFO..."
  fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
   if [ "$?" != "0" ]; then
    WASSLEEPING1="1"
@@ -33,6 +33,7 @@ echo "Updating remote Servers..."
   ssh $T1INFO 'sudo pm-suspend' &
  fi
 
+echo "Connecting to remote Server $T1INFO..."
  fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
   if [ "$?" != "0" ]; then
   WASSLEEPING2="1"
