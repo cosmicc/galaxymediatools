@@ -18,6 +18,11 @@ if [ "$1" == "-gr" ] ||  [ "$2" == "-gr" ] ||  [ "$3" == "-gr" ]; then REV="yes"
 
 source /opt/galaxymediatools/precheck
 LOGF="$LOGDIR/ATV_$THISSERVER-$CTS.txt"
+if [ "$THISSERVER" == "$T1NAME" ]; then
+POAK=$T1KEY
+elif [ "$THISSERVER" == "$T2NAME" ]; then
+POAK=$T2KEY
+fi
 if [[ $SIM ]]; then TMODE="Simulation mode"
 elif [[ $REV ]]; then TMODE="Span Reverse mode"
 elif [[ $SPN ]]; then TMODE="Span Forward mode"
