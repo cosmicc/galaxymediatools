@@ -1,5 +1,4 @@
 #!/bin/bash
-source /etc/galaxymediatools.conf
 source /opt/galaxymediatools/precheck
 LOGF="$LOGDIR/MassMovieRename-$CTS.txt"
 if [ "$1" == "-v" ]; then echo "Script starting up"
@@ -48,7 +47,7 @@ for f in "${file[@]}"; do
   VRESCHK=`echo "$f" | awk -F'[][]' '{print $2}'`
   SCHK=`echo "$f" | sed 's/.*\]\([^]]*\)\[.*/\1/g'`
   echo $SCHK
-   #if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] && [ "$VRESCHK" != "480p" ] && [ "$VRESCHK" != "SD" ]; then
+   if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] && [ "$VRESCHK" != "480p" ] && [ "$VRESCHK" != "SD" ]; then
     WIDTH=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep width | sed -e 's/width=//'`
     HEIGHT=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep height | sed -e 's/height=//'`
     VCODEC=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//'`
@@ -106,9 +105,9 @@ for f in "${file[@]}"; do
      echo "$fil is missing year, marking file in missingyear log "
      printf "$f \n" >> "$LOGDIR/missingyear.txt"
     fi
-   #else
-   # echo "$fil is formatted properly already skipping"
-   #fi 
+   else
+   echo "$fil is formatted properly already skipping"
+   fi 
    else
     echo "File FAILED integrity test!! Purging file and marking for re-download"
     if [ "$2" != "-s" ]; then 
@@ -117,7 +116,7 @@ for f in "${file[@]}"; do
     printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fil \n" >> $LOGF
     printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fil \n" >> $LOGF
     printf "$f \n" >> "$LOGDIR/re-downloads.txt"
-  #rm -r "$f"
+  rm -r "$f"
    fi
 done
 TTIME=$(date +%s)
