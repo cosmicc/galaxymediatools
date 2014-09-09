@@ -20,7 +20,7 @@ sleep 5
 if [ -f "$LOGDIR/MOVIEINDEX" ]; then
 rm -f $LOGDIR/MOVIEINDEX
 fi
-find "$MOVIEDIR" -type f  | cat $f | sort >> $LOGDIR/MOVIEINDEX
+find "$MOVIEDIR" -type f | sort >> $LOGDIR/MOVIEINDEX
 i=0
 while read sfile
 do
@@ -116,7 +116,7 @@ for f in "${file[@]}"; do
     printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fil \n" >> $LOGF
     printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fil \n" >> $LOGF
     printf "$f \n" >> "$LOGDIR/re-downloads.txt"
-  rm -r "$f"
+  if [ "$2" != "-s" ]; then rm -r "$f"; fi
    fi
 done
 TTIME=$(date +%s)
