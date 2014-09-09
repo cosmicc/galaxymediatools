@@ -12,7 +12,7 @@ rm -r $TRANSDIR/* &> /dev/null
 else
 mkdir $TRANSDIR
 fi
-rm -rf "$MOVIEDIR/*.idx" &> /dev/null & rm -rf "$MOVIEDIR/*.sub" &> /dev/null & rm -rf "$MOVIEDIR/*.srt" &> /dev/null & rm -rf "$MOVIEDIR/*.nfo" &> /dev/null & rm -rf "$MOVIEDIR/*.txt" &> /dev/null
+rm -rf "$MOVIEDIR/*.idx" &> /dev/null && rm -rf "$MOVIEDIR/*.sub" &> /dev/null && rm -rf "$MOVIEDIR/*.srt" &> /dev/null && rm -rf "$MOVIEDIR/*.nfo" &> /dev/null && rm -rf "$MOVIEDIR/*.txt" &> /dev/null
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process \n" >> $LOGF
 if [ "$1" == "-v" ]; then echo "Building file index..."
 fi
