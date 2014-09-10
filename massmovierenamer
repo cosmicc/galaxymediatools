@@ -19,17 +19,17 @@ source /opt/galaxymediatools/precheck
 LOGF="$LOGDIR/MassMovieRename-$CTS.txt"
 if [[ $FORCE ]]; then EFED="Forced"; else EFED="Not Forced)"; fi
 if [[ $SIM ]]; then
-echo "Script starting up in SIMULATION ($EFED) MODE"
+ echo "Script starting up in SIMULATION ($EFED) MODE"
 else
-echo "Script starting up in normal ($EFED) mode"
+ echo "Script starting up in normal ($EFED) mode"
 fi
 touch $LOGF 
 printf "`eval date +%m/%d/%y"-"%H:%M` - *** Script Start \n" >> $LOGF
 echo "Resetting transcode directory $TRANSDIR"
 if [ -d $TRANSDIR ]; then
-rm -r $TRANSDIR/* &> /dev/null
+ rm -r $TRANSDIR/* &> /dev/null
 else
-mkdir $TRANSDIR
+ mkdir $TRANSDIR
 fi
 echo "Cleaning out non-movie files..."
 rm -rf "$MOVIEDIR/*.idx" &> /dev/null
@@ -41,7 +41,7 @@ printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process \n
 echo "Building file index..."
 sleep 5
 if [ -f "$LOGDIR/MOVIEINDEX" ]; then
-rm -f $LOGDIR/MOVIEINDEX
+ rm -f $LOGDIR/MOVIEINDEX
 fi
 find "$MOVIEDIR" -type f | sort >> $LOGDIR/MOVIEINDEX
 i=0
@@ -67,28 +67,28 @@ for f in "${file[@]}"; do
  rm -r "$TRANSDIR/isinteg.rename.$EXT" &> /dev/null
  if [ "$?" == "0" ]; then
   if [[ $VERB ]]; then echo "$fil passed integrity check."; fi
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 03 File passed integrity check - $fil \n" >> $LOGF
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 03 File passed integrity check - $fil \n" >> $LOGF
   VRESCHK=`echo "$f" | awk -F'[][]' '{print $2}'`
   SCHK=`echo "$f" | sed 's/.*\]\([^]]*\)\[.*/\1/g'`
-   if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] && [ "$VRESCHK" != "480p" ] && [ "$VRESCHK" != "SD" ] && [[ $FORCE ]] ; then
-    WIDTH=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep width | sed -e 's/width=//'`
-    HEIGHT=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep height | sed -e 's/height=//'`
-    VCODEC=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
-    CTS=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep codec_tag_string | sed -e 's/codec_tag_string=//' | head -n 1`
-    ACODE=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//'`
-    ACODEC1=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
-    ACHANS1=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep channels | sed -e 's/channels=//' | head -n 1`
-    ACODEC2=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | tail -n 1`
-    ACHANS2=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep channels | sed -e 's/channels=//' | tail -n 1`
-    ACNT=`wc -l <<< "$ACODE"`
-    if [ "$ACNT" -gt "1" ]; then
-     ACODEC=`echo ${ACODEC1^^}"-"$ACHANS1"ch+"${ACODEC2^^}"-"$ACHANS2"ch"`
-    else
+  if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] && [ "$VRESCHK" != "480p" ] && [ "$VRESCHK" != "SD" ] || [[ $FORCE ]] ; then
+   WIDTH=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep width | sed -e 's/width=//'`
+   HEIGHT=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep height | sed -e 's/height=//'`
+   VCODEC=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
+   CTS=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep codec_tag_string | sed -e 's/codec_tag_string=//' | head -n 1`
+   ACODE=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//'`
+   ACODEC1=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
+   ACHANS1=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep channels | sed -e 's/channels=//' | head -n 1`
+   ACODEC2=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | tail -n 1`
+   ACHANS2=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep channels | sed -e 's/channels=//' | tail -n 1`
+   ACNT=`wc -l <<< "$ACODE"`
+   if [ "$ACNT" -gt "1" ]; then
+    ACODEC=`echo ${ACODEC1^^}"-"$ACHANS1"ch+"${ACODEC2^^}"-"$ACHANS2"ch"`
+   else
      ACODEC=`echo ${ACODEC1^^}"-"$ACHANS1"ch"`
-    fi 
-    YEAR=`echo "$f" | grep -oE '\([[:alnum:]]*?\)' | sed 's/[()]//g'`
-    MNAME=`echo "$f" | sed -e 's/([^()]*)//g' | sed -e 's/\[[^][]*\]//g' | sed 's/....$//' | sed -e 's/^ *//' -e 's/ *$//'`
-    if [ "$WIDTH" == "1920" ]; then
+   fi 
+   YEAR=`echo "$f" | grep -oE '\([[:alnum:]]*?\)' | sed 's/[()]//g'`
+   MNAME=`echo "$f" | sed -e 's/([^()]*)//g' | sed -e 's/\[[^][]*\]//g' | sed 's/....$//' | sed -e 's/^ *//' -e 's/ *$//'`
+   if [ "$WIDTH" == "1920" ]; then
      VRES="1080p"
     elif [ "$WIDTH" == "1280" ]; then
      VRES="720p"
@@ -119,12 +119,12 @@ for f in "${file[@]}"; do
      printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine VIDEO CODEC - $fil \n" >> $LOGF
      exit 1
     fi
-    if [ "$ACODEC" == "" ]; then
+    if [ "$ACODEC1" == "" ]; then
      echo "Cannot determine audio codec. Exiting."
      printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine AUDIO CODEC - $fil \n" >> $LOGF
      exit 1
     fi
-    if [ "$ACHANS" == "" ]; then
+    if [ "$ACHANS1" == "" ]; then
      echo "Cannot determine audio channels. Exiting."
      printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine AUDIO CHANNELS - $fil \n" >> $LOGF
      exit 1
@@ -142,15 +142,19 @@ for f in "${file[@]}"; do
       fi
      else
       if [ "$f" != "$FNAME" ]; then
-      echo "SIM MODE - No renaming applied $fil -> $FNAME"
+       printf "`eval date +%m/%d/%y"-"%H:%M` - 01 SIM MODE Movie NOT Renamed - $fil -> $FNAME \n" >> $LOGF
+       echo " * SIM MODE Movie NOT Renamed - $fil -> $FNAME"
+       mv "$f" "$FNAME"
       else
-      echo "SIM MODE - File has correct name"
+       if [[ $VERB ]]; then echo "File already has correct name $fil"; fi
+       printf "`eval date +%m/%d/%y"-"%H:%M` - 02 File already has correct name - $fil \n" >> $LOGF
       fi
      fi
     else
      echo "$fil is missing year, marking file in missingyear log "
      printf "$f \n" >> "$LOGDIR/missingyear.txt"
     fi
+  else
   if [[ $VERB ]]; then echo "Skipping correctly formatted file ($EFED) - $fil"; fi
   printf "`eval date +%m/%d/%y"-"%H:%M` - 02 Skipping correctly formatted file ($EFED) - $fil \n" >> $LOGF 
   fi 

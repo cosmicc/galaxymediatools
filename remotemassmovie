@@ -5,14 +5,17 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo "Galaxy Media Tools - Remote Mass movie renamer"
         echo " "
         echo "-h or --help : Help"
-        echo " "
+        echo "-f  : Skip already proper formatting check"
+	echo " "
         exit 0
 fi
 
-if [ "$1" == "" ]; then
+if [ "$1" == "" ] || [ "$1" == "-f" ]; then
         echo "Argument missing. Specify which server to rename on"
         exit 1
 fi
+
+if [ "$2" == "-f" ] ||  [ "$3" == "-f" ]; then FORCE="yes"; fi
 
 source /opt/galaxymediatools/precheck
 
@@ -26,7 +29,11 @@ fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
   echo -e "Transcode server $T1NAME started"
  fi
  echo "Starting remote mass movie renamer on $T1NAME"
+ if [[ $FORCE ]]; then
+ ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/massmovierenamer -v -f"
+ else
  ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/massmovierenamer -v"
+ fi
  echo -e "Remote mass movie renamer started on $T1NAME"
  exit 0
  elif [ "$1" == "$T2NAME" ]; then
@@ -39,7 +46,12 @@ fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
   echo -e "Transcode server $T2NAME started"
  fi
  echo "Starting remote mass movie renamer on $T2NAME"
+ if [[ $FORCE ]]; then
+ ssh $T2INFO "sudo screen -dm sudo /opt/galaxymediatools/massmovierenamer -v -f"
+ else
  ssh $T2INFO "sudo screen -dm sudo /opt/galaxymediatools/massmovierenamer -v"
+ fi
+
  echo -e "Remote mass movie renamer started on $T2NAME"
  exit 0
 fi
