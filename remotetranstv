@@ -66,7 +66,7 @@ fi
 
 if [ "$1" == "$T1NAME" ]; then
 TNAME=$T1NAME; TIP=$T1IP; TMAC=$T1MAC; TINFO=$T1INFO
-elif [ "$1" == "$T1NAME" ];
+elif [ "$1" == "$T1NAME" ]; then
 TNAME=$T2NAME; TIP=$T2IP; TMAC=$T2MAC; TINFO=$T2INFO
 else
 echo "No server exists with that name"
