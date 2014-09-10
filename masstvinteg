@@ -29,11 +29,11 @@ else
 mkdir $TRANSDIR
 fi
 echo "Cleaning out non-movie files..."
-rm -rf "$TVDIR/*.idx" &> /dev/null
-rm -rf "$TVDIR/*.sub" &> /dev/null
-rm -rf "$TVDIR/*.srt" &> /dev/null
-rm -rf "$TVDIR/*.nfo" &> /dev/null
-rm -rf "$TVDIR/*.txt" &> /dev/null
+find "$TVDIR" -type f -name *.srt -delete
+find "$TVDIR" -type f -name *.idx -delete
+find "$TVDIR" -type f -name *.sub -delete
+find "$TVDIR" -type f -name *.nfo -delete
+find "$TVDIR" -type f -name *.txt -delete
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process \n" >> $LOGF
 echo "Building file index..."
 sleep 5
