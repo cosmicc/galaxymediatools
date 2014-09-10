@@ -32,11 +32,11 @@ else
  mkdir $TRANSDIR
 fi
 echo "Cleaning out non-movie files..."
-rm -rf "$MOVIEDIR/*.idx" &> /dev/null
-rm -rf "$MOVIEDIR/*.sub" &> /dev/null
-rm -rf "$MOVIEDIR/*.srt" &> /dev/null
-rm -rf "$MOVIEDIR/*.nfo" &> /dev/null
-rm -rf "$MOVIEDIR/*.txt" &> /dev/null
+find "$MOVIEDIR" -type f -name *.srt -delete
+find "$MOVIEDIR" -type f -name *.idx -delete
+find "$MOVIEDIR" -type f -name *.sub -delete
+find "$MOVIEDIR" -type f -name *.nfo -delete
+find "$MOVIEDIR" -type f -name *.txt -delete
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process \n" >> $LOGF
 echo "Building file index..."
 sleep 5
@@ -63,9 +63,13 @@ for f in "${file[@]}"; do
  EXT=${f: -3}
  EXT=${EXT,,}
  rm -r "$TRANSDIR/isinteg.rename.$EXT" &> /dev/null
+ if [ "$EXT" == "mp4" ] || [ "$EXT" == "avi" ] || [ "$EXT" == "mkv" ]; then 
  ffmpeg -v error -i "$f" -vframes 50 -y "$TRANSDIR/isinteg.rename.$EXT" < /dev/null
+ else
+ WRONGEXT="1"
+ fi
  rm -r "$TRANSDIR/isinteg.rename.$EXT" &> /dev/null
- if [ "$?" == "0" ]; then
+ if [ "$?" == "0" ] && [[ -z $WRONGEXT ]]; then
   if [[ $VERB ]]; then echo "$fil passed integrity check."; fi
   printf "`eval date +%m/%d/%y"-"%H:%M` - 03 File passed integrity check - $fil \n" >> $LOGF
   VRESCHK=`echo "$f" | awk -F'[][]' '{print $2}'`
