@@ -13,7 +13,7 @@ fi
 
 if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ]; then SIM="yes"; fi
 if [ "$1" == "-f" ] ||  [ "$2" == "-f" ] ||  [ "$3" == "-f" ]; then FORCE="yes"; fi
-if [ "$1" == "-f" ] ||  [ "$2" == "-f" ] ||  [ "$3" == "-f" ]; then VERB="yes"; fi
+if [ "$1" == "-v" ] ||  [ "$2" == "-v" ] ||  [ "$3" == "-v" ]; then VERB="yes"; fi
 
 source /opt/galaxymediatools/precheck
 LOGF="$LOGDIR/MassMovieRename-$CTS.txt"
@@ -67,6 +67,7 @@ for f in "${file[@]}"; do
  rm -r "$TRANSDIR/isinteg.rename.$EXT" &> /dev/null
  if [ "$?" == "0" ]; then
   if [[ $VERB ]]; then echo "$fil passed integrity check."; fi
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 03 File passed integrity check - $fil \n" >> $LOGF
   VRESCHK=`echo "$f" | awk -F'[][]' '{print $2}'`
   SCHK=`echo "$f" | sed 's/.*\]\([^]]*\)\[.*/\1/g'`
    if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] && [ "$VRESCHK" != "480p" ] && [ "$VRESCHK" != "SD" ] && [[ $FORCE ]] ; then
@@ -142,6 +143,8 @@ for f in "${file[@]}"; do
      else
       if [ "$f" != "$FNAME" ]; then
       echo "SIM MODE - No renaming applied $fil -> $FNAME"
+      else
+      echo "SIM MODE - File has correct name"
       fi
      fi
     else

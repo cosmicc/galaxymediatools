@@ -1,0 +1,91 @@
+#!/bin/bash
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        echo " "
+        echo "Galaxy Media Tools - Automatic Mass TV Series Integrity checker"
+        echo " "
+        echo "-h or --help : Help"
+        echo "-s  : Simulation only"
+	echo "-v  : Verbose"
+        echo " "
+        exit 0
+fi
+
+if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ]; then SIM="yes"; fi
+if [ "$1" == "-v" ] ||  [ "$2" == "-v" ] ||  [ "$3" == "-v" ]; then VERB="yes"; fi
+
+source /opt/galaxymediatools/precheck
+LOGF="$LOGDIR/MassTVInteg-$CTS.txt"
+if [[ $SIM ]]; then
+echo "Script starting up in SIMULATION MODE"
+else
+echo "Script starting up in normal mode"
+fi
+touch $LOGF 
+printf "`eval date +%m/%d/%y"-"%H:%M` - *** Script Start \n" >> $LOGF
+echo "Resetting transcode directory $TRANSDIR"
+if [ -d $TRANSDIR ]; then
+rm -r $TRANSDIR/* &> /dev/null
+else
+mkdir $TRANSDIR
+fi
+echo "Cleaning out non-movie files..."
+rm -rf "$TVDIR/*.idx" &> /dev/null
+rm -rf "$TVDIR/*.sub" &> /dev/null
+rm -rf "$TVDIR/*.srt" &> /dev/null
+rm -rf "$TVDIR/*.nfo" &> /dev/null
+rm -rf "$TVDIR/*.txt" &> /dev/null
+printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process \n" >> $LOGF
+echo "Building file index..."
+sleep 5
+if [ -f "$LOGDIR/TVINDEX" ]; then
+rm -f $LOGDIR/TVINDEX
+fi
+find "$TVDIR" -type f | sort >> $LOGDIR/TVINDEX
+i=0
+while read sfile
+do
+    if [[ -f $sfile ]]; then
+        file[$i]=$sfile
+        i=$(($i+1))
+    fi
+done < $LOGDIR/TVINDEX
+printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover script start-up notification\n" >> $LOGF
+echo "Sending pushover notification"
+if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass TV Integity Script Starting - ${#file[@]} Files to proccess" &> /dev/null
+fi
+if [[ -z $VERB ]]; then echo "Processing TV Files..."; fi
+j=0
+for f in "${file[@]}"; do
+ fil=${f##*/}
+ EXT=${f: -3}
+ EXT=${EXT,,}
+ rm -r "$TRANSDIR/isinteg.rename.$EXT" &> /dev/null
+ ffmpeg -v error -i "$f" -vframes 50 -y "$TRANSDIR/isinteg.$EXT" < /dev/null
+ rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
+ if [ "$?" == "0" ]; then
+  if [[ $VERB ]]; then echo "$fil passed integrity check."; fi
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 03 File passed integrity check - $fil \n" >> $LOGF
+ else
+  echo "File FAILED integrity test!! Purging file and marking for re-download"
+  if [[ -z $SIM ]]; then 
+  $APPDIR/pushover.sh -T $POAK -U $POUK "Movie FAILED integrity test!! Purging file and marking for re-download - $fil"
+  fi
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fil \n" >> $LOGF
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fil \n" >> $LOGF
+  printf "$f \n" >> "$LOGDIR/re-downloads.txt"
+  if [[ -z $SIM ]]; then rm -r "$f"; fi
+  fi
+done
+TTIME=$(date +%s)
+   ETIME=$(gettime "$STIME" "$TTIME")
+rm -r $TRANSDIR/* &> /dev/null
+printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover completion notification\n" >> $LOGF
+if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass TV Integrity Script Complete - Total Elapsed: $ETIME"
+fi
+printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server TV section update  \n" >> $LOGF
+if [[ -z $SIM ]]; then ssh $PLEXINFO -q 'sudo su plex -c "plexscan -s -c $PLEXCAT &> /dev/null &"' &> /dev/null &
+   fi
+printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
+echo "Script ended."
+pm-suspend
+#sed 's/\]\ \[/\]\[/g' removes space between brackets
