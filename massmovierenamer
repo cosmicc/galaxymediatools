@@ -1,21 +1,44 @@
 #!/bin/bash
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        echo " "
+        echo "Galaxy Media Tools - Automatic Mass Movie Renamer"
+        echo " "
+        echo "-h or --help : Help"
+        echo "-s  : Simulation only"
+	echo "-f  : Skip already proper formatting check"
+	echo "-v  : Verbose"
+        echo " "
+        exit 0
+fi
+
+if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ]; then SIM="yes"; fi
+if [ "$1" == "-f" ] ||  [ "$2" == "-f" ] ||  [ "$3" == "-f" ]; then FORCE="yes"; fi
+if [ "$1" == "-f" ] ||  [ "$2" == "-f" ] ||  [ "$3" == "-f" ]; then VERB="yes"; fi
+
 source /opt/galaxymediatools/precheck
 LOGF="$LOGDIR/MassMovieRename-$CTS.txt"
-if [ "$1" == "-v" ]; then echo "Script starting up"
+if [[ $FORCE ]]; then EFED="Forced"; else EFED="Not Forced)"; fi
+if [[ $SIM ]]; then
+echo "Script starting up in SIMULATION ($EFED) MODE"
+else
+echo "Script starting up in normal ($EFED) mode"
 fi
 touch $LOGF 
 printf "`eval date +%m/%d/%y"-"%H:%M` - *** Script Start \n" >> $LOGF
-if [ "$1" == "-v" ]; then echo "Resetting transcode directory $TRANSDIR"
-fi
+echo "Resetting transcode directory $TRANSDIR"
 if [ -d $TRANSDIR ]; then
 rm -r $TRANSDIR/* &> /dev/null
 else
 mkdir $TRANSDIR
 fi
-rm -rf "$MOVIEDIR/*.idx" &> /dev/null && rm -rf "$MOVIEDIR/*.sub" &> /dev/null && rm -rf "$MOVIEDIR/*.srt" &> /dev/null && rm -rf "$MOVIEDIR/*.nfo" &> /dev/null && rm -rf "$MOVIEDIR/*.txt" &> /dev/null
+echo "Cleaning out non-movie files..."
+rm -rf "$MOVIEDIR/*.idx" &> /dev/null
+rm -rf "$MOVIEDIR/*.sub" &> /dev/null
+rm -rf "$MOVIEDIR/*.srt" &> /dev/null
+rm -rf "$MOVIEDIR/*.nfo" &> /dev/null
+rm -rf "$MOVIEDIR/*.txt" &> /dev/null
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process \n" >> $LOGF
-if [ "$1" == "-v" ]; then echo "Building file index..."
-fi
+echo "Building file index..."
 sleep 5
 if [ -f "$LOGDIR/MOVIEINDEX" ]; then
 rm -f $LOGDIR/MOVIEINDEX
@@ -30,25 +53,23 @@ do
     fi
 done < $LOGDIR/MOVIEINDEX
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover script start-up notification\n" >> $LOGF
-if [ "$1" == "-v" ]; then echo "Sending pushover notification"
+echo "Sending pushover notification"
+if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass Movie Rename Script Starting - ${#file[@]} Files to proccess" &> /dev/null
 fi
-if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass Movie Rename Script Starting - ${#file[@]} Files to proccess" &> /dev/null
-fi
+if [[ -z $VERB ]]; then echo "Processing Movie Files..."; fi
 j=0
 for f in "${file[@]}"; do
  fil=${f##*/}
- echo "Testing video integrity..."
- EXT=${f: -3,,}
+ EXT=${f: -3}
  EXT=${EXT,,}
  rm -r "$TRANSDIR/isinteg.rename.$EXT" &> /dev/null
  ffmpeg -v error -i "$f" -vframes 50 -y "$TRANSDIR/isinteg.rename.$EXT" < /dev/null
  rm -r "$TRANSDIR/isinteg.rename.$EXT" &> /dev/null
  if [ "$?" == "0" ]; then
-  echo -e "Video file passed integrity test."
+  if [[ $VERB ]]; then echo "$fil passed integrity check."; fi
   VRESCHK=`echo "$f" | awk -F'[][]' '{print $2}'`
   SCHK=`echo "$f" | sed 's/.*\]\([^]]*\)\[.*/\1/g'`
-  echo $SCHK
-   if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] && [ "$VRESCHK" != "480p" ] && [ "$VRESCHK" != "SD" ]; then
+   if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] && [ "$VRESCHK" != "480p" ] && [ "$VRESCHK" != "SD" ] && [[ $FORCE ]] ; then
     WIDTH=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep width | sed -e 's/width=//'`
     HEIGHT=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep height | sed -e 's/height=//'`
     VCODEC=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
@@ -58,12 +79,12 @@ for f in "${file[@]}"; do
     ACHANS1=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep channels | sed -e 's/channels=//' | head -n 1`
     ACODEC2=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | tail -n 1`
     ACHANS2=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep channels | sed -e 's/channels=//' | tail -n 1`
-ACNT=`wc -l <<< "$ACODE"`
-if [ "$ACNT" -gt "1" ]; then
-ACODEC=`echo ${ACODEC1^^}"-"$ACHANS1"ch+"${ACODEC2^^}"-"$ACHANS2"ch"`
-else
-ACODEC=`echo ${ACODEC1^^}"-"$ACHANS1"ch"`
-fi 
+    ACNT=`wc -l <<< "$ACODE"`
+    if [ "$ACNT" -gt "1" ]; then
+     ACODEC=`echo ${ACODEC1^^}"-"$ACHANS1"ch+"${ACODEC2^^}"-"$ACHANS2"ch"`
+    else
+     ACODEC=`echo ${ACODEC1^^}"-"$ACHANS1"ch"`
+    fi 
     YEAR=`echo "$f" | grep -oE '\([[:alnum:]]*?\)' | sed 's/[()]//g'`
     MNAME=`echo "$f" | sed -e 's/([^()]*)//g' | sed -e 's/\[[^][]*\]//g' | sed 's/....$//' | sed -e 's/^ *//' -e 's/ *$//'`
     if [ "$WIDTH" == "1920" ]; then
@@ -71,11 +92,11 @@ fi
     elif [ "$WIDTH" == "1280" ]; then
      VRES="720p"
     elif [ "$WIDTH" == "720" ]; then
-     if [ "$HEIGHT" -gt "570" ]; then
-      VRES="576p"
-     else
+    if [ "$HEIGHT" -gt "570" ]; then
+     VRES="576p"
+    else
       VRES="480p"
-     fi
+    fi
     elif [ "$WIDTH" -lt "720" ]; then
      VRES="SD"	
     fi
@@ -84,61 +105,72 @@ fi
     fi
     if [ "$HEIGHT" == "" ]; then
      echo "Cannot determine video HEIGHT. Exiting."
+     printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine VIDEO HEIGHT - $fil \n" >> $LOGF 
      exit 1
     fi
     if [ "$WIDTH" == "" ]; then
      echo "Cannot determine video WIDTH. Exiting."
+     printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine VIDEO WIDTH - $fil \n" >> $LOGF
      exit 1
     fi
     if [ "$VCODEC" == "" ]; then
      echo "Cannot determine video codec. Exiting."
+     printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine VIDEO CODEC - $fil \n" >> $LOGF
      exit 1
     fi
     if [ "$ACODEC" == "" ]; then
      echo "Cannot determine audio codec. Exiting."
+     printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine AUDIO CODEC - $fil \n" >> $LOGF
      exit 1
     fi
     if [ "$ACHANS" == "" ]; then
      echo "Cannot determine audio channels. Exiting."
+     printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine AUDIO CHANNELS - $fil \n" >> $LOGF
      exit 1
     fi
     if [ "$YEAR" != "" ]; then
      FNAME=`echo "$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].$EXT" | sed 's/ \+/ /g'`
-     printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Movie Renamed - $fil -> $FNAME \n" >> $LOGF
-     echo "$f -> $FNAME"
-     if [ "$2" != "-s" ]; then
-      mv "$f" "$FNAME"
+     if [[ -z $SIM ]]; then
+      if [ "$f" != "$FNAME" ]; then
+       printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Movie Renamed - $fil -> $FNAME \n" >> $LOGF
+       echo " * Movie Renamed - $fil -> $FNAME"
+       mv "$f" "$FNAME"
+      else
+       if [[ $VERB ]]; then echo "File already has correct name $fil"; fi
+       printf "`eval date +%m/%d/%y"-"%H:%M` - 02 File already has correct name - $fil \n" >> $LOGF
+      fi
      else
-      echo "SIMULATION MODE - No renaming applied."
+      if [ "$f" != "$FNAME" ]; then
+      echo "SIM MODE - No renaming applied $fil -> $FNAME"
+      fi
      fi
     else
      echo "$fil is missing year, marking file in missingyear log "
      printf "$f \n" >> "$LOGDIR/missingyear.txt"
     fi
-   else
-   echo "$fil is formatted properly already skipping"
-   fi 
+  if [[ $VERB ]]; then echo "Skipping correctly formatted file ($EFED) - $fil"; fi
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 02 Skipping correctly formatted file ($EFED) - $fil \n" >> $LOGF 
+  fi 
    else
     echo "File FAILED integrity test!! Purging file and marking for re-download"
-    if [ "$2" != "-s" ]; then 
+    if [[ -z $SIM ]]; then 
     $APPDIR/pushover.sh -T $POAK -U $POUK "Movie FAILED integrity test!! Purging file and marking for re-download - $fil"
     fi
     printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fil \n" >> $LOGF
     printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fil \n" >> $LOGF
     printf "$f \n" >> "$LOGDIR/re-downloads.txt"
-  if [ "$2" != "-s" ]; then rm -r "$f"; fi
+  if [[ -z $SIM ]]; then rm -r "$f"; fi
    fi
 done
 TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
 rm -r $TRANSDIR/* &> /dev/null
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover completion notification\n" >> $LOGF
-if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass Movie Rename Script Complete - Total Elapsed: $ETIME"
+if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass Movie Rename Script Complete - Total Elapsed: $ETIME"
 fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server movie section update  \n" >> $LOGF
-if [ "$1" == "-v" ]; then echo "Script ended."
-fi
-if [ "$2" != "-s" ]; then ssh $PLEXINFO -q 'sudo su plex -c "plexscan -s -c $PLEXMCAT &> /dev/null &"' &> /dev/null &
+echo "Script ended."
+if [[ -z $SIM ]]; then ssh $PLEXINFO -q 'sudo su plex -c "plexscan -s -c $PLEXMCAT &> /dev/null &"' &> /dev/null &
    fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
 pm-suspend
