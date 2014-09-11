@@ -17,12 +17,8 @@ if [ "$1" == "-g" ] ||  [ "$2" == "-g" ] ||  [ "$3" == "-g" ]; then SPN="yes"; f
 if [ "$1" == "-gr" ] ||  [ "$2" == "-gr" ] ||  [ "$3" == "-gr" ]; then REV="yes"; fi
 
 source /opt/galaxymediatools/precheck
-LOGF="$LOGDIR/ATV_$THISSERVER-$CTS.txt"
-if [ "$THISSERVER" == "$T1NAME" ]; then
-POAK=$T1KEY
-elif [ "$THISSERVER" == "$T2NAME" ]; then
-POAK=$T2KEY
-fi
+LOGF="$LOGDIR/TTV_$THISSERVER_$CTS.txt"
+INDXFIL="TTV_fileindex_$THISSERVER.txt"
 if [[ $SIM ]]; then TMODE="Simulation mode"
 elif [[ $REV ]]; then TMODE="Span Reverse mode"
 elif [[ $SPN ]]; then TMODE="Span Forward mode"
@@ -40,7 +36,7 @@ else
 fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process on $THISSERVER \n" >> $LOGF
 echo "Building index of files to process..."
-if [ -f "$LOGDIR/FILEINDEX_$THISSERVER" ]; then rm -f $LOGDIR/FILEINDEX_$THISSERVER; fi
+if [ -f "$LOGDIR/$INDXFIL" ]; then rm -f $LOGDIR/$INDXFIL; fi
 
 FINDVARS="\"$TVDIR\" -type f ! -path \"$EXPATH1/*\" ! -path \"$EXPATH2/*\" ! -path \"$EXPATH3/*\" ! -path \"$EXPATH4/*\" ! -path \"$EXPATH5/*\" ! -path \"$EXPATH6/*\" ! -path \"$EXPATH7/*\" ! -path \"$EXPATH8/*\" ! -path \"$EXPATH9/*\" ! -name *.ntrans.* ! -name *.trans.* $ATTRANS"
 FCNT=`eval /usr/bin/find "$FINDVARS" | wc -l`
@@ -54,9 +50,9 @@ else
  FCOUNT2=$((FCOUNT1+1))
 fi
 fi
-if [[ $REV ]]; then eval /usr/bin/find $FINDVARS | sort -r | head -$FCOUNT1 >> $LOGDIR/FILEINDEX_$THISSERVER
-elif [[ $SPN ]]; then eval /usr/bin/find $FINDVARS | sort | head -$FCOUNT2 >> $LOGDIR/FILEINDEX_$THISSERVER
-else eval /usr/bin/find $FINDVARS | sort  >> $LOGDIR/FILEINDEX_$THISSERVER
+if [[ $REV ]]; then eval /usr/bin/find $FINDVARS | sort -r | head -$FCOUNT1 >> $LOGDIR/$INDXFIL
+elif [[ $SPN ]]; then eval /usr/bin/find $FINDVARS | sort | head -$FCOUNT2 >> $LOGDIR/$INDXFIL
+else eval /usr/bin/find $FINDVARS | sort  >> $LOGDIR/$INDXFIL
 fi
 i=0
 while read sfile
@@ -65,7 +61,7 @@ do
         file[$i]=$sfile
         i=$(($i+1))
     fi
-done < $LOGDIR/FILEINDEX_$THISSERVER
+done < $LOGDIR/$INDXFIL
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Starting transcode process on ${#file[@]} files on $THISSERVER \n" >> $LOGF
 echo "Starting transcode process on ${#file[@]} files"
 if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Auto TV Transcode Script Starting in $TMODE on $THISSERVER - ${#file[@]} Files to proccess" &> /dev/null; fi

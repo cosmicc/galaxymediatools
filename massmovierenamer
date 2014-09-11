@@ -16,7 +16,7 @@ if [ "$1" == "-f" ] ||  [ "$2" == "-f" ] ||  [ "$3" == "-f" ]; then FORCE="yes";
 if [ "$1" == "-v" ] ||  [ "$2" == "-v" ] ||  [ "$3" == "-v" ]; then VERB="yes"; fi
 
 source /opt/galaxymediatools/precheck
-LOGF="$LOGDIR/MMR_$CTS.txt"
+LOGF="$LOGDIR/MMR_$THISSERVER_$CTS.txt"
 INDXFIL="MMR_fileindex_$THISSERVER.txt"
 if [[ $FORCE ]]; then EFED="Forced"; else EFED="Not Forced"; fi
 if [[ $SIM ]]; then

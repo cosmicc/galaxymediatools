@@ -14,7 +14,8 @@ if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ]; then SIM="yes"; f
 if [ "$1" == "-v" ] ||  [ "$2" == "-v" ] ||  [ "$3" == "-v" ]; then VERB="yes"; fi
 
 source /opt/galaxymediatools/precheck
-LOGF="$LOGDIR/MassTVInteg-$CTS.txt"
+LOGF="$LOGDIR/MTI_$THISSERVER_$CTS.txt"
+INDXFIL="MTI_fileindex_$THISSERVER.txt"
 if [[ $SIM ]]; then
 echo "Script starting up in SIMULATION MODE"
 else
@@ -37,10 +38,10 @@ find "$TVDIR" -type f -name *.txt -delete
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process \n" >> $LOGF
 echo "Building file index..."
 sleep 5
-if [ -f "$LOGDIR/TVINDEX" ]; then
-rm -f $LOGDIR/TVINDEX
+if [ -f "$LOGDIR/$INDXFIL" ]; then
+rm -f $LOGDIR/$INDXFIL
 fi
-find "$TVDIR" -type f | sort >> $LOGDIR/TVINDEX
+find "$TVDIR" -type f | sort >> $LOGDIR/$INDXFIL
 i=0
 while read sfile
 do
@@ -48,7 +49,7 @@ do
         file[$i]=$sfile
         i=$(($i+1))
     fi
-done < $LOGDIR/TVINDEX
+done < $LOGDIR/$INDXFIL
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover script start-up notification\n" >> $LOGF
 echo "Sending pushover notification"
 if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass TV Integity Script Starting - ${#file[@]} Files to proccess" &> /dev/null
