@@ -172,6 +172,7 @@ for f in "${file[@]}"; do
     printf "$f \n" >> "$LOGDIR/re-downloads.txt"
   #if [[ -z $SIM ]]; then rm -r "$f"; fi
    fi
+sleep 10
 done
 TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
