@@ -16,7 +16,8 @@ if [ "$1" == "-f" ] ||  [ "$2" == "-f" ] ||  [ "$3" == "-f" ]; then FORCE="yes";
 if [ "$1" == "-v" ] ||  [ "$2" == "-v" ] ||  [ "$3" == "-v" ]; then VERB="yes"; fi
 
 source /opt/galaxymediatools/precheck
-LOGF="$LOGDIR/MMR-$CTS.txt"
+LOGF="$LOGDIR/MMR_$CTS.txt"
+INDXFIL="MMR_fileindex_$THISSERVER.txt"
 if [[ $FORCE ]]; then EFED="Forced"; else EFED="Not Forced"; fi
 if [[ $SIM ]]; then
  echo "Script starting up in SIMULATION ($EFED) MODE"
@@ -40,10 +41,10 @@ find "$MOVIEDIR" -type f -name *.txt -delete
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process \n" >> $LOGF
 echo "Building file index..."
 sleep 5
-if [ -f "$LOGDIR/MOVIEINDEX" ]; then
- rm -f $LOGDIR/MOVIEINDEX
+if [ -f "$LOGDIR/$INDXFIL" ]; then
+ rm -f $LOGDIR/$INDXFIL
 fi
-find "$MOVIEDIR" -type f | sort >> $LOGDIR/MOVIEINDEX
+find "$MOVIEDIR" -type f | sort >> $LOGDIR/$INDXFIL
 i=0
 while read sfile
 do
@@ -51,7 +52,7 @@ do
         file[$i]=$sfile
         i=$(($i+1))
     fi
-done < $LOGDIR/MOVIEINDEX
+done < $LOGDIR/$INDXFIL
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover script start-up notification\n" >> $LOGF
 echo "Sending pushover notification"
 if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass Movie Rename Script Starting - ${#file[@]} Files to proccess" &> /dev/null
