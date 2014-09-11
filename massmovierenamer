@@ -17,7 +17,7 @@ if [ "$1" == "-v" ] ||  [ "$2" == "-v" ] ||  [ "$3" == "-v" ]; then VERB="yes"; 
 
 source /opt/galaxymediatools/precheck
 LOGF="$LOGDIR/MassMovieRename-$CTS.txt"
-if [[ $FORCE ]]; then EFED="Forced"; else EFED="Not Forced)"; fi
+if [[ $FORCE ]]; then EFED="Forced"; else EFED="Not Forced"; fi
 if [[ $SIM ]]; then
  echo "Script starting up in SIMULATION ($EFED) MODE"
 else
@@ -172,7 +172,7 @@ for f in "${file[@]}"; do
     printf "$f \n" >> "$LOGDIR/re-downloads.txt"
   #if [[ -z $SIM ]]; then rm -r "$f"; fi
    fi
-sleep 10
+sleep 7
 done
 TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
