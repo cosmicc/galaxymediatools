@@ -29,7 +29,7 @@ fwenp=${1##*/}
 fnewp="${1%.*}"
 fnenp="${fwenp%.*}"
 echo -e "Checking video file integrity"
-isinteg "$fwewp"
+isinteg "$1"
 if [ "$ISINTEG" == "1" ]; then
  echo -e "Video file passed integrity test."
  printf "`eval date +%m/%d/%y"-"%H:%M` - 06 File passed video integrity test - $fwewp\n" >> $LOGF
@@ -77,15 +77,15 @@ if [ "$ISINTEG" == "1" ]; then
    ssh $SSHINFO -q 'sudo su plex -c "plexscan -s -c $PLEXMCAT &> /dev/null &"' &> /dev/null &
   else
    echo "File FAILED integrity test!! Purging file and marking for re-download"
-  fi
   $APPDIR/pushover.sh -T $POAK -U $POUK "File failed integrity test!! $fwenp - Marking for redownload"
   printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fwenp \n" >> $LOGF
   printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fwenp \n" >> $LOGF
   printf "$fwewp \n" >> "$LOGDIR/re-downloads.txt"
   #rm -r "$fwewp"
+  fi
   rm -r "$TRANSDIR/$fwenp" &> /dev/null
   TTIME=$(date +%s)
   ETIME=$(gettime "$STIME" "$TTIME")
   printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
   echo "Script ended."
-  pm-suspend
+  #pm-suspend
