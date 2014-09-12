@@ -17,6 +17,7 @@ if [ "$1" == "-g" ] ||  [ "$2" == "-g" ] ||  [ "$3" == "-g" ]; then SPN="yes"; f
 if [ "$1" == "-gr" ] ||  [ "$2" == "-gr" ] ||  [ "$3" == "-gr" ]; then REV="yes"; fi
 
 source "/opt/galaxymediatools/functions/precheck"
+source "/opt/galaxymediatools/functions/isinteg"
 LOGF="$LOGDIR/TTV_$THISSERVER_$CTS.txt"
 INDXFIL="TTV_fileindex_$THISSERVER.txt"
 if [[ $SIM ]]; then TMODE="Simulation mode"
@@ -84,10 +85,8 @@ for f in "${file[@]}"; do
  printf "`eval date +%m/%d/%y"-"%H:%M` - 04 Copying file to local drive for transcoding on $THISSERVER $fne\n" >> $LOGF
  if [[ -z $SIM ]]; then cp -f "$f" "$TRANSDIR"; fi
  echo "Checking video file integrity of $fne..."
- rm -r "$TRANSDIR/isinteg.*" &> /dev/null
- ffmpeg -v error -i "$TRANSDIR/$fil" -vframes 50 -y "$TRANSDIR/isinteg.$EXT" < /dev/null
- if [ "$?" == "0" ]; then
-  rm -r "$TRANSDIR/isinteg.$EXT"
+ isinteg "$f"
+ if [ "$ISINTEG" == "1" ]; then
   FRAMES=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
   HEIGHT=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep height | sed -e 's/height=//'`
   echo -e "File passed video integrity test - $fne"
