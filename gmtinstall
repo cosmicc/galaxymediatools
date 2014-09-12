@@ -4,25 +4,28 @@ if [ ! -f /etc/galaxymediatools.conf ]; then
 cp /opt/galaxymediatools/galaxymediatools.conf.sample /etc/galaxymediatools.conf
 else
 echo -e "Config file already exists. Not overwriting."
-exit 1
 fi
 echo "deb http://www.bunkus.org/ubuntu/trusty/ ./" >> /etc/apt/sources.list # for mkvtoolsnix
 echo "deb-src http://www.bunkus.org/ubuntu/trusty/ ./" >> /etc/apt/sources.list # for mkvtoolsnix
-apt-get update
-apt-get install ssh fping wakeonlan sysstat screen pm-utils mkvtoolnix -y
-chmod ug+wrx /opt/galaxymediatools/pushover.sh
-chmod ug+wrx /opt/galaxymediatools/transtv
-chmod ug+wrx /opt/galaxymediatools/transmantv
-chmod ug+wrx /opt/galaxymediatools/nontransdir
-chmod ug+wrx /opt/galaxymediatools/transmovie
-chmod ug+wrx /opt/galaxymediatools/killalltrans
-chmod ug+wrx /opt/galaxymediatools/1080to720
-chmod ug+wrx /opt/galaxymediatools/remotewake
-chmod ug+wrx /opt/galaxymediatools/remotesuspend
-chmod ug+wrx /opt/galaxymediatools/remotetranstv
-chmod ug+wrx /opt/galaxymediatools/remotecmd
-chmod ug+wrx /opt/galaxymediatools/checkserver
-chmod ug+wrx /opt/galaxymediatools/statusservers
+echo "Running package update..."
+apt-get update >> /dev/null
+echo "Running Package Installs..."
+apt-get install ssh fping wakeonlan sysstat screen pm-utils mkvtoolnix -y --force-yes
+#echo "Applying Permissions..."
+#chmod ug+wrx /opt/galaxymediatools/pushover.sh
+#chmod ug+wrx /opt/galaxymediatools/transtv
+#chmod ug+wrx /opt/galaxymediatools/transmantv
+#chmod ug+wrx /opt/galaxymediatools/nontransdir
+#chmod ug+wrx /opt/galaxymediatools/transmovie
+#chmod ug+wrx /opt/galaxymediatools/killalltrans
+#chmod ug+wrx /opt/galaxymediatools/1080to720
+#chmod ug+wrx /opt/galaxymediatools/remotewake
+#chmod ug+wrx /opt/galaxymediatools/remotesuspend
+#chmod ug+wrx /opt/galaxymediatools/remotetranstv
+#chmod ug+wrx /opt/galaxymediatools/remotecmd
+#chmod ug+wrx /opt/galaxymediatools/checkserver
+#chmod ug+wrx /opt/galaxymediatools/statusservers
+echo "Creating Symbolic Links..."
 ln -s /opt/galaxymediatools/transtv /usr/local/bin/transtv &> /dev/null
 ln -s /opt/galaxymediatools/transmantv /usr/local/bin/transmantv &> /dev/null
 ln -s /opt/galaxymediatools/nontransdir /usr/local/bin/nontransdir &> /dev/null
@@ -35,5 +38,16 @@ ln -s /opt/galaxymediatools/remotetranstv /usr/local/bin/remotetranstv &> /dev/n
 ln -s /opt/galaxymediatools/checkserver /usr/local/bin/checkserver &> /dev/null
 ln -s /opt/galaxymediatools/statusservers /usr/local/bin/statusservers &> /dev/null
 ln -s /opt/galaxymediatools/remotecmd /usr/local/bin/remotecmd &> /dev/null
+echo " "
+echo "-----------------------------------------------------------"
 echo -e "Installation complete"
+echo "-----------------------------------------------------------"
 echo -e "Make sure you edit /etc/galaxymediatools.conf!"
+echo " "
+read -r -p "Would you like to run the ffmpeg install now? [y/N] " response
+response=${response,,}    # tolower
+if [[ $response =~ ^(yes|y)$ ]]; then
+/opt/galaxymediatools/ffmpeginst
+else
+exit 0
+fi
