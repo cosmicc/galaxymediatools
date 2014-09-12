@@ -1,164 +1,92 @@
 #!/bin/bash
 
-APPDIR="/opt/galaxymediatools"
 if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo " "
-        echo "Galaxy Media Tools - Automatic Movie Transcoder"
-        echo " "
-        echo "-h or --help : Help"
-        echo "-v : Console output"
-        echo "-u : Upgrade from git only"
-        echo "-v -s : Simulation only"
+        echo "Galaxy Media Tools - Movie Transcoder"
+	echo " "
+	echo "-h or --help : Help"
         echo " "
         exit 0
 fi
-source /opt/galaxymediatools/precheck
-LOGF="$LOGDIR/TVTrans-$CTS.txt"
-if [ "$1" == "-v" ]; then echo "Script starting up"
+
+if [ "$1" == "" ]; then
+        echo "Argument missing. Specify a movie to transcode"
+        exit 1
 fi
+
+source /opt/galaxymediatools/precheck
+LOGF="$LOGDIR/MVT_$THISSERVER_$CTS.txt"
+echo "Script starting up"
 touch $LOGF 
 printf "`eval date +%m/%d/%y"-"%H:%M` - *** Script Start \n" >> $LOGF
-if [ "$1" == "-v" ]; then echo "Resetting transcode directory $TRANSDIR"
-fi
-if [ -d $TRANSDIR ]; then
-rm -r $TRANSDIR/* &> /dev/null
-else
+if [ ! -d $TRANSDIR ]; then
 mkdir $TRANSDIR
 fi
-printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process \n" >> $LOGF
-if [ "$1" == "-v" ]; then echo "Building file index..."
-fi
-if [ -f "$LOGDIR/FILEINDEX" ]; then
-rm -f $LOGDIR/FILEINDEX
-fi
-find "$MOVIEDIR" -type f ! -name "*.trans.*" ! -name "*.ntrans.*" "$AMTRANS" | cat $1 | sort >> $LOGDIR/FILEINDEX
-i=0
-while read sfile
-do
-    if [[ -f $sfile ]]; then
-        file[$i]=$sfile
-        i=$(($i+1))
-    fi
-done < $LOGDIR/FILEINDEX
-printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover script start-up notification\n" >> $LOGF
-if [ "$1" == "-v" ]; then echo "Sending pushover notification"
-fi
-if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Auto Movie Transcode Script Starting - ${#file[@]} Files to proccess" &> /dev/null
-fi
-printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Starting transcode process on ${#file[@]} files \n" >> $LOGF
-j=0
-for f in "${file[@]}"; do
- j=$(($j+1))
+ f="$MOVIEDIR/$1"
  fil=${f##*/}
  EXT=${f: -3}
  transc=`echo "$f" | cut -d "." -f3`
  transd=`echo "$f" | cut -d "." -f2`
- if [ "$transc" != "trans" ] && [ "$transd" != "trans" ]  && [ "$transc" != "ntrans" ]  && [ "$transd" != "ntrans" ]; then
   OSIZE=$(wc -c "$f" | cut -f 1 -d ' ')
   fne="${f%.*}"
   fng="${fne##*/}"
-  fleft=$((${#file[@]}-$j))
-  if [ -f "$fne.trans.mp4" ]; then
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 70 File already has transcoded version existing - removing $fne.trans.mp4 \n" >> $LOGF
-   if [ "$2" != "-s" ]; then rm -f "$fne.trans.mp4"
-   fi
-  fi
-  if [ $OSIZE -gt 900000000 ] || [ $EXT != "mp4" ]; then
-   if [ "$1" == "-v" ]; then echo -e "Copying file locally..."
-   fi
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 04 Copying file from filer to local for transcoding $fne\n" >> $LOGF
-   if [ "$2" != "-s" ]; then cp -f "$f" "$TRANSDIR"
+  echo -e "Copying file locally..."
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 04 Copying file from filer to local for transcoding $fne\n" >> $LOGF
+  cp -f "$f" "$TRANSDIR"
+  echo -e "Checking video file integrity"
+  rm -r "$TRANSDIR/isinteg.*" &> /dev/null
+  ISINTEG=`eval ffmpeg -v error -t 10 -i \"$TRANSDIR/$fil\" -y \"$TRANSDIR/isinteg.$EXT\" < /dev/null`
+  if [ "$ISINTEG" == "" ]; then
+   echo -e "Video file passed integrity test."
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 06 File passed video integrity test - $fne\n" >> $LOGF
+   rm -r "$TRANSDIR/isinteg.$EXT"
    FRAMES=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
-   HEIGHT=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep height | sed -e 's/height=//'`
-   else
-   HEIGHT="200"
-   fi
-   if [ "$HEIGHT" -gt "406" ]; then
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file (Resized) Frames: $FRAMES - $fil\n" >> $LOGF
-    ffmpegsw="-c:v libx264 -preset slow -sn -crf $MOVIEQUAL -profile:v high -vf scale=720:400 -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
-    asd="(Resized)"
-    else
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 05 Processing video file (Not-Resized) Frames: $FRAMES - $fil\n" >> $LOGF
-    ffmpegsw="-c:v libx264 -preset slow -sn -crf $MOVIEQUAL -profile:v high -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
-    asd="(Not Resized)"
-   fi
+   WIDTH=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep width | sed -e 's/width=//'`
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file Frames: $FRAMES - $fil\n" >> $LOGF
+   ffmpegsw="-c:v libx264 -preset slow -sn -crf $MOVIEQUAL -profile:v high -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
    TSTIME=$(date +%s)
-   if [ "$1" == "-v" ]; then echo -e "* Transcoding file: $fil"
-   fi
-   if [ "$2" != "-s" ]; then nice -n -10 ffmpeg -i "$TRANSDIR/$fil" $ffmpegsw "$TRANSDIR/$fng.trans.mp4" < /dev/null &> /dev/null 
-   fi
+   echo -e "* Transcoding file: $fil"
+   nice -n -10 ffmpeg -i "$TRANSDIR/$fil" $ffmpegsw "$TRANSDIR/$fng.trans.mp4" < /dev/null &> /dev/null 
    TETIME=$(date +%s)
    GTIME=$(gettime "$TSTIME" "$TETIME")
    SOSIZE=$((OSIZE/1000000))
    NSIZE=$(wc -c "$TRANSDIR/$fng.trans.mp4" | cut -f 1 -d ' ')
    SNSIZE=$((NSIZE/1000000))
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 02 Transcoding Finished. ($SOSIZE->$SNSIZE) $fleft Left, Elapsed time: $GTIME - $fil \n" >> $LOGF
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 02 Movie Transcoding Finished. ($SOSIZE->$SNSIZE) Elapsed time: $GTIME - $fil \n" >> $LOGF
    if [ ! -f "$TRANSDIR/$fng.trans.mp4" ]; then
-    if [ "$1" == "-v" ]; then echo -e "PROBLEM!! No transcoded file found, something is wrong. Exiting."
-    fi
+    echo -e "PROBLEM!! No transcoded file found, something is wrong. Exiting."
     printf "`eval date +%m/%d/%y"-"%H:%M` - 99 PROBLEM!! No transcoded file found, something went wrong. Exiting. $fil\n" >> $LOGF
     exit 1
    fi
-   if [ "$NSIZE" -lt "300000000" ];then
+   if [ "$NSIZE" -lt "600000000" ];then
     rm -r "$TRANSDIR/$fne.trans.mp4"
     rm -r "$TRANSDIR/$fil"
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 98 PROBLEM!! Transcoded file under 300 Meg, something went wrong, Exiting. $fil\n" >> $LOGF
-    if [ "$1" == "-v" ]; then echo -e "PROBLEM!! Transcoded file under 25 Meg, something went wrong, Exiting."
-    fi
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 98 PROBLEM!! Transcoded file under 600 Meg, something went wrong, Exiting. $fil\n" >> $LOGF
+    echo -e "PROBLEM!! Transcoded file under 600 Meg, something went wrong, Exiting."
     exit 1
    fi
-   if [ "$OSIZE" -gt "$NSIZE" ] && [ "$NSIZE" -gt "300000000" ]; then
-    if [ "$1" == "-v" ]; then echo -e "Copying transcoded file back $fng.trans.mp4"
-    fi
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 09 Transcoded file is smaller as intended - Deleting original $fil\n" >> $LOGF
+    echo -e "Copying transcoded file back $fng.trans.mp4"
     printf "`eval date +%m/%d/%y"-"%H:%M` - 03 Copying transcoded file back to filer - $fng.trans.mp4\n" >> $LOGF
-    if [ "$2" != "-s" ]; then 
-     cp -f "$TRANSDIR/$fng.trans.mp4" "$fne.trans.mp4"
-     rm -f "$f"
-     rm -f "$TRANSDIR/$fng.trans.mp4"
-     rm -f "$TRANSDIR/$fil"
-    fi 
-    if [ "$1" == "-v" ]; then echo -e "Transcoding finished, $asd ($SOSIZE->$SNSIZE) Original replaced, $fleft Left, elapsed time: $GTIME"
-    fi
-    if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Transcode Finished $asd ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME - Original replaced - $fleft Left." &> /dev/null
-    fi
-    else
-    if [ "$2" != "-s" ]; then rm -f "$TRANSDIR/$fng.trans.mp4"
-    fi
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 80 Transcoded file is BIGGER! - Deleting transcode $fne.trans.mp4\n" >> $LOGF
-    if [ "$2" != "-s" ]; then 
-     mv "$f" "$fne.ntrans.$EXT"
-     rm -f "$TRANSDIR/$fil"
-     rm -f "$TRANSDIR/$fng.trans.mp4"
-    fi
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 80 Marking original file non transcodable - $fne.ntrans.$EXT\n" >> $LOGF
-    if [ "$1" == "-v" ]; then echo -e "Transcoding finished, $asd ($SOSIZE->$SNSIZE) Original kept, elapsed time: $GTIME"
-    fi
-    if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "TV Transcode Finished - $asd ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME - Original kept, Non Transcodable" &> /dev/null
-    fi
-   fi
-   if [ "$2" != "-s" ]; then ssh $SSHINFO -q 'sudo su plex -c "plexscan -s -c $PLEXCAT &> /dev/null &"' &> /dev/null &
-   fi
-   #else
-    #printf "`eval date +%m/%d/%y"-"%H:%M` - 10 Skipping mp4 file under sized, marking file non transcodable - $fil \n" >> $LOGF
-    #if [ "$2" != "-s" ]; then mv "$f" "$fne.ntrans.mp4"
-    #fi
-  fi
+    cp -f "$TRANSDIR/$fng.trans.mp4" "$fne.trans.mp4"
+    cp -f "$f" "/video/Incoming/process/1080to720old"
+    rm -f "$f"
+    rm -f "$TRANSDIR/$fng.trans.mp4"
+    rm -f "$TRANSDIR/$fil"
+    echo -e "Transcoding finished, ($SOSIZE->$SNSIZE) Original replaced, elapsed time: $GTIME"
+    $APPDIR/pushover.sh -T $POAK -U $POUK "Movie Transcode Finished ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME" &> /dev/null
+   ssh $SSHINFO -q 'sudo su plex -c "plexscan -s -c 6 &> /dev/null &"' &> /dev/null &
   else
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 20 Skipping file already transcoded - $fil \n" >> $LOGF
- fi
-done
+  echo "File FAILED integrity test!! Purging file and marking for re-download"
+  fi
+  $APPDIR/pushover.sh -T $POAK -U $POUK "File failed integrity test!! $fil - Marking for redownload"
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fil \n" >> $LOGF
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fil \n" >> $LOGF
+  printf "$f \n" >> "$LOGDIR/re-downloads.txt"
+  #rm -r "$f"
+  rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
+  rm -r "$TRANSDIR/$fil" &> /dev/null
 TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
-rm -r $TRANSDIR/* &> /dev/null
-echo -e "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover completion notification\n" >> $LOGF
-if [ "$2" != "-s" ]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Auto Movie Transcode Script Complete - Total Elapsed: $ETIME"
-fi
-echo -e "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server full video analyze  \n" >> $LOGF
-if [ "$2" != "-s" ]; then ssh $SSHINFO 'sudo su plex -c "plexscan -b -a -c $PLEXCAT &> /dev/null &"' > /dev/null &
-fi
-echo -e "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
-if [ "$1" == "-v" ]; then echo "Script ended."
-fi
-if [ "$2" != "-s" ]; then pm-suspend
-fi
+printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
+echo "Script ended."
+pm-suspend
