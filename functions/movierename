@@ -4,6 +4,8 @@ function movierename()
 {
    local FPATH=${1%/*}
    local FFIL=${1##*/}
+   local ext=${1: -3}
+   local ext=${1,,}
    if [ -f "$1" ] && [ "$FFIL" != "$1" ]; then
    local WIDTH=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep width | sed -e 's/width=//'`
    local HEIGHT=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep height | sed -e 's/height=//'`
@@ -64,14 +66,14 @@ function movierename()
     exit 1
    fi
    if [ "$YEAR" != "" ]; then
-    renamedmoviewp=`echo "$FPATH/$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].mp4" | sed 's/ \+/ /g'`
-    renamedmovienp=`echo "$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].mp4" | sed 's/ \+/ /g'`
+    renamedmoviewp=`echo "$FPATH/$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`
+    renamedmovienp=`echo "$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`
    else
     echo "$FNAME is missing year, marking file in missing year log "
     printf "$FNAME \n" >> "$LOGDIR/missingyear.txt"
     local YEAR="0000"
-    renamedmoviewp=`echo "$FPATH/$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].mp4" | sed 's/ \+/ /g'`
-    renamedmovienp=`echo "$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].mp4" | sed 's/ \+/ /g'`
+    renamedmoviewp=`echo "$FPATH/$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`
+    renamedmovienp=`echo "$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`
    fi
  else
    echo "File Renamer Problem! $1 file does not exist, or bad path. Exiting."
