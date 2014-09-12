@@ -22,7 +22,7 @@ if [ "$2" != "" ]; then
         exit 1
 fi
 
-source /opt/galaxymediatools/precheck
+source "/opt/galaxymediatools/functions/precheck"
 
 wakeserver()
 {
