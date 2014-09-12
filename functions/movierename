@@ -2,8 +2,9 @@
 
 function movierename()
 {
-   if [ -f "$1" ]; then
-   local FPATH=$(dirname $1)
+   local FPATH=${1%/*}
+   local FFIL=${1##*/}
+   if [ -f "$1" ] && [ "$FFIL" != "$1" ]; then
    local WIDTH=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep width | sed -e 's/width=//'`
    local HEIGHT=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep height | sed -e 's/height=//'`
    local VCODEC=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
@@ -19,8 +20,8 @@ function movierename()
    else
      local ACODEC=`echo ${ACODEC1^^}"-"$ACHANS1"ch"`
    fi
-   local YEAR=`echo "$1" | grep -oE '\([[:alnum:]]*?\)' | sed 's/[()]//g'`
-   local MNAME=`echo "$1" | sed -e 's/([^()]*)//g' | sed -e 's/\[[^][]*\]//g' | sed 's/....$//' | sed -e 's/^ *//' -e 's/ *$//'`
+   local YEAR=`echo "$FFIL" | grep -oE '\([[:alnum:]]*?\)' | sed 's/[()]//g'`
+   local MNAME=`echo "$FFIL" | sed -e 's/([^()]*)//g' | sed -e 's/\[[^][]*\]//g' | sed 's/....$//' | sed -e 's/^ *//' -e 's/ *$//'`
    if [ "$WIDTH" == "1920" ]; then
     local VRES="1080p"
    elif [ "$WIDTH" == "1280" ]; then
@@ -63,15 +64,17 @@ function movierename()
     exit 1
    fi
    if [ "$YEAR" != "" ]; then
-    RenamedMovie=`echo "$FPATH$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].mp4" | sed 's/ \+/ /g'`
+    renamedmoviewp=`echo "$FPATH/$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].mp4" | sed 's/ \+/ /g'`
+    renamedmovienp=`echo "$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].mp4" | sed 's/ \+/ /g'`
    else
     echo "$FNAME is missing year, marking file in missing year log "
     printf "$FNAME \n" >> "$LOGDIR/missingyear.txt"
     local YEAR="0000"
-    RenamedMovie=`echo "$FPATH$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].mp4" | sed 's/ \+/ /g'`
+    renamedmoviewp=`echo "$FPATH/$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].mp4" | sed 's/ \+/ /g'`
+    renamedmovienp=`echo "$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].mp4" | sed 's/ \+/ /g'`
    fi
  else
-   echo "File Renamer Problem! $1 file does not exist. Exiting."
+   echo "File Renamer Problem! $1 file does not exist, or bad path. Exiting."
    printf "`eval date +%m/%d/%y"-"%H:%M` - 79 File Renamer Problem! $1 file does not exist. Exiting. \n" >> $LOGF
    exit 1
 fi

@@ -16,83 +16,76 @@ fi
 
 source "/opt/galaxymediatools/functions/precheck"
 source "/opt/galaxymediatools/functions/isinteg"
+source "/opt/galaxymediatools/functions/movierename"
 LOGF="$LOGDIR/MVT_$THISSERVER_$CTS.txt"
 echo "Script starting up"
 touch $LOGF 
 printf "`eval date +%m/%d/%y"-"%H:%M` - *** Script Start \n" >> $LOGF
 if [ ! -d $TRANSDIR ]; then
-mkdir $TRANSDIR
+ mkdir $TRANSDIR
 fi
- f="$1"
- fil=${f##*/}
- EXT=${f: -3}
- transc=`echo "$f" | cut -d "." -f3`
- transd=`echo "$f" | cut -d "." -f2`
-  OSIZE=$(wc -c "$f" | cut -f 1 -d ' ')
-  fne="${f%.*}"
-  fng="${fne##*/}"
-  echo -e "Copying file locally..."
-  printf "`eval date +%m/%d/%y"-"%H:%M` - 04 Copying file from filer to local for transcoding $fne\n" >> $LOGF
-  cp -f "$f" "$TRANSDIR"
-  echo -e "Checking video file integrity"
-  isinteg "$f"
-  if [ "$ISINTEG" == "1" ]; then
-   echo -e "Video file passed integrity test."
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 06 File passed video integrity test - $fne\n" >> $LOGF
-   FRAMES=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
-   WIDTH=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep width | sed -e 's/width=//'`
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file Frames: $FRAMES - $fil\n" >> $LOGF
+fwewp="$1"
+fwenp=${f##*/}
+fnewp="${f%.*}"
+fnenp="${fne##*/}"
+echo -e "Checking video file integrity"
+isinteg "$fwewp"
+if [ "$ISINTEG" == "1" ]; then
+ echo -e "Video file passed integrity test."
+ printf "`eval date +%m/%d/%y"-"%H:%M` - 06 File passed video integrity test - $fwewp\n" >> $LOGF
+ echo "Copying File Locally..."
+ printf "`eval date +%m/%d/%y"-"%H:%M` - 04 Copying file from filer to local for transcoding $fwewp\n" >> $LOGF
+ cp -f "$fwewp" "$TRANSDIR"
+ FRAMES=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fwenp" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file Frames: $FRAMES - $fwenp\n" >> $LOGF
    ffmpegsw="-c:v libx264 -preset slow -sn -crf $MOVIEQUAL -profile:v high -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
    TSTIME=$(date +%s)
-   echo -e "* Transcoding file: $fil"
-   nice -n -10 ffmpeg -i "$TRANSDIR/$fil" $ffmpegsw "$TRANSDIR/$fng.trans.mp4" < /dev/null &> /dev/null 
+   echo -e "* Transcoding file: $fwenp"
+   nice -n -10 ffmpeg -i "$TRANSDIR/$fwenp" $ffmpegsw "$TRANSDIR/$fnenp.trans.mp4" < /dev/null &> /dev/null 
    TETIME=$(date +%s)
    GTIME=$(gettime "$TSTIME" "$TETIME")
    SOSIZE=$((OSIZE/1000000))
-   NSIZE=$(wc -c "$TRANSDIR/$fng.trans.mp4" | cut -f 1 -d ' ')
+   NSIZE=$(wc -c "$TRANSDIR/$fnenp.trans.mp4" | cut -f 1 -d ' ')
    SNSIZE=$((NSIZE/1000000))
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 02 Movie Transcoding Finished. ($SOSIZE->$SNSIZE) Elapsed time: $GTIME - $fil \n" >> $LOGF
-   if [ ! -f "$TRANSDIR/$fng.trans.mp4" ]; then
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 02 Movie Transcoding Finished. ($SOSIZE->$SNSIZE) Elapsed time: $GTIME - $fwenp \n" >> $LOGF
+   if [ ! -f "$TRANSDIR/$fnenp.trans.mp4" ]; then
     echo -e "PROBLEM!! No transcoded file found, something is wrong. Exiting."
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 99 PROBLEM!! No transcoded file found, something went wrong. Exiting. $fil\n" >> $LOGF
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 99 PROBLEM!! No transcoded file found, something went wrong. Exiting. $fwenp\n" >> $LOGF
     exit 1
    fi
    if [ "$NSIZE" -lt "400000000" ];then
-    rm -r "$TRANSDIR/$fne.trans.mp4"
-    rm -r "$TRANSDIR/$fil"
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 98 PROBLEM!! Transcoded file under 400 Meg, something went wrong, Exiting. $fil\n" >> $LOGF
+    rm -r "$TRANSDIR/$fnenp.trans.mp4"
+    rm -r "$TRANSDIR/$fwenp"
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 98 PROBLEM!! Transcoded file under 400 Meg, something went wrong, Exiting. $fwenp\n" >> $LOGF
     echo -e "PROBLEM!! Transcoded file under 600 Meg, something went wrong, Exiting."
     exit 1
    fi
 
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 02 - Renaming Movie - $fil\n" >> $LOGF
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 02 - Renaming Movie - $fwenp\n" >> $LOGF
    echo "Renaming Movie..."
-   mv "$TRANSDIR/$fng.trans.mp4" "TRANSDIR/$fng.mp4"
-   movierename "$TRANSDIR/$fne.mp4"
+   mv "$TRANSDIR/$fnenp.trans.mp4" "$TRANSDIR/$fnenp.mp4"
+   movierename "$TRANSDIR/$fnenp.mp4"
 
-
-
-    echo -e "Copying transcoded file back $FNAME"
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 03 Copying transcoded file back to filer - $FNAME\n" >> $LOGF
-    cp -f "$TRANSDIR/$fng.trans.mp4" "$FNAME"
-    rm -f "$f"
-    rm -f "$TRANSDIR/$fng.trans.mp4"
-    rm -f "$TRANSDIR/$fil"
-    echo -e "Transcoding finished, ($SOSIZE->$SNSIZE) Original replaced, elapsed time: $GTIME"
-    $APPDIR/pushover.sh -T $POAK -U $POUK "Movie Transcode Finished ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME" &> /dev/null
+   echo -e "Copying transcoded file back $renamedmovienp"
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 03 Copying transcoded file back to filer - $renamedmovienp\n" >> $LOGF
+   cp -f "$TRANSDIR/$fnenp.mp4" "$MOVIEDIR/$renamedmovienp"
+   mv -f "$fwewp" "/video/Incoming/process/oldmovietranscodes"
+   rm -f "$TRANSDIR/$fnenp.mp4"
+   rm -f "$TRANSDIR/$fwenp"
+   echo -e "Transcoding finished, ($SOSIZE->$SNSIZE) Original replaced, elapsed time: $GTIME"
+   $APPDIR/pushover.sh -T $POAK -U $POUK "Movie Transcode Finished ($SOSIZE->$SNSIZE) - $fwenp Elapsed Time: $GTIME" &> /dev/null
    ssh $SSHINFO -q 'sudo su plex -c "plexscan -s -c $PLEXMCAT &> /dev/null &"' &> /dev/null &
   else
-  echo "File FAILED integrity test!! Purging file and marking for re-download"
+   echo "File FAILED integrity test!! Purging file and marking for re-download"
   fi
-  $APPDIR/pushover.sh -T $POAK -U $POUK "File failed integrity test!! $fil - Marking for redownload"
-  printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fil \n" >> $LOGF
-  printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fil \n" >> $LOGF
-  printf "$f \n" >> "$LOGDIR/re-downloads.txt"
-  rm -r "$f"
-  rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
-  rm -r "$TRANSDIR/$fil" &> /dev/null
-TTIME=$(date +%s)
-   ETIME=$(gettime "$STIME" "$TTIME")
-printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
-echo "Script ended."
-pm-suspend
+  $APPDIR/pushover.sh -T $POAK -U $POUK "File failed integrity test!! $fwenp - Marking for redownload"
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fwenp \n" >> $LOGF
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fwenp \n" >> $LOGF
+  printf "$fwewp \n" >> "$LOGDIR/re-downloads.txt"
+  #rm -r "$fwewp"
+  rm -r "$TRANSDIR/$fwenp" &> /dev/null
+  TTIME=$(date +%s)
+  ETIME=$(gettime "$STIME" "$TTIME")
+  printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
+  echo "Script ended."
+  pm-suspend
