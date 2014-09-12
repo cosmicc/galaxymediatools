@@ -26,9 +26,9 @@ function movierename()
    local MNAME=`echo "$FFIL" | sed -e 's/([^()]*)//g' | sed -e 's/\[[^][]*\]//g' | sed 's/....$//' | sed -e 's/^ *//' -e 's/ *$//'`
    if [ "$WIDTH" == "1920" ]; then
     local VRES="1080p"
-   elif [ "$WIDTH" -lt "1281" ] && [ "$WIDTH" -gt "1200" ]; then
+   elif [ "$WIDTH" == "1280" ]; then
     local VRES="720p"
-   elif [ "$WIDTH" -gt "719" ] && [ "$WIDTH" -lt "1201" ]; then
+   elif [ "$WIDTH" -gt "719" ] && [ "$WIDTH" -lt "1280" ]; then
     if [ "$HEIGHT" -gt "570" ]; then
      local VRES="576p"
     else
