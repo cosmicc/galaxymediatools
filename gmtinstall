@@ -6,7 +6,10 @@ else
 echo -e "Config file already exists. Not overwriting."
 exit 1
 fi
-apt-get install ssh fping wakeonlan sysstat screen pm-utils -y
+echo "deb http://www.bunkus.org/ubuntu/trusty/ ./" >> /etc/apt/sources.list # for mkvtoolsnix
+echo "deb-src http://www.bunkus.org/ubuntu/trusty/ ./" >> /etc/apt/sources.list # for mkvtoolsnix
+apt-get update
+apt-get install ssh fping wakeonlan sysstat screen pm-utils mkvtoolnix -y
 chmod ug+wrx /opt/galaxymediatools/pushover.sh
 chmod ug+wrx /opt/galaxymediatools/transtv
 chmod ug+wrx /opt/galaxymediatools/transmantv
