@@ -81,16 +81,16 @@ for f in "${file[@]}"; do
   echo "File already has transcoded version existing - removing $fne.trans.mp4"
   if [[ -z $SIM ]]; then rm -f "$fne.trans.mp4"; fi
  fi
- echo "Copying file to local drive for transcoding on $fne..."
- printf "`eval date +%m/%d/%y"-"%H:%M` - 04 Copying file to local drive for transcoding on $THISSERVER $fne\n" >> $LOGF
- if [[ -z $SIM ]]; then cp -f "$f" "$TRANSDIR"; fi
  echo "Checking video file integrity of $fne..."
  isinteg "$f"
  if [ "$ISINTEG" == "1" ]; then
+  echo -e "File passed video integrity test - $fne"
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 06 File passed video integrity test on $THISSERVER - $fne\n" >> $LOGF 
+echo "Copying file to local drive for transcoding on $fne..."
+ printf "`eval date +%m/%d/%y"-"%H:%M` - 04 Copying file to local drive for transcoding on $THISSERVER $fne\n" >> $LOGF
+ if [[ -z $SIM ]]; then cp -f "$f" "$TRANSDIR"; fi
   FRAMES=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
   HEIGHT=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep height | sed -e 's/height=//'`
-  echo -e "File passed video integrity test - $fne"
-  printf "`eval date +%m/%d/%y"-"%H:%M` - 06 File passed video integrity test on $THISSERVER - $fne\n" >> $LOGF
   if [ "$HEIGHT" -gt "406" ]; then
    printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file (Resized) Frames: $FRAMES on $THISSERVER - $fil\n" >> $LOGF
    echo "*Processing video file (Resized) Frames: $FRAMES - $fil..."
@@ -161,7 +161,7 @@ for f in "${file[@]}"; do
   printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download on $THISSERVER - $fil \n" >> $LOGF
   if [[ -z $SIM ]]; then 
    printf "$f \n" >> "$LOGDIR/re-downloads.txt"
-   rm -r "$f"
+   #rm -r "$f"
    rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
    rm -r "$TRANSDIR/$fil" &> /dev/null
   fi
