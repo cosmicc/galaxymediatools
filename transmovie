@@ -25,9 +25,9 @@ if [ ! -d $TRANSDIR ]; then
  mkdir $TRANSDIR
 fi
 fwewp="$1"
-fwenp=${f##*/}
-fnewp="${f%.*}"
-fnenp="${fne##*/}"
+fwenp=${1##*/}
+fnewp="${1%.*}"
+fnenp="${fwenp%.*}"
 echo -e "Checking video file integrity"
 isinteg "$fwewp"
 if [ "$ISINTEG" == "1" ]; then
