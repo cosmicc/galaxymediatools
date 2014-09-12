@@ -131,12 +131,13 @@ fi
     printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Movie Renamed - $fil -> $FNAME \n" >> $LOGF
     echo " * Movie Renamed - $fil -> $FNAME"
    else
-    echo "$fne.mp4 is missing year, marking file in missing year log "
-    printf "$fne.mp4 \n" >> "$LOGDIR/missingyear.txt"
+    echo "$FNAME is missing year, marking file in missing year log "
+    printf "$FNAME \n" >> "$LOGDIR/missingyear.txt"
     YEAR="0000"
+    FNAME=`echo "$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].mp4" | sed 's/ \+/ /g'`
    fi
     echo -e "Copying transcoded file back $FNAME"
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 03 Copying transcoded file back to filer - $fng.mp4\n" >> $LOGF
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 03 Copying transcoded file back to filer - $FNAME\n" >> $LOGF
     cp -f "$TRANSDIR/$fng.trans.mp4" "$FNAME"
     rm -f "$f"
     rm -f "$TRANSDIR/$fng.trans.mp4"
