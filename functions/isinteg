@@ -3,6 +3,7 @@
 function isinteg ()
 {
  rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
+ EXT=${f: -3}
  if [ "$EXT" == "mp4" ] || [ "$EXT" == "avi" ] || [ "$EXT" == "mkv" ]; then
  ffmpeg -v error -i "$1" -vframes 10 -y "$TRANSDIR/isinteg.$EXT" < /dev/null
  rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
