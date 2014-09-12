@@ -1,0 +1,78 @@
+#!/bin/bash
+
+function movierename()
+{
+   if [ -f "$1" ]; then
+   local FPATH=$(dirname $1)
+   local WIDTH=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep width | sed -e 's/width=//'`
+   local HEIGHT=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep height | sed -e 's/height=//'`
+   local VCODEC=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
+   local CDTS=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep codec_tag_string | sed -e 's/codec_tag_string=//' | head -n 1`
+   local ACODE=`ffprobe -select_streams a -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//'`
+   local ACODEC1=`ffprobe -select_streams a -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
+   local ACHANS1=`ffprobe -select_streams a -show_streams "$1" 2>/dev/null | grep channels | sed -e 's/channels=//' | head -n 1`
+   local ACODEC2=`ffprobe -select_streams a -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | tail -n 1`
+   local ACHANS2=`ffprobe -select_streams a -show_streams "$1" 2>/dev/null | grep channels | sed -e 's/channels=//' | tail -n 1`
+   local ACNT=`wc -l <<< "$ACODE"`
+   if [ "$ACNT" -gt "1" ]; then
+    local ACODEC=`echo ${ACODEC1^^}"-"$ACHANS1"ch+"${ACODEC2^^}"-"$ACHANS2"ch"`
+   else
+     local ACODEC=`echo ${ACODEC1^^}"-"$ACHANS1"ch"`
+   fi
+   local YEAR=`echo "$1" | grep -oE '\([[:alnum:]]*?\)' | sed 's/[()]//g'`
+   local MNAME=`echo "$1" | sed -e 's/([^()]*)//g' | sed -e 's/\[[^][]*\]//g' | sed 's/....$//' | sed -e 's/^ *//' -e 's/ *$//'`
+   if [ "$WIDTH" == "1920" ]; then
+    local VRES="1080p"
+   elif [ "$WIDTH" == "1280" ]; then
+    local VRES="720p"
+   elif [ "$WIDTH" == "720" ]; then
+    if [ "$HEIGHT" -gt "570" ]; then
+     local VRES="576p"
+    else
+     local VRES="480p"
+    fi
+   elif [ "$WIDTH" -lt "720" ]; then
+    local VRES="SD"
+   fi
+   if [ "$VCODEC" == "mpeg4" ]; then
+    local VCODEC=`echo $CDTS | awk '{print tolower($0)}'`
+   fi
+   if [ "$HEIGHT" == "" ]; then
+    echo "Cannot determine video HEIGHT. Exiting."
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine VIDEO HEIGHT - $fil \n" >> $LOGF
+    exit 1
+   fi
+   if [ "$WIDTH" == "" ]; then
+    echo "Cannot determine video WIDTH. Exiting."
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine VIDEO WIDTH - $fil \n" >> $LOGF
+    exit 1
+   fi
+   if [ "$VCODEC" == "" ]; then
+    echo "Cannot determine video codec. Exiting."
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine VIDEO CODEC - $fil \n" >> $LOGF
+    exit 1
+   fi
+   if [ "$ACODEC1" == "" ]; then
+    echo "Cannot determine audio codec. Exiting."
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine AUDIO CODEC - $fil \n" >> $LOGF
+    exit 1
+   fi
+   if [ "$ACHANS1" == "" ]; then
+    echo "Cannot determine audio channels. Exiting."
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine AUDIO CHANNELS - $fil \n" >> $LOGF
+    exit 1
+   fi
+   if [ "$YEAR" != "" ]; then
+    RenamedMovie=`echo "$FPATH$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].mp4" | sed 's/ \+/ /g'`
+   else
+    echo "$FNAME is missing year, marking file in missing year log "
+    printf "$FNAME \n" >> "$LOGDIR/missingyear.txt"
+    local YEAR="0000"
+    RenamedMovie=`echo "$FPATH$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].mp4" | sed 's/ \+/ /g'`
+   fi
+ else
+   echo "File Renamer Problem! $1 file does not exist. Exiting."
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 79 File Renamer Problem! $1 file does not exist. Exiting. \n" >> $LOGF
+   exit 1
+fi
+}

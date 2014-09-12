@@ -1,5 +1,5 @@
 #!/bin/bash
-source /etc/galaxymediatools.conf
+source "/opt/galaxymediatools/functions/precheck"
 if [ "$1" == "" ]; then
 echo "No filename specified. Exiting"
 exit 1

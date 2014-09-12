@@ -1,0 +1,18 @@
+#!/bin/bash
+
+function isinteg ()
+{
+ rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
+ if [ "$EXT" == "mp4" ] || [ "$EXT" == "avi" ] || [ "$EXT" == "mkv" ]; then
+ ffmpeg -v error -i "$1" -vframes 50 -y "$TRANSDIR/isinteg.$EXT" < /dev/null
+ rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
+ local WRONGEXT="0"
+else
+ local WRONGEXT="1"
+fi
+ if [ "$?" == "0" ] && [ "$WRONGEXT" != "1" ]; then
+ ISINTEG="1"
+ else
+ ISINTEG="2"
+ fi
+}

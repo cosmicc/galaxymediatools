@@ -13,7 +13,7 @@ fi
 if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ]; then SIM="yes"; fi
 if [ "$1" == "-v" ] ||  [ "$2" == "-v" ] ||  [ "$3" == "-v" ]; then VERB="yes"; fi
 
-source /opt/galaxymediatools/precheck
+source "/opt/galaxymediatools/functions/precheck"
 LOGF="$LOGDIR/MTI_$THISSERVER_$CTS.txt"
 INDXFIL="MTI_fileindex_$THISSERVER.txt"
 if [[ $SIM ]]; then

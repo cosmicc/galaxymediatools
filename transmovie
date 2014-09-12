@@ -14,7 +14,8 @@ if [ "$1" == "" ]; then
         exit 1
 fi
 
-source /opt/galaxymediatools/precheck
+source "/opt/galaxymediatools/functions/precheck"
+source "/opt/galaxymediatools/functions/isinteg"
 LOGF="$LOGDIR/MVT_$THISSERVER_$CTS.txt"
 echo "Script starting up"
 touch $LOGF 
@@ -22,7 +23,7 @@ printf "`eval date +%m/%d/%y"-"%H:%M` - *** Script Start \n" >> $LOGF
 if [ ! -d $TRANSDIR ]; then
 mkdir $TRANSDIR
 fi
- f="$MOVIEDIR/$1"
+ f="$1"
  fil=${f##*/}
  EXT=${f: -3}
  transc=`echo "$f" | cut -d "." -f3`
@@ -34,12 +35,10 @@ fi
   printf "`eval date +%m/%d/%y"-"%H:%M` - 04 Copying file from filer to local for transcoding $fne\n" >> $LOGF
   cp -f "$f" "$TRANSDIR"
   echo -e "Checking video file integrity"
-  rm -r "$TRANSDIR/isinteg.*" &> /dev/null
-  ISINTEG=`eval ffmpeg -v error -t 10 -i \"$TRANSDIR/$fil\" -y \"$TRANSDIR/isinteg.$EXT\" < /dev/null`
-  if [ "$ISINTEG" == "" ]; then
+  isinteg "$f"
+  if [ "$ISINTEG" == "1" ]; then
    echo -e "Video file passed integrity test."
    printf "`eval date +%m/%d/%y"-"%H:%M` - 06 File passed video integrity test - $fne\n" >> $LOGF
-   rm -r "$TRANSDIR/isinteg.$EXT"
    FRAMES=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
    WIDTH=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep width | sed -e 's/width=//'`
    printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file Frames: $FRAMES - $fil\n" >> $LOGF
@@ -68,74 +67,11 @@ fi
 
    printf "`eval date +%m/%d/%y"-"%H:%M` - 02 - Renaming Movie - $fil\n" >> $LOGF
    echo "Renaming Movie..."
-   WIDTH=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fng.trans.mp4" 2>/dev/null | grep width | sed -e 's/width=//'`
-   HEIGHT=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fng.trans.mp4" 2>/dev/null | grep height | sed -e 's/height=//'`
-   VCODEC=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fng.trans.mp4" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
-   CDTS=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fng.trans.mp4" 2>/dev/null | grep codec_tag_string | sed -e 's/codec_tag_string=//' | head -n 1`
-   ACODE=`ffprobe -select_streams a -show_streams "$TRANSDIR/$fng.trans.mp4" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//'`
-   ACODEC1=`ffprobe -select_streams a -show_streams "$TRANSDIR/$fng.trans.mp4" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
-   ACHANS1=`ffprobe -select_streams a -show_streams "$TRANSDIR/$fng.trans.mp4" 2>/dev/null | grep channels | sed -e 's/channels=//' | head -n 1`
-   ACODEC2=`ffprobe -select_streams a -show_streams "$TRANSDIR/$fng.trans.mp4" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | tail -n 1`
-   ACHANS2=`ffprobe -select_streams a -show_streams "$TRANSDIR/$fng.trans.mp4" 2>/dev/null | grep channels | sed -e 's/channels=//' | tail -n 1`
-   ACNT=`wc -l <<< "$ACODE"`
-   if [ "$ACNT" -gt "1" ]; then
-    ACODEC=`echo ${ACODEC1^^}"-"$ACHANS1"ch+"${ACODEC2^^}"-"$ACHANS2"ch"`
-   else
-     ACODEC=`echo ${ACODEC1^^}"-"$ACHANS1"ch"`
-   fi
-   YEAR=`echo "$f" | grep -oE '\([[:alnum:]]*?\)' | sed 's/[()]//g'`
-   MNAME=`echo "$f" | sed -e 's/([^()]*)//g' | sed -e 's/\[[^][]*\]//g' | sed 's/....$//' | sed -e 's/^ *//' -e 's/ *$//'`
-   if [ "$WIDTH" == "1920" ]; then
-    VRES="1080p"
-   elif [ "$WIDTH" == "1280" ]; then
-    VRES="720p"
-   elif [ "$WIDTH" == "720" ]; then
-    if [ "$HEIGHT" -gt "570" ]; then
-     VRES="576p"
-    else
-     VRES="480p"
-    fi
-   elif [ "$WIDTH" -lt "720" ]; then
-    VRES="SD"
-   fi
-   if [ "$VCODEC" == "mpeg4" ]; then
-    VCODEC=`echo $CDTS | awk '{print tolower($0)}'`
-   fi
-   if [ "$HEIGHT" == "" ]; then
-    echo "Cannot determine video HEIGHT. Exiting."
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine VIDEO HEIGHT - $fil \n" >> $LOGF
-    exit 1
-   fi
-   if [ "$WIDTH" == "" ]; then
-    echo "Cannot determine video WIDTH. Exiting."
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine VIDEO WIDTH - $fil \n" >> $LOGF
-    exit 1
-   fi
-   if [ "$VCODEC" == "" ]; then
-    echo "Cannot determine video codec. Exiting."
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine VIDEO CODEC - $fil \n" >> $LOGF
-    exit 1
-   fi
-   if [ "$ACODEC1" == "" ]; then
-    echo "Cannot determine audio codec. Exiting."
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine AUDIO CODEC - $fil \n" >> $LOGF
-    exit 1
-   fi
-   if [ "$ACHANS1" == "" ]; then
-    echo "Cannot determine audio channels. Exiting."
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine AUDIO CHANNELS - $fil \n" >> $LOGF
-    exit 1
-   fi
-   if [ "$YEAR" != "" ]; then
-    FNAME=`echo "$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].mp4" | sed 's/ \+/ /g'`
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Movie Renamed - $fil -> $FNAME \n" >> $LOGF
-    echo " * Movie Renamed - $fil -> $FNAME"
-   else
-    echo "$FNAME is missing year, marking file in missing year log "
-    printf "$FNAME \n" >> "$LOGDIR/missingyear.txt"
-    YEAR="0000"
-    FNAME=`echo "$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].mp4" | sed 's/ \+/ /g'`
-   fi
+   mv "$TRANSDIR/$fng.trans.mp4" "TRANSDIR/$fng.mp4"
+   movierename "$TRANSDIR/$fne.mp4"
+
+
+
     echo -e "Copying transcoded file back $FNAME"
     printf "`eval date +%m/%d/%y"-"%H:%M` - 03 Copying transcoded file back to filer - $FNAME\n" >> $LOGF
     cp -f "$TRANSDIR/$fng.trans.mp4" "$FNAME"

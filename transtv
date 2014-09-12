@@ -16,7 +16,7 @@ if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ]; then SIM="yes"; f
 if [ "$1" == "-g" ] ||  [ "$2" == "-g" ] ||  [ "$3" == "-g" ]; then SPN="yes"; fi
 if [ "$1" == "-gr" ] ||  [ "$2" == "-gr" ] ||  [ "$3" == "-gr" ]; then REV="yes"; fi
 
-source /opt/galaxymediatools/precheck
+source "/opt/galaxymediatools/functions/precheck"
 LOGF="$LOGDIR/TTV_$THISSERVER_$CTS.txt"
 INDXFIL="TTV_fileindex_$THISSERVER.txt"
 if [[ $SIM ]]; then TMODE="Simulation mode"

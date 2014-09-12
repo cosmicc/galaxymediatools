@@ -13,8 +13,7 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo " "
         exit 0
 fi
-source /opt/galaxymediatools/precheck
-
+source "/opt/galaxymediatools/functions/precheck"
 LOGF="$LOGDIR/TVTransMan-$CTS.txt"
 if [ "$1" == "-v" ]; then echo "Script starting up"
 fi

@@ -15,7 +15,9 @@ if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ]; then SIM="yes"; f
 if [ "$1" == "-f" ] ||  [ "$2" == "-f" ] ||  [ "$3" == "-f" ]; then FORCE="yes"; fi
 if [ "$1" == "-v" ] ||  [ "$2" == "-v" ] ||  [ "$3" == "-v" ]; then VERB="yes"; fi
 
-source /opt/galaxymediatools/precheck
+source "/opt/galaxymediatools/functions/precheck"
+source "/opt/galaxymediatools/functions/movierename"
+source "/opt/galaxymediatools/functions/isinteg"
 LOGF="$LOGDIR/MMR_$THISSERVER_$CTS.txt"
 INDXFIL="MMR_fileindex_$THISSERVER.txt"
 if [[ $FORCE ]]; then EFED="Forced"; else EFED="Not Forced"; fi
@@ -63,14 +65,11 @@ for f in "${file[@]}"; do
  fil=${f##*/}
  EXT=${f: -3}
  EXT=${EXT,,}
- rm -r "$TRANSDIR/isinteg.rename.$EXT" &> /dev/null
- if [ "$EXT" == "mp4" ] || [ "$EXT" == "avi" ] || [ "$EXT" == "mkv" ]; then 
- ffmpeg -v error -i "$f" -vframes 50 -y "$TRANSDIR/isinteg.rename.$EXT" < /dev/null
- else
- WRONGEXT="1"
- fi
- rm -r "$TRANSDIR/isinteg.rename.$EXT" &> /dev/null
- if [ "$?" == "0" ] && [[ -z $WRONGEXT ]]; then
+if [ "$EXT" == "m4v" ]; then
+$APPDIR/transmovie "$f"
+else
+ isinteg "$f"
+ if [ "$ISINTEG" == "1" ]; then
   if [[ $VERB ]]; then echo "$fil passed integrity check."; fi
   printf "`eval date +%m/%d/%y"-"%H:%M` - 03 File passed integrity check - $fil \n" >> $LOGF
   VRESCHK=`echo "$f" | awk -F'[][]' '{print $2}'`
@@ -173,7 +172,7 @@ for f in "${file[@]}"; do
     printf "$f \n" >> "$LOGDIR/re-downloads.txt"
   #if [[ -z $SIM ]]; then rm -r "$f"; fi
    fi
-sleep 1
+fi
 done
 TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
