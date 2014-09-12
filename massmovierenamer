@@ -75,103 +75,40 @@ else
   VRESCHK=`echo "$f" | awk -F'[][]' '{print $2}'`
   SCHK=`echo "$f" | sed 's/.*\]\([^]]*\)\[.*/\1/g'`
   if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] && [ "$VRESCHK" != "480p" ] && [ "$VRESCHK" != "SD" ] || [[ $FORCE ]] ; then
-   WIDTH=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep width | sed -e 's/width=//'`
-   HEIGHT=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep height | sed -e 's/height=//'`
-   VCODEC=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
-   CDTS=`ffprobe -select_streams v -show_streams "$f" 2>/dev/null | grep codec_tag_string | sed -e 's/codec_tag_string=//' | head -n 1`
-   ACODE=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//'`
-   ACODEC1=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
-   ACHANS1=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep channels | sed -e 's/channels=//' | head -n 1`
-   ACODEC2=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | tail -n 1`
-   ACHANS2=`ffprobe -select_streams a -show_streams "$f" 2>/dev/null | grep channels | sed -e 's/channels=//' | tail -n 1`
-   ACNT=`wc -l <<< "$ACODE"`
-   if [ "$ACNT" -gt "1" ]; then
-    ACODEC=`echo ${ACODEC1^^}"-"$ACHANS1"ch+"${ACODEC2^^}"-"$ACHANS2"ch"`
-   else
-     ACODEC=`echo ${ACODEC1^^}"-"$ACHANS1"ch"`
-   fi 
-   YEAR=`echo "$f" | grep -oE '\([[:alnum:]]*?\)' | sed 's/[()]//g'`
-   MNAME=`echo "$f" | sed -e 's/([^()]*)//g' | sed -e 's/\[[^][]*\]//g' | sed 's/....$//' | sed -e 's/^ *//' -e 's/ *$//'`
-   if [ "$WIDTH" == "1920" ]; then
-     VRES="1080p"
-    elif [ "$WIDTH" == "1280" ]; then
-     VRES="720p"
-    elif [ "$WIDTH" == "720" ]; then
-    if [ "$HEIGHT" -gt "570" ]; then
-     VRES="576p"
+   movierename "$f" 
+   if [[ -z $SIM ]]; then
+    if [ "$f" != "$renamedmoviewp" ]; then
+     printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Movie Renamed - $fil -> $renamedmovienp \n" >> $LOGF
+     echo " * Movie Renamed - $fil -> $renamedmovienp"
+     mv "$f" "$renamedmoviewp"
     else
-      VRES="480p"
+     if [[ $VERB ]]; then echo "File already has correct name $fil"; fi
+     printf "`eval date +%m/%d/%y"-"%H:%M` - 02 File already has correct name - $fil \n" >> $LOGF
     fi
-    elif [ "$WIDTH" -lt "720" ]; then
-     VRES="SD"	
-    fi
-    if [ "$VCODEC" == "mpeg4" ]; then
-     VCODEC=`echo $CDTS | awk '{print tolower($0)}'`
-    fi
-    if [ "$HEIGHT" == "" ]; then
-     echo "Cannot determine video HEIGHT. Exiting."
-     printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine VIDEO HEIGHT - $fil \n" >> $LOGF 
-     exit 1
-    fi
-    if [ "$WIDTH" == "" ]; then
-     echo "Cannot determine video WIDTH. Exiting."
-     printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine VIDEO WIDTH - $fil \n" >> $LOGF
-     exit 1
-    fi
-    if [ "$VCODEC" == "" ]; then
-     echo "Cannot determine video codec. Exiting."
-     printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine VIDEO CODEC - $fil \n" >> $LOGF
-     exit 1
-    fi
-    if [ "$ACODEC1" == "" ]; then
-     echo "Cannot determine audio codec. Exiting."
-     printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine AUDIO CODEC - $fil \n" >> $LOGF
-     exit 1
-    fi
-    if [ "$ACHANS1" == "" ]; then
-     echo "Cannot determine audio channels. Exiting."
-     printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine AUDIO CHANNELS - $fil \n" >> $LOGF
-     exit 1
-    fi
-    if [ "$YEAR" != "" ]; then
-     FNAME=`echo "$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].$EXT" | sed 's/ \+/ /g'`
-     if [[ -z $SIM ]]; then
-      if [ "$f" != "$FNAME" ]; then
-       printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Movie Renamed - $fil -> $FNAME \n" >> $LOGF
-       echo " * Movie Renamed - $fil -> $FNAME"
-       mv "$f" "$FNAME"
-      else
-       if [[ $VERB ]]; then echo "File already has correct name $fil"; fi
-       printf "`eval date +%m/%d/%y"-"%H:%M` - 02 File already has correct name - $fil \n" >> $LOGF
-      fi
-     else
-      if [ "$f" != "$FNAME" ]; then
-       printf "`eval date +%m/%d/%y"-"%H:%M` - 01 SIM MODE Movie NOT Renamed - $fil -> $FNAME \n" >> $LOGF
-       echo " * SIM MODE Movie NOT Renamed - $fil -> $FNAME"
-       mv "$f" "$FNAME"
-      else
-       if [[ $VERB ]]; then echo "File already has correct name $fil"; fi
-       printf "`eval date +%m/%d/%y"-"%H:%M` - 02 File already has correct name - $fil \n" >> $LOGF
-      fi
-     fi
-    else
-     echo "$fil is missing year, marking file in missingyear log "
-     printf "$f \n" >> "$LOGDIR/missingyear.txt"
-    fi
-  else
-  if [[ $VERB ]]; then echo "Skipping correctly formatted file ($EFED) - $fil"; fi
-  printf "`eval date +%m/%d/%y"-"%H:%M` - 02 Skipping correctly formatted file ($EFED) - $fil \n" >> $LOGF 
-  fi 
    else
-    echo "File FAILED integrity test!! Purging file and marking for re-download"
-    if [[ -z $SIM ]]; then 
-    $APPDIR/pushover.sh -T $POAK -U $POUK "Movie FAILED integrity test!! Purging file and marking for re-download - $fil"
+    if [ "$f" != "$renamedmoviewp" ]; then
+     printf "`eval date +%m/%d/%y"-"%H:%M` - 01 SIM MODE Movie NOT Renamed - $fil -> $FNAME \n" >> $LOGF
+     echo " * SIM MODE Movie NOT Renamed - $fil -> $FNAME"
+     mv "$f" "$FNAME"
+    else
+     if [[ $VERB ]]; then echo "File already has correct name $fil"; fi
+     printf "`eval date +%m/%d/%y"-"%H:%M` - 02 File already has correct name - $fil \n" >> $LOGF
     fi
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fil \n" >> $LOGF
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fil \n" >> $LOGF
-    printf "$f \n" >> "$LOGDIR/re-downloads.txt"
-  #if [[ -z $SIM ]]; then rm -r "$f"; fi
    fi
+  else
+   if [[ $VERB ]]; then echo "Skipping correctly formatted file ($EFED) - $fil"; fi
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 02 Skipping correctly formatted file ($EFED) - $fil \n" >> $LOGF 
+  fi 
+ else
+  echo "File FAILED integrity test!! Purging file and marking for re-download"
+  if [[ -z $SIM ]]; then 
+   $APPDIR/pushover.sh -T $POAK -U $POUK "Movie FAILED integrity test!! Purging file and marking for re-download - $fil"
+  fi
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fil \n" >> $LOGF
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fil \n" >> $LOGF
+  printf "$f \n" >> "$LOGDIR/re-downloads.txt"
+  #if [[ -z $SIM ]]; then rm -r "$f"; fi
+ fi
 fi
 done
 TTIME=$(date +%s)
