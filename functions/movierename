@@ -5,7 +5,7 @@ function movierename()
    local FPATH=${1%/*}
    local FFIL=${1##*/}
    local ext=${1: -3}
-   local ext=${1,,}
+   local ext=${ext,,}
    if [ -f "$1" ] && [ "$FFIL" != "$1" ]; then
    local WIDTH=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep width | sed -e 's/width=//'`
    local HEIGHT=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep height | sed -e 's/height=//'`
