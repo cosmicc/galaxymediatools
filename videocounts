@@ -1,0 +1,49 @@
+#!/bin/bash
+
+TMC=`find /video/Movies -type f | wc -l`
+
+QTEP=`find /video/Movies -type f -name "*1080p*" | wc -l`
+QSTP=`find /video/Movies -type f -name "*720p*" | wc -l`
+QSD=`find /video/Movies -type f -name "*SD*" | wc -l`
+QFEP=`find /video/Movies -type f -name "*480p*" | wc -l`
+QFSP=`find /video/Movies -type f -name "*576p*" | wc -l`
+THD=$((QTEP+QSTP))
+TSD=$((QFSP+QSD+QFEP))
+
+TMKV=`find /video/Movies -type f -name "*.mkv" | wc -l`
+TMPF=`find /video/Movies -type f -name "*.mp4" | wc -l`
+TAVI=`find /video/Movies -type f -name "*.avi" | wc -l`
+TOTH=$((TMC-TMKV-TMPF-TAVI))
+
+TTVS=`find "/video/TV Series" -maxdepth 1 -type d | wc -l`
+TTSA=`find "/video/TV Series" -maxdepth 2 -type d | wc -l`
+TTVE=`find "/video/TV Series" -type f | wc -l`
+TTE=`find "/video/TV Series" -type f -name "*.trans.*" | wc -l`
+NTE=`find "/video/TV Series" -type f -name "*.ntrans.*" | wc -l`
+TTS=$((TTVE-TTE-NTE))
+TTSE=$((TTSA-TTVS))
+
+TCV=`find "/video/Concerts" -type f | wc -l`
+TSU=`find "/video/Stand-Up Comedy" -type f | wc -l`
+TDV=`find "/video/Documentaries & Specials" -type f | wc -l`
+
+
+echo " "
+echo "___________________________________________________________________________________"
+echo " "
+echo " Total Movies: $TMC			Total TV Shows: $TTVS"
+echo " "
+echo " High Definition Movies......$THD	Total Show Episodes..$TTVE"
+echo " Standard Definition Movies..$TSD	Total Show Seasons...$TTSE"
+echo " "
+echo " 1080p Movies....$QTEP			Transcoded TV Episodes........$TTE"
+echo " 720p Movies.....$QSTP			Non-Transcodable TV Episodes..$NTE"
+echo " 576p Movies.....$QFSP			Untouched TV Episodes.........$TTS"
+echo " 480p Movies.....$QFEP"
+echo " Sub 480p Movies.$QSD"
+echo " 					Total Stand-Up Comedy Videos..$TSU"
+echo " MP4 Movies......$TMPF			"
+echo " MKV Movies......$TMKV			Total Concert Videos..........$TCV"
+echo " AVI Movies......$TAVI"
+echo " Other Movies....$TOTH			Total Documentary Videos......$TDV"
+echo "____________________________________________________________________________________"
