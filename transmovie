@@ -38,6 +38,7 @@ if [ "$ISINTEG" == "1" ]; then
  cp -f "$fwewp" "$TRANSDIR"
  FRAMES=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fwenp" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
    printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file Frames: $FRAMES - $fwenp\n" >> $LOGF
+   $APPDIR/pushover.sh -T $POAK -U $POUK "Processing Movie file Frames: $FRAMES - $fwenp" &> /dev/null
    ffmpegsw="-c:v libx264 -preset slow -sn -crf $MOVIEQUAL -profile:v high -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
    TSTIME=$(date +%s)
    echo -e "* Transcoding file: $fwenp"
