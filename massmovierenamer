@@ -66,7 +66,7 @@ for f in "${file[@]}"; do
  EXT=${f: -3}
  EXT=${EXT,,}
 if [ "$EXT" == "m4v" ]; then
-$APPDIR/transmovie "$f"
+eval $APPDIR/transmovie "$f"
 else
  isinteg "$f"
  if [ "$ISINTEG" == "1" ]; then
@@ -107,7 +107,7 @@ else
   printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fil \n" >> $LOGF
   printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fil \n" >> $LOGF
   printf "$f \n" >> "$LOGDIR/re-downloads.txt"
-  #if [[ -z $SIM ]]; then rm -r "$f"; fi
+  if [[ -z $SIM ]]; then rm -r "$f"; fi
  fi
 fi
 done

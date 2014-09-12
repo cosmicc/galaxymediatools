@@ -19,7 +19,7 @@ elif [ "$2" == "" ]; then
         exit 1
 fi
 
-source /opt/galaxymediatools/precheck
+source "/opt/galaxymediatools/functions/precheck"
 
 if [ "$1" == "$T1NAME" ]; then
 fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
