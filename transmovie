@@ -89,4 +89,4 @@ if [ "$ISINTEG" == "1" ]; then
   ETIME=$(gettime "$STIME" "$TTIME")
   printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
   echo "Script ended."
-  #pm-suspend
+  pm-suspend
