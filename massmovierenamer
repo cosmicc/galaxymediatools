@@ -67,9 +67,9 @@ for f in "${file[@]}"; do
  EXT=${EXT,,}
 if [ "$EXT" == "m4v" ]; then
 echo "M4V Movie found, transcoding movie to mp4..."
-rm -f /var/lock/gtrans.lock >> /dev/null
-eval $APPDIR/transmovie \"$f\" >> /dev/null
-mkdir /var/lock/gtrans.lock >> /dev/null
+rm -rf /var/lock/gtrans.lock &> /dev/null
+eval $APPDIR/transmovie \"$f\"
+mkdir /var/lock/gtrans.lock &> /dev/null
 echo "M4V Transcode complete."
 else
  isinteg "$f"
