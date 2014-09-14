@@ -19,10 +19,6 @@ elif [ "$2" == "" ]; then
         exit 1
 fi
 
-if [ "$3" == "-x"; then
-`exit`
-fi
-
 source "/opt/galaxymediatools/functions/precheck"
 
 if [ "$1" == "$T1NAME" ]; then

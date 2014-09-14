@@ -14,6 +14,7 @@ if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ]; then SIM="yes"; f
 if [ "$1" == "-v" ] ||  [ "$2" == "-v" ] ||  [ "$3" == "-v" ]; then VERB="yes"; fi
 
 source "/opt/galaxymediatools/functions/precheck"
+source "/opt/galaxymediatools/functions/isinteg"
 LOGF="$LOGDIR/MTI_$THISSERVER_$CTS.txt"
 INDXFIL="MTI_fileindex_$THISSERVER.txt"
 if [[ $SIM ]]; then
@@ -60,10 +61,8 @@ for f in "${file[@]}"; do
  fil=${f##*/}
  EXT=${f: -3}
  EXT=${EXT,,}
- rm -r "$TRANSDIR/isinteg.rename.$EXT" &> /dev/null
- ffmpeg -v error -i "$f" -vframes 50 -y "$TRANSDIR/isinteg.$EXT" < /dev/null
- rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
- if [ "$?" == "0" ]; then
+ isinteg "$f"
+ if [ "$ISINTEG" == "1" ]; then
   if [[ $VERB ]]; then echo "$fil passed integrity check."; fi
    printf "`eval date +%m/%d/%y"-"%H:%M` - 03 File passed integrity check - $fil \n" >> $LOGF
  else
@@ -74,11 +73,11 @@ for f in "${file[@]}"; do
   printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fil \n" >> $LOGF
   printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fil \n" >> $LOGF
   printf "$f \n" >> "$LOGDIR/re-downloads.txt"
-  if [[ -z $SIM ]]; then rm -r "$f"; fi
+  #if [[ -z $SIM ]]; then rm -r "$f"; fi
   fi
 done
 TTIME=$(date +%s)
-   ETIME=$(gettime "$STIME" "$TTIME")
+ETIME=$(gettime "$STIME" "$TTIME")
 rm -r $TRANSDIR/* &> /dev/null
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover completion notification\n" >> $LOGF
 if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass TV Integrity Script Complete - Total Elapsed: $ETIME"
@@ -88,5 +87,5 @@ if [[ -z $SIM ]]; then ssh $PLEXINFO -q 'sudo su plex -c "plexscan -s -c $PLEXCA
    fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
 echo "Script ended."
-pm-suspend
+#pm-suspend
 #sed 's/\]\ \[/\]\[/g' removes space between brackets
