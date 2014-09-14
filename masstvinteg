@@ -73,7 +73,7 @@ for f in "${file[@]}"; do
   printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fil \n" >> $LOGF
   printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fil \n" >> $LOGF
   printf "$f \n" >> "$LOGDIR/re-downloads.txt"
-  #if [[ -z $SIM ]]; then rm -r "$f"; fi
+  if [[ -z $SIM ]]; then rm -r "$f"; fi
   fi
 done
 TTIME=$(date +%s)
@@ -87,5 +87,5 @@ if [[ -z $SIM ]]; then ssh $PLEXINFO -q 'sudo su plex -c "plexscan -s -c $PLEXCA
    fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
 echo "Script ended."
-#pm-suspend
+pm-suspend
 #sed 's/\]\ \[/\]\[/g' removes space between brackets
