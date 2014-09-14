@@ -19,6 +19,10 @@ elif [ "$2" == "" ]; then
         exit 1
 fi
 
+if [ "$3" == "-x"; then
+`exit`
+fi
+
 source "/opt/galaxymediatools/functions/precheck"
 
 if [ "$1" == "$T1NAME" ]; then
@@ -32,7 +36,8 @@ fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
  fi
  echo "Starting remote movie transcoder on $T1NAME"
  ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/transmovie \"$2\" -v"
- echo -e "Remote mass movie renamer started on $T1NAME"
+ echo -e "Remote movie transcoder started on $T1NAME with $2"
+ if [ "$3" == "-x"; then eval exit; fi
  exit 0
  elif [ "$1" == "$T2NAME" ]; then
 fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
@@ -43,10 +48,11 @@ fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
   sleep 10
   echo -e "Transcode server $T2NAME started"
  fi
- echo "Starting remote mass movie renamer on $T2NAME"
+ echo "Starting remote movie transcoder on $T2NAME"
  ssh $T2INFO "sudo screen -dm sudo /opt/galaxymediatools/transmovie \"$2\" -v"
 
- echo -e "Remote mass movie renamer started on $T2NAME"
+ echo -e "Remote movie transcoder started on $T2NAME with $2"
+ if [ "$3" == "-x"; then eval exit; fi
  exit 0
 fi
 echo "No server exists with that name"
