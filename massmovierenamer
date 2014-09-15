@@ -66,7 +66,7 @@ for f in "${file[@]}"; do
  EXT=${f: -3}
  EXT=${EXT,,}
  OSIZE=$(wc -c "$f" | cut -f 1 -d ' ')
-if [ "$EXT" == "m4v" ] || [ "$OSIZE" -gt "3000000000"; then
+if [ "$EXT" == "m4v" ] || [ "$OSIZE" -gt "3000000000" ]; then
 echo "M4V or 3Gig+ Movie found, transcoding movie to mp4..."
 rm -rf /var/lock/gtrans.lock &> /dev/null
 eval $APPDIR/transmovie \"$f\"
