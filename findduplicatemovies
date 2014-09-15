@@ -1,0 +1,30 @@
+#!/bin/bash
+source /etc/galaxymediatools.conf
+rm -rf /DELETEME
+rm -rf /DELETEME2
+echo "Finding Duplicates..."
+find "$MOVIEDIR" -type f -name *.srt -delete
+find "$MOVIEDIR" -type f -name *.idx -delete
+find "$MOVIEDIR" -type f -name *.sub -delete
+find "$MOVIEDIR" -type f -name *.nfo -delete
+find "$MOVIEDIR" -type f -name *.txt -delete
+
+find "$MOVIEDIR" -type f | sort >> /DELETEME
+i=0
+while read sfile
+do
+    if [[ -f $sfile ]]; then
+        file[$i]=`echo ${sfile##*/} | sed -e 's/([^()]*)//g' | sed -e 's/\[[^][]*\]//g' | sed 's/....$//' | sed -e 's/^ *//' -e 's/ *$//'`
+        echo "${file[$i]}" >> /DELETEME2
+        i=$(($i+1))
+    fi
+done < /DELETEME
+j=0
+dupes=`sort -n "/DELETEME2" | uniq -d`
+echo "  "
+echo -en "$dupes"
+echo "  "
+echo "  "
+rm -rf /DELETEME
+rm -rf /DELETEME2
+
