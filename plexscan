@@ -1,0 +1,30 @@
+#!/bin/bash
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        echo " "
+        echo "Galaxy Media Tools - Plex Server section updater"
+        echo " "
+        echo "-h or --help : Help"
+        echo " "
+        exit 0
+fi
+
+if [ "$1" == "" ]; then
+        echo "Argument missing. Specify which plex section to update <movies> <tv>"
+        exit 1
+fi
+
+
+source /etc/galaxymediatools.conf
+
+if [ "$1" == "movies" ]; then
+echo "Sending update notification to Plex Server to update MOVIES"
+PLEXC="6"
+elif [ "$1" == "tv" ]; then
+echo "Sending update notification to Plex Server to update TV SHOWS"
+PLEXC="4"
+else
+echo "Wrong option specified. use /"tv/" or /"movies/""
+exit 1
+fi
+ssh $PLEXINFO -q 'sudo su plex -c "plexscan -s -c $PLEXC &> /dev/null &"' &> /dev/null &
+echo "Section is being scanned."
