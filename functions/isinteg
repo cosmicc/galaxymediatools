@@ -5,9 +5,8 @@ function isinteg ()
  rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
  local EXT=${1: -3}
  if [ "$EXT" == "mp4" ] || [ "$EXT" == "avi" ] || [ "$EXT" == "mkv" ] || [ "$EXT" == "m4v" ] || [ "$EXT" == "M4V" ] || [ "$EXT" == "AVI" ] || [ "$EXT" == "MP4" ] || [ "$EXT" == "M4V" ]; then
- ffmpeg -v error -i "$1" -vframes 10 -y "$TRANSDIR/isinteg.$EXT" < /dev/null
- rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
  local WRONGEXT="0"
+ ffmpeg -v error -i "$1" -vframes 10 -y "$TRANSDIR/isinteg.$EXT" < /dev/null
 else
  local WRONGEXT="1"
 fi
@@ -16,4 +15,5 @@ fi
  else
  ISINTEG="2"
  fi
+rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
 }
