@@ -59,6 +59,7 @@ echo -e "Remote auto tv transcode started in normal mode on $1"
 elif [ "$5" == "c" ]; then
 ssh $4 "sudo screen -dm sudo /opt/galaxymediatools/transtv -c \"$CURD\""
 echo -e "Remote auto tv transcode started in specified directory mode on $1"
+echo "sudo screen -dm sudo /opt/galaxymediatools/transtv -c \"$CURD\""
 else
 echo "ERROR in Script. Exiting."
 exit 1
