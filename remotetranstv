@@ -8,19 +8,24 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
 	echo " "
         echo "-h or --help : Help"
         echo "-g : Span across multiple servers"
+	echo "-c : specify dirctory only . for current directory"
         echo " "
         exit 0
 fi
 
-if [ "$1" == "" ]; then
+if [ "$1" == "" ] || [ "$1" == "-c" ]; then
         echo "Argument missing. Specify which server to transcode on or -g"
         exit 1
 fi
 
-if [ "$2" != "" ]; then
-        echo "Too many arguments. Specify one server to transcode on or -g"
-        exit 1
+if [ "$1" == "-g" ] ||  [ "$2" == "-g" ] ||  [ "$3" == "-g" ] ||  [ "$4" == "-g" ]; then SPAN="yes"; fi
+
+if [ "$2" == "-c" ]; then CURD="$3"
+elif [ "$3" == "-c" ]; then CURD="$4"
+elif [ "$4" == "-c" ]; then CURD="$5"
 fi
+
+if [ "$CURD" == "." ]; then CURD="$PWD"; fi
 
 source "/opt/galaxymediatools/functions/precheck"
 
@@ -51,15 +56,18 @@ echo -e "Remote auto tv transcode started in span reverse mode on $1"
 elif [ "$5" == "" ]; then
 ssh $4 "sudo screen -dm sudo /opt/galaxymediatools/transtv"
 echo -e "Remote auto tv transcode started in normal mode on $1"
+elif [ "$5" == "c" ]; then
+ssh $4 "sudo screen -dm sudo /opt/galaxymediatools/transtv -c \"$CURD\""
+echo -e "Remote auto tv transcode started in specified directory mode on $1"
 else
 echo "ERROR in Script. Exiting."
 exit 1
 fi
 }
 
-if [ "$1" == "-g" ]; then
-sendtrans $T1NAME $T1IP $T1MAC $T1INFO
-sendtrans $T2NAME $T2IP $T2MAC $T2INFO
+if [[ $SPAN ]]; then
+sendtrans $T1NAME $T1IP $T1MAC $T1INFO g
+sendtrans $T2NAME $T2IP $T2MAC $T2INFO gr
 echo "Complete."
 exit 0
 fi
@@ -73,5 +81,9 @@ echo "No server exists with that name"
 exit 1
 fi
 
+if [[ $CURD ]]; then
+sendtrans $TNAME $TIP $TMAC $TINFO c "$CURD"
+else
 sendtrans $TNAME $TIP $TMAC $TINFO
+fi
 echo "Complete."
