@@ -8,13 +8,15 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
 	echo "-s  : Simulation only"
 	echo "-g  : Split list in half (for spanning multiple servers)"
 	echo "-gr : Split list in half and reverse (for second spanning server)"
+        echo "-c  : Current directory only (bypass date chacks)"
         echo " "
         exit 0
 fi
 
-if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ]; then SIM="yes"; fi
-if [ "$1" == "-g" ] ||  [ "$2" == "-g" ] ||  [ "$3" == "-g" ]; then SPN="yes"; fi
-if [ "$1" == "-gr" ] ||  [ "$2" == "-gr" ] ||  [ "$3" == "-gr" ]; then REV="yes"; fi
+if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ] ||  [ "$4" == "-s" ]; then SIM="yes"; fi
+if [ "$1" == "-g" ] ||  [ "$2" == "-g" ] ||  [ "$3" == "-g" ] ||  [ "$4" == "-g" ]; then SPN="yes"; fi
+if [ "$1" == "-gr" ] ||  [ "$2" == "-gr" ] ||  [ "$3" == "-gr" ] ||  [ "$4" == "-gr" ]; then REV="yes"; fi
+if [ "$1" == "-c" ] ||  [ "$2" == "-c" ] ||  [ "$3" == "-c" ] ||  [ "$4" == "-c" ]; then CUR="yes"; fi
 
 source "/opt/galaxymediatools/functions/precheck"
 source "/opt/galaxymediatools/functions/isinteg"
@@ -39,7 +41,11 @@ printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process on
 echo "Building index of files to process..."
 if [ -f "$LOGDIR/$INDXFIL" ]; then rm -f $LOGDIR/$INDXFIL; fi
 
+if [[ $CUR ]]; then
+FINDVARS="\".\" -type f ! ! -name *.ntrans.* ! -name *.trans.* -size +200M"
+else
 FINDVARS="\"$TVDIR\" -type f ! -path \"$EXPATH1/*\" ! -path \"$EXPATH2/*\" ! -path \"$EXPATH3/*\" ! -path \"$EXPATH4/*\" ! -path \"$EXPATH5/*\" ! -path \"$EXPATH6/*\" ! -path \"$EXPATH7/*\" ! -path \"$EXPATH8/*\" ! -path \"$EXPATH9/*\" ! -name *.ntrans.* ! -name *.trans.* $ATTRANS"
+fi
 FCNT=`eval /usr/bin/find "$FINDVARS" | wc -l`
 
 if [[ $SPN ]] || [[ $REV ]]; then
