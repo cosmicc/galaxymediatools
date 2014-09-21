@@ -25,7 +25,7 @@ fi
 if [ "$T2STAT" == "0" ]; then
  /opt/galaxymediatools/remotewake "$T2NAME"
  WHICHSERVER="$T2NAME"
-elif [ "$T2STAT" == "1" ]l then
+elif [ "$T2STAT" == "1" ]; then
  WHICHSERVER="$T2NAME"
 elif [ "$T2STAT" == "2" ] && [ "$T1STAT" == "0" ]; then
  /opt/galaxymediatools/remotewake "$T1NAME"
