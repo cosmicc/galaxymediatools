@@ -5,56 +5,25 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo "Galaxy Media Tools - Remote Mass movie renamer"
         echo " "
         echo "-h or --help : Help"
-        echo "-f  : Skip already proper formatting check"
 	echo " "
         exit 0
 fi
 
-if [ "$1" == "" ] || [ "$1" == "-f" ]; then
-        echo "Argument missing. Specify which server to rename on"
-        exit 1
-fi
-
-if [ "$2" == "-f" ] ||  [ "$3" == "-f" ]; then FORCE="yes"; fi
-
 source "/opt/galaxymediatools/functions/precheck"
+source "/opt/galaxymediatools/functions/whichserver"
 
-if [ "$1" == "$T1NAME" ]; then
-fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
- if [ "$?" != "0" ]; then
-  echo "Waking transcode server $T1NAME"
-  wakeonlan $T1MAC
-  echo "Waiting for startup..."
-  sleep 10
-  echo -e "Transcode server $T1NAME started"
- fi
+whichserver
+if [ "$WHICHSERVER" == "$T1NAME" ]; then
  echo "Starting remote mass movie renamer on $T1NAME"
- if [[ $FORCE ]]; then
  ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/massmovierenamer -v -f"
- else
- ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/massmovierenamer -v"
- fi
  echo -e "Remote mass movie renamer started on $T1NAME"
  exit 0
- elif [ "$1" == "$T2NAME" ]; then
-fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
- if [ "$?" != "0" ]; then 
-  echo "Waking transcode server $T2NAME"
-  wakeonlan $T2MAC
-  echo "Waiting for startup..."
-  sleep 10
-  echo -e "Transcode server $T2NAME started"
- fi
+elif [ "$WHICHSERVER" == "$T2NAME" ]; then
  echo "Starting remote mass movie renamer on $T2NAME"
- if [[ $FORCE ]]; then
  ssh $T2INFO "sudo screen -dm sudo /opt/galaxymediatools/massmovierenamer -v -f"
- else
- ssh $T2INFO "sudo screen -dm sudo /opt/galaxymediatools/massmovierenamer -v"
- fi
-
  echo -e "Remote mass movie renamer started on $T2NAME"
  exit 0
+elif [ "$WHICHSERVER" == "NONE" ]; then
+ echo -e "All servers are busy at the moment. Exiting."
 fi
-echo "No server exists with that name"
-exit 1
 
