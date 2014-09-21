@@ -24,6 +24,6 @@ elif [ "$WHICHSERVER" == "$T2NAME" ]; then
  echo -e "Remote mass movie renamer started on $T2NAME"
  exit 0
 elif [ "$WHICHSERVER" == "NONE" ]; then
- echo -e "All servers are busy at the moment. Exiting."
+ echo -e "All servers are busy. Exiting."
 fi
 
