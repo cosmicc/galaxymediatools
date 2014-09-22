@@ -2,65 +2,44 @@
 
 if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo " "
-        echo "Galaxy Media Tools - Remote movie transcoder"
+        echo "Galaxy Media Tools - Remote Movie Transcoder"
         echo " "
-	echo "Usage: remotetransmovie <server> <movie>"
-	echo " "
+	echo "-s : Embed Subtitles in video (For forign Movies)"
         echo "-h or --help : Help"
 	echo " "
         exit 0
 fi
 
 if [ "$1" == "" ]; then
-        echo "Argument missing. Specify which server to rename on"
-        exit 1
-elif [ "$2" == "" ]; then
 	 echo "Argument missing. Specify which movie to transcode"
         exit 1
 fi
 
+if [ "$2" == "-s" ] ||  [ "$3" == "-s" ] ||  [ "$4" == "-s" ]; then EMBEDSUBS="yes"; fi
+
 source "/opt/galaxymediatools/functions/precheck"
+source "/opt/galaxymediatools/functions/whichserver"
 
-if [ "$1" == "$T1NAME" ]; then
-fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
- if [ "$?" != "0" ]; then
-  echo "Waking transcode server $T1NAME"
-  wakeonlan $T1MAC
-  echo "Waiting for startup..."
-  sleep 10
-  echo -e "Transcode server $T1NAME started"
- fi
+whichserver
+if [ "$WHICHSERVER" == "$T1NAME" ]; then
  echo "Starting remote movie transcoder on $T1NAME"
- ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/transmovie \"$2\" -v"
- echo -e "Remote movie transcoder started on $T1NAME with $2"
- if [ "$3" == "-x" ]; then 
-  set -m
-  exit
-  set -m
-  exit
+ if [[ $EMBEDSUBS ]]; then
+  ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/transmovie \"$1\" -s"
+ else
+  ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/transmovie \"$1\""
  fi
+ echo -e "Remote movie transcoder started on $T1NAME with $1"
  exit 0
- elif [ "$1" == "$T2NAME" ]; then
-fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
- if [ "$?" != "0" ]; then 
-  echo "Waking transcode server $T2NAME"
-  wakeonlan $T2MAC
-  echo "Waiting for startup..."
-  sleep 10
-  echo -e "Transcode server $T2NAME started"
- fi
+elif [ "$WHICHSERVER" == "$T2NAME" ]; then
  echo "Starting remote movie transcoder on $T2NAME"
- ssh $T2INFO "sudo screen -dm sudo /opt/galaxymediatools/transmovie \"$2\" -v"
-
- echo -e "Remote movie transcoder started on $T2NAME with $2"
-  if [ "$3" == "-x" ]; then
-  set -m
-  exit
-  set -m
-  exit
- fi 
-exit 0
-fi
-echo "No server exists with that name"
+ if [[ $EMBEDSUBS ]]; then
+ ssh $T2INFO "sudo screen -dm sudo /opt/galaxymediatools/transmovie \"$1\" -s"
+ else
+ ssh $T2INFO "sudo screen -dm sudo /opt/galaxymediatools/transmovie \"$1\""
+ fi
+ echo -e "Remote movie transcoder started on $T2NAME with $1"
+else
+echo -e "All servers are busy. Exiting."
 exit 1
+fi
 
