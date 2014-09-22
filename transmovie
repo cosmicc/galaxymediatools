@@ -5,6 +5,7 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo "Galaxy Media Tools - Embed Subtitles on Video"
 	echo " "
 	echo "-s : Embed Subtitles into Video (For forign movies)"
+        echo "-d : Downgrade movie from 1080p to 720p"
 	echo "-h or --help : Help"
         echo " "
         exit 0
@@ -16,6 +17,7 @@ if [ "$1" == "" ]; then
 fi
 
 if [ "$2" == "-s" ] ||  [ "$3" == "-s" ] ||  [ "$4" == "-s" ]; then EMBEDSUBS="yes"; fi
+if [ "$2" == "-d" ] ||  [ "$3" == "-d" ] ||  [ "$4" == "-d" ]; then DOWNGRADE="yes"; fi
 
 source "/opt/galaxymediatools/functions/precheck"
 source "/opt/galaxymediatools/functions/isinteg"
@@ -42,7 +44,7 @@ if [ "$ISINTEG" == "1" ]; then
  cp -f "$fwewp" "$TRANSDIR"
  OSIZE=$(wc -c "$TRANSDIR/$fwenp" | cut -f 1 -d ' ')
  FRAMES=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fwenp" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
- 
+ WIDTH=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fwenp" 2>/dev/null | grep width | sed -e 's/width=//'` 
 if [[ $EMBEDSUBS ]]; then
  printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file $FRAMES frames (Embedding Subs) - $fwenp\n" >> $LOGF
  $APPDIR/pushover.sh -T $POAK -U $POUK "Processing Movie on $THISSERVER, $FRAMES frames (Embedding Subs) - $fwenp" &> /dev/null
@@ -55,9 +57,18 @@ if [[ $EMBEDSUBS ]]; then
    echo "No subtitles file found, and not a mkv. Exiting."
    printf "`eval date +%m/%d/%y"-"%H:%M` - 87 No subtitles file found, and not a mkv. Exiting. $fwenp\n" >> $LOGF
   fi
-fi
-else
+elif [[ $DOWNGRADE ]]; then
+   if [ "$WIDTH" -gt "1290" ]; then
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file Frames: $FRAMES - $fil\n" >> $LOGF
+    ffmpegsw="-c:v libx264 -preset slow -sn -crf $MOVIEQUAL -profile:v high -s hd720 -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
+    else
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 88 Video file already 720p or lower. Exiting." >> $LOGF
+    exit 1
+   fi
+ else
 ffmpegsw="-c:v libx264 -preset slow -sn -crf $MOVIEQUAL -profile:v high -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
+fi
+
 printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file - $fwenp\n" >> $LOGF
  $APPDIR/pushover.sh -T $POAK -U $POUK "Processing Movie on $THISSERVER, $FRAMES frames - $fwenp" &> /dev/null
 fi
