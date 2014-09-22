@@ -29,6 +29,7 @@ printf "`eval date +%m/%d/%y"-"%H:%M` - *** Script Start \n" >> $LOGF
 if [ ! -d $TRANSDIR ]; then
  mkdir $TRANSDIR
 fi
+rm -f /$TRANSDIR/*
 fwewp="$1"
 fwenp=${1##*/}
 fnewp="${1%.*}"
@@ -42,7 +43,7 @@ if [ "$ISINTEG" == "1" ]; then
  echo "Copying File Locally..."
  printf "`eval date +%m/%d/%y"-"%H:%M` - 04 Copying file from filer to local for transcoding $fwewp\n" >> $LOGF
  cp -f "$fwewp" "$TRANSDIR"
- OSIZE=$(wc -c "$fwewp" | cut -f 1 -d ' ')
+ OSIZE=$(wc -c "$TRANSDIR/$fwenp" | cut -f 1 -d ' ')
  FRAMES=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fwenp" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
  WIDTH=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fwenp" 2>/dev/null | grep width | sed -e 's/width=//'` 
 
