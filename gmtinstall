@@ -35,7 +35,7 @@ ln -s /opt/galaxymediatools/1080to720 /usr/local/bin/1080to720 &> /dev/null
 ln -s /opt/galaxymediatools/remotewake /usr/local/bin/remotewake &> /dev/null
 ln -s /opt/galaxymediatools/remotesuspend /usr/local/bin/remotesuspend &> /dev/null
 ln -s /opt/galaxymediatools/remotetranstv /usr/local/bin/remotetranstv &> /dev/null
-ln -s /opt/galaxymediatools/checkserver /usr/local/bin/checkserver &> /dev/null
+ln -s /opt/galaxymediatools/remotetransmove /usr/local/bin/remotetransmovie &> /dev/null
 ln -s /opt/galaxymediatools/statusservers /usr/local/bin/statusservers &> /dev/null
 ln -s /opt/galaxymediatools/remotecmd /usr/local/bin/remotecmd &> /dev/null
 echo " "
