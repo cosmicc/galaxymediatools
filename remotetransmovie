@@ -5,6 +5,7 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo "Galaxy Media Tools - Remote Movie Transcoder"
         echo " "
 	echo "-s : Embed Subtitles in video (For forign Movies)"
+	echo "-d : Downgrade movie from 1080p to 720p"
         echo "-h or --help : Help"
 	echo " "
         exit 0
@@ -16,6 +17,7 @@ if [ "$1" == "" ]; then
 fi
 
 if [ "$2" == "-s" ] ||  [ "$3" == "-s" ] ||  [ "$4" == "-s" ]; then EMBEDSUBS="yes"; fi
+if [ "$2" == "-d" ] ||  [ "$3" == "-d" ] ||  [ "$4" == "-d" ]; then DOWNGRADE="yes"; fi
 
 source "/opt/galaxymediatools/functions/precheck"
 source "/opt/galaxymediatools/functions/whichserver"
@@ -25,6 +27,8 @@ if [ "$WHICHSERVER" == "$T1NAME" ]; then
  echo "Starting remote movie transcoder on $T1NAME"
  if [[ $EMBEDSUBS ]]; then
   ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/transmovie \"$1\" -s"
+ elif [[ $DOWNGRADE ]]; then
+  ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/transmovie \"$1\" -d"
  else
   ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/transmovie \"$1\""
  fi
@@ -34,6 +38,8 @@ elif [ "$WHICHSERVER" == "$T2NAME" ]; then
  echo "Starting remote movie transcoder on $T2NAME"
  if [[ $EMBEDSUBS ]]; then
  ssh $T2INFO "sudo screen -dm sudo /opt/galaxymediatools/transmovie \"$1\" -s"
+ elif [[ $DOWNGRADE ]]; then
+ ssh $T2INFO "sudo screen -dm sudo /opt/galaxymediatools/transmovie \"$1\" -d"
  else
  ssh $T2INFO "sudo screen -dm sudo /opt/galaxymediatools/transmovie \"$1\""
  fi
