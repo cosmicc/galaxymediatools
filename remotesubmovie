@@ -20,13 +20,13 @@ source "/opt/galaxymediatools/functions/whichserver"
 whichserver
 if [ "$WHICHSERVER" == "$T1NAME" ]; then
  echo "Starting remote movie transcoder on $T1NAME"
- ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/embedsubs \"$2\" -v"
- echo -e "Remote movie transcoder started on $T1NAME with $2"
+ ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/embedsubs \"$1\" -v"
+ echo -e "Remote movie transcoder started on $T1NAME with $1"
  exit 0
 elif [ "$WHICHSERVER" == "$T2NAME" ]; then
  echo "Starting remote movie transcoder on $T2NAME"
- ssh $T2INFO "sudo screen -dm sudo /opt/galaxymediatools/embedsubs \"$2\" -v"
- echo -e "Remote movie transcoder started on $T2NAME with $2"
+ ssh $T2INFO "sudo screen -dm sudo /opt/galaxymediatools/embedsubs \"$1\" -v"
+ echo -e "Remote movie transcoder started on $T2NAME with $1"
 else
 echo -e "All servers are busy. Exiting."
 exit 1
