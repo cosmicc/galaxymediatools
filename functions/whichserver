@@ -23,12 +23,14 @@ fi
   local T2STAT="0"
 fi
 if [ "$T2STAT" == "0" ]; then
- /opt/galaxymediatools/remotewake "$T2NAME"
+ eval /opt/galaxymediatools/remotewake "$T2NAME"
  WHICHSERVER="$T2NAME"
+ sleep 10
 elif [ "$T2STAT" == "1" ]; then
  WHICHSERVER="$T2NAME"
 elif [ "$T2STAT" == "2" ] && [ "$T1STAT" == "0" ]; then
- /opt/galaxymediatools/remotewake "$T1NAME"
+ eval /opt/galaxymediatools/remotewake "$T1NAME"
+ sleep 10
  WHICHSERVER="$T1NAME"
 elif [ "$T2STAT" == "2" ] && [ "$T1STAT" == "1" ]; then
  WHICHSERVER="$T1NAME"
