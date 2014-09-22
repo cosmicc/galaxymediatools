@@ -1,0 +1,57 @@
+#!/bin/bash
+control_c()
+{
+  echo -en "\n*** Ouch! Exiting ***\n"
+  rm -rf /var/lock/gtrans.lock &> /dev/null
+  exit $?
+}
+
+appexit()
+{
+  rm -rf /var/lock/gtrans.lock &> /dev/null
+  exit $?
+}
+
+function gettime {
+TTIME=$(($2 - $1))
+MIN=$((TTIME / 60))
+HRS=$((MIN / 60))
+MINR=$((MIN % 60))
+if [ "$HRS" != "0" ]; then
+echo -e "$HRS Hours and $MINR Minutes"
+else
+echo -e "$MIN Minutes"
+fi
+}
+
+THISSERVER=`hostname`
+APPDIR="/opt/galaxymediatools"
+STIME=$(date +%s)
+CTS=`eval date +%Y%m%d`
+if [ ! -f "/etc/galaxymediatools.conf" ]; then
+ echo -e "No config file found. Exiting."
+ exit 1
+else
+ source /etc/galaxymediatools.conf
+fi
+if [ "$THISSERVER" == "$T1NAME" ]; then
+POAK=$T1KEY
+elif [ "$THISSERVER" == "$T2NAME" ]; then
+POAK=$T2KEY
+fi
+T1IP=`sed -e 's#.*@\(\)#\1#' <<< "$T1INFO"`
+T2IP=`sed -e 's#.*@\(\)#\1#' <<< "$T2INFO"`
+if [ "$LOGDIR" == "" ] || [ "$TVDIR" == "" ] || [ "$TRANSDIR" == "" ] || [ "$POUK" == "" ] || [ "$PLEXINFO" == "" ] || [ "$PLEXCAT" == "" ]; then
+echo -e "No config information found in config file. Exiting."
+exit 1
+fi
+
+#if mkdir "/var/lock/gtrans.lock"; then
+#trap control_c SIGINT
+#trap appexit EXIT
+#else
+#echo -e "Process locked. Lock file detected. Can only run 1 transcode script at a time. Exiting."
+#exit 1
+#fi
+
+

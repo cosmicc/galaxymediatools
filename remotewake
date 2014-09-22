@@ -10,16 +10,12 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         exit 0
 fi
 
-if [ "$1" == "-f" ] ||  [ "$2" == "-f" ] ||  [ "$3" == "-f" ] ||  [ "$4" == "-f" ]; then FORCE="yes"; fi
-
 if [ "$1" == "" ]; then
 	echo "Argument missing. Specify which transcode server to start-up"
 	exit 1
 fi
 
-if [[ ! $FORCE ]]; then
-source "/opt/galaxymediatools/functions/precheck"
-fi
+source "/opt/galaxymediatools/functions/prechecknl"
 
 if [ "$1" == "$T1NAME" ]; then
  fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
