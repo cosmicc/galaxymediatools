@@ -74,6 +74,7 @@ else
 printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file - $fwenp\n" >> $LOGF
  $APPDIR/pushover.sh -T $POAK -U $POUK "Processing Movie on $THISSERVER, $FRAMES frames - $fwenp" &> /dev/null
 fi
+echo $ffmpegsw
    TSTIME=$(date +%s)
    mv -f "$TRANSDIR/$fwenp" "$TRANSDIR/PROCFILE.$EXT"
    echo -e "* Transcoding file: $fwenp"
