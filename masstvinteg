@@ -53,7 +53,7 @@ do
 done < $LOGDIR/$INDXFIL
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover script start-up notification\n" >> $LOGF
 echo "Sending pushover notification"
-if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass TV Integity Script Starting - ${#file[@]} Files to proccess" &> /dev/null
+if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass TV Integity Checker Starting on $THISSERVER - ${#file[@]} Files to proccess" &> /dev/null
 fi
 if [[ -z $VERB ]]; then echo "Processing TV Files..."; fi
 j=0
@@ -80,7 +80,7 @@ TTIME=$(date +%s)
 ETIME=$(gettime "$STIME" "$TTIME")
 rm -r $TRANSDIR/* &> /dev/null
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover completion notification\n" >> $LOGF
-if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass TV Integrity Script Complete - Total Elapsed: $ETIME"
+if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass TV Integrity Checker Complete on $THISSERVER - Total Elapsed: $ETIME"
 fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server TV section update  \n" >> $LOGF
 if [[ -z $SIM ]]; then ssh $PLEXINFO -q 'sudo su plex -c "plexscan -s -c $PLEXCAT &> /dev/null &"' &> /dev/null &

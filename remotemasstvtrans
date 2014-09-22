@@ -1,0 +1,73 @@
+#!/bin/bash
+
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        echo " "
+        echo "Galaxy Media Tools - Remote TV Transcoder"
+        echo " "
+        echo "-h or --help : Help"
+        echo "-g : Span across multiple servers"
+	echo "-c : specify directory only . for current directory"
+        echo " "
+        exit 0
+fi
+
+if [ "$1" == "-g" ] ||  [ "$2" == "-g" ] ||  [ "$3" == "-g" ] ||  [ "$4" == "-g" ]; then SPAN="yes"; fi
+
+if [ "$2" == "-c" ]; then CURD="$3"
+elif [ "$3" == "-c" ]; then CURD="$4"
+elif [ "$4" == "-c" ]; then CURD="$5"
+fi
+
+if [ "$CURD" == "." ]; then CURD="$PWD"; fi
+
+source "/opt/galaxymediatools/functions/prechecknl"
+source "/opt/galaxymediatools/functions/whichserver"
+
+whichserver
+sendtrans ()
+{
+echo "Starting remote TV Transcode on $1"
+if [ "$5" == "g" ]; then
+ssh $4 "sudo screen -dm sudo /opt/galaxymediatools/masstvtrans -g"
+echo -e "Remote auto tv transcode started in span mode on $1"
+elif [ "$5" == "gr" ]; then
+ssh $4 "sudo screen -dm sudo /opt/galaxymediatools/masstvtrans -gr"
+echo -e "Remote auto tv transcode started in span reverse mode on $1"
+elif [ "$5" == "" ]; then
+ssh $4 "sudo screen -dm sudo /opt/galaxymediatools/masstvtrans"
+echo -e "Remote auto tv transcode started in normal mode on $1"
+elif [ "$5" == "c" ]; then
+ssh $4 "sudo screen -dm sudo /opt/galaxymediatools/masstvtrans -c \"$CURD\""
+echo -e "Remote auto tv transcode started in specified directory mode on $1"
+echo "sudo screen -dm sudo /opt/galaxymediatools/masstvtrans -c \"$CURD\""
+else
+echo "ERROR in Script. Exiting."
+exit 1
+fi
+}
+
+if [[ $SPAN ]]; then
+eval /opt/galaxymediatools/remotewake "$T1NAME"
+eval /opt/galaxymediatools/remotewake "$T2NAME"
+# NEED TO CHECK IF BOTH SERVERS ARE READ TO GO HERE AND NOT PROCESSING ALREADY
+sendtrans $T1NAME $T1IP $T1MAC $T1INFO g
+sendtrans $T2NAME $T2IP $T2MAC $T2INFO gr
+echo "Complete."
+exit 0
+fi
+
+if [ "$WHICHSERVER" == "$T1NAME" ]; then
+TNAME=$T1NAME; TIP=$T1IP; TMAC=$T1MAC; TINFO=$T1INFO
+elif [ "$WHICHSERVER" == "$T2NAME" ]; then
+TNAME=$T2NAME; TIP=$T2IP; TMAC=$T2MAC; TINFO=$T2INFO
+else
+echo "All servers busy, try again later."
+exit 1
+fi
+
+if [[ $CURD ]]; then
+sendtrans $TNAME $TIP $TMAC $TINFO c "$CURD"
+else
+sendtrans $TNAME $TIP $TMAC $TINFO
+fi
+echo "Complete."

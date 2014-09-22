@@ -45,7 +45,7 @@ if [ "$ISINTEG" == "1" ]; then
  
 if [[ $EMBEDSUBS ]]; then
  printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file $FRAMES frames (Embedding Subs) - $fwenp\n" >> $LOGF
- $APPDIR/pushover.sh -T $POAK -U $POUK "Processing Movie file Frames: $FRAMES (Embedding Subs) - $fwenp" &> /dev/null
+ $APPDIR/pushover.sh -T $POAK -U $POUK "Processing Movie on $THISSERVER, $FRAMES frames (Embedding Subs) - $fwenp" &> /dev/null
  if [ "$EXT" == "mkv" ]; then
   ffmpegsw="-vf subtitles="$TRANSDIR/PROCFILE.$EXT" -c:v libx264 -preset slow -sn -crf $MOVIEQUAL -profile:v high -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
  else
@@ -58,8 +58,8 @@ if [[ $EMBEDSUBS ]]; then
 fi
 else
 ffmpegsw="-c:v libx264 -preset slow -sn -crf $MOVIEQUAL -profile:v high -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
-printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file $FRAMES frames - $fwenp\n" >> $LOGF
- $APPDIR/pushover.sh -T $POAK -U $POUK "Processing Movie file Frames: $FRAMES - $fwenp" &> /dev/null
+printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file - $fwenp\n" >> $LOGF
+ $APPDIR/pushover.sh -T $POAK -U $POUK "Processing Movie on $THISSERVER, $FRAMES frames - $fwenp" &> /dev/null
 fi
 
    TSTIME=$(date +%s)
@@ -97,7 +97,7 @@ fi
    rm -f "$TRANSDIR/$fnenp.mp4"
    rm -f "$TRANSDIR/$fwenp"
    echo -e "Transcoding finished, ($SOSIZE->$SNSIZE) Original replaced, elapsed time: $GTIME"
-   $APPDIR/pushover.sh -T $POAK -U $POUK "Movie Transcode Finished ($SOSIZE->$SNSIZE) - $fwenp Elapsed Time: $GTIME" &> /dev/null
+   $APPDIR/pushover.sh -T $POAK -U $POUK "Movie Transcode Finished on $THISSERVER ($SOSIZE->$SNSIZE) - $fwenp Elapsed Time: $GTIME" &> /dev/null
    ssh $SSHINFO -q 'sudo su plex -c "plexscan -s -c $PLEXMCAT &> /dev/null &"' &> /dev/null &
   else
    echo "File FAILED integrity test!! Purging file and marking for re-download"

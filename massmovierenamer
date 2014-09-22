@@ -57,7 +57,7 @@ do
 done < $LOGDIR/$INDXFIL
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover script start-up notification\n" >> $LOGF
 echo "Sending pushover notification"
-if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass Movie Rename Script Starting - ${#file[@]} Files to proccess" &> /dev/null
+if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass Movie Renamer Starting on $THISSERVER - ${#file[@]} Files to proccess" &> /dev/null
 fi
 if [[ -z $VERB ]]; then echo "Processing Movie Files..."; fi
 j=0
@@ -120,7 +120,7 @@ TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
 rm -r $TRANSDIR/* &> /dev/null
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover completion notification\n" >> $LOGF
-if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass Movie Rename Script Complete - Total Elapsed: $ETIME"
+if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass Movie Renamer Complete on $THISSERVER - Total Elapsed: $ETIME"
 fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server movie section update  \n" >> $LOGF
 echo "Script ended."
