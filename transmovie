@@ -45,6 +45,7 @@ if [ "$ISINTEG" == "1" ]; then
  OSIZE=$(wc -c "$fwewp" | cut -f 1 -d ' ')
  FRAMES=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fwenp" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
  WIDTH=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fwenp" 2>/dev/null | grep width | sed -e 's/width=//'` 
+
 if [[ $EMBEDSUBS ]]; then
  printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file $FRAMES frames (Embedding Subs) - $fwenp\n" >> $LOGF
  $APPDIR/pushover.sh -T $POAK -U $POUK "Processing Movie on $THISSERVER, $FRAMES frames (Embedding Subs) - $fwenp" &> /dev/null
@@ -57,23 +58,21 @@ if [[ $EMBEDSUBS ]]; then
    echo "No subtitles file found, and not a mkv. Exiting."
    printf "`eval date +%m/%d/%y"-"%H:%M` - 87 No subtitles file found, and not a mkv. Exiting. $fwenp\n" >> $LOGF
   fi
+ fi
 elif [[ $DOWNGRADE ]]; then
-   if [ "$WIDTH" -gt "1290" ]; then
-     printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file $FRAMES frames (1080p to 720p) - $fwenp\n" >> $LOGF
- $APPDIR/pushover.sh -T $POAK -U $POUK "Processing Movie on $THISSERVER, $FRAMES frames (1080p to 720p) - $fwenp" &> /dev/nul
-    ffmpegsw="-c:v libx264 -preset slow -sn -crf $MOVIEQUAL -profile:v high -s hd720 -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
-    else
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 88 Video file already 720p or lower. Exiting." >> $LOGF
-    exit 1
-   fi
+ if [ "$WIDTH" -gt "1290" ]; then
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file $FRAMES frames (1080p to 720p) - $fwenp\n" >> $LOGF
+  $APPDIR/pushover.sh -T $POAK -U $POUK "Processing Movie on $THISSERVER, $FRAMES frames (1080p to 720p) - $fwenp" &> /dev/nul
+  ffmpegsw="-c:v libx264 -preset slow -sn -crf $MOVIEQUAL -profile:v high -s hd720 -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
  else
-ffmpegsw="-c:v libx264 -preset slow -sn -crf $MOVIEQUAL -profile:v high -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
-fi
-
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 88 Video file already 720p or lower. Exiting." >> $LOGF
+  exit 1
+ fi
+else
+ ffmpegsw="-c:v libx264 -preset slow -sn -crf $MOVIEQUAL -profile:v high -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
 printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file - $fwenp\n" >> $LOGF
  $APPDIR/pushover.sh -T $POAK -U $POUK "Processing Movie on $THISSERVER, $FRAMES frames - $fwenp" &> /dev/null
 fi
-
    TSTIME=$(date +%s)
    mv -f "$TRANSDIR/$fwenp" "$TRANSDIR/PROCFILE.$EXT"
    echo -e "* Transcoding file: $fwenp"
