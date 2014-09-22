@@ -54,7 +54,8 @@ if [[ $EMBEDSUBS ]]; then
   ffmpegsw="-vf subtitles="$TRANSDIR/PROCFILE.$EXT" -c:v libx264 -preset slow -sn -crf $MOVIEQUAL -profile:v high -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
  else
   if [ -f "$fnewp.srt" ]; then
-   ffmpegsw="-vf subtitles="$fnewp.srt" -c:v libx264 -preset slow -sn -crf $MOVIEQUAL -profile:v high -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
+   cp -f "$fnewp.srt" "/$TRANSDIR/PROCFILE.srt"
+   ffmpegsw="-vf subtitles="/$TRANSDIR/PROCFILE.srt" -c:v libx264 -preset slow -sn -crf $MOVIEQUAL -profile:v high -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
   else
    echo "No subtitles file found, and not a mkv. Exiting."
    printf "`eval date +%m/%d/%y"-"%H:%M` - 87 No subtitles file found, and not a mkv. Exiting. $fwenp\n" >> $LOGF
@@ -74,7 +75,6 @@ else
 printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file - $fwenp\n" >> $LOGF
  $APPDIR/pushover.sh -T $POAK -U $POUK "Processing Movie on $THISSERVER, $FRAMES frames - $fwenp" &> /dev/null
 fi
-echo $ffmpegsw
    TSTIME=$(date +%s)
    mv -f "$TRANSDIR/$fwenp" "$TRANSDIR/PROCFILE.$EXT"
    echo -e "* Transcoding file: $fwenp"
