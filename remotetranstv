@@ -4,18 +4,11 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo " "
         echo "Galaxy Media Tools - Remote TV Transcoder"
         echo " "
-	echo "Usage: remotetranstv <-g> <server>"
-	echo " "
         echo "-h or --help : Help"
         echo "-g : Span across multiple servers"
-	echo "-c : specify dirctory only . for current directory"
+	echo "-c : specify directory only . for current directory"
         echo " "
         exit 0
-fi
-
-if [ "$1" == "" ] || [ "$1" == "-c" ]; then
-        echo "Argument missing. Specify which server to transcode on or -g"
-        exit 1
 fi
 
 if [ "$1" == "-g" ] ||  [ "$2" == "-g" ] ||  [ "$3" == "-g" ] ||  [ "$4" == "-g" ]; then SPAN="yes"; fi
@@ -27,25 +20,12 @@ fi
 
 if [ "$CURD" == "." ]; then CURD="$PWD"; fi
 
-source "/opt/galaxymediatools/functions/precheck"
+source "/opt/galaxymediatools/functions/prechecknl"
+source "/opt/galaxymediatools/functions/whichserver"
 
-wakeserver()
+whichserver
+sendtrans ()
 {
-fping -c1 -t300 $2 2>/dev/null 1>/dev/null
- if [ "$?" != "0" ]; then
-  echo "Waking transcode server $1"
-  wakeonlan $3
-  echo "Waiting for startup..."
-  sleep 10
-  echo -e "Transcode server $1 started"
- else
- echo -e "Transcode server $1 is awake"
- fi
-}
-
-sendtrans()
-{
-wakeserver $1 $2 $3
 echo "Starting remote TV Transcode on $1"
 if [ "$5" == "g" ]; then
 ssh $4 "sudo screen -dm sudo /opt/galaxymediatools/transtv -g"
@@ -67,18 +47,21 @@ fi
 }
 
 if [[ $SPAN ]]; then
+eval /opt/galaxymediatools/remotewake "$T1NAME"
+eval /opt/galaxymediatools/remotewake "$T2NAME"
+# NEED TO CHECK IF BOTH SERVERS ARE READ TO GO HERE AND NOT PROCESSING ALREADY
 sendtrans $T1NAME $T1IP $T1MAC $T1INFO g
 sendtrans $T2NAME $T2IP $T2MAC $T2INFO gr
 echo "Complete."
 exit 0
 fi
 
-if [ "$1" == "$T1NAME" ]; then
+if [ "$WHICHSERVER" == "$T1NAME" ]; then
 TNAME=$T1NAME; TIP=$T1IP; TMAC=$T1MAC; TINFO=$T1INFO
-elif [ "$1" == "$T2NAME" ]; then
+elif [ "$WHICHSERVER" == "$T2NAME" ]; then
 TNAME=$T2NAME; TIP=$T2IP; TMAC=$T2MAC; TINFO=$T2INFO
 else
-echo "No server exists with that name"
+echo "All servers busy, try again later."
 exit 1
 fi
 
