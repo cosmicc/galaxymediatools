@@ -39,7 +39,7 @@ if [ "$1" == "$T2NAME" ] || [ "$1" == "all" ]; then
    echo "$T2NAME server already suspended."
  else
   if (ssh $T2INFO '[ -d /var/lock/gtrans.lock ]'); then
-   echo "NOT Suspending server $T1NAME, because server is busy"
+   echo "NOT Suspending server $T2NAME, because server is busy"
   else
    echo "Suspending transcode server $T2NAME"
    ssh $T2INFO 'sudo pm-suspend' &
