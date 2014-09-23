@@ -5,12 +5,16 @@ cp /opt/galaxymediatools/galaxymediatools.conf.sample /etc/galaxymediatools.conf
 else
 echo -e "Config file already exists. Not overwriting."
 fi
+read -r -p "Would you like to run apt-get system package update and install? [y/N] " response
+response=${response,,}    # tolower
+if [[ $response =~ ^(yes|y)$ ]]; then
 echo "deb http://www.bunkus.org/ubuntu/trusty/ ./" >> /etc/apt/sources.list # for mkvtoolsnix
 echo "deb-src http://www.bunkus.org/ubuntu/trusty/ ./" >> /etc/apt/sources.list # for mkvtoolsnix
 echo "Running package update..."
 apt-get update >> /dev/null
 echo "Running Package Installs..."
 apt-get install ssh fping wakeonlan sysstat screen pm-utils mkvtoolnix -y --force-yes
+fi
 #echo "Applying Permissions..."
 #chmod ug+wrx /opt/galaxymediatools/pushover.sh
 #chmod ug+wrx /opt/galaxymediatools/transtv
@@ -26,16 +30,15 @@ apt-get install ssh fping wakeonlan sysstat screen pm-utils mkvtoolnix -y --forc
 #chmod ug+wrx /opt/galaxymediatools/checkserver
 #chmod ug+wrx /opt/galaxymediatools/statusservers
 echo "Creating Symbolic Links..."
-ln -s /opt/galaxymediatools/transtv /usr/local/bin/transtv &> /dev/null
-ln -s /opt/galaxymediatools/transmantv /usr/local/bin/transmantv &> /dev/null
 ln -s /opt/galaxymediatools/nontransdir /usr/local/bin/nontransdir &> /dev/null
 ln -s /opt/galaxymediatools/transmovie /usr/local/bin/transmovie &> /dev/null
 ln -s /opt/galaxymediatools/killalltrans /usr/local/bin/killalltrans &> /dev/null
-ln -s /opt/galaxymediatools/1080to720 /usr/local/bin/1080to720 &> /dev/null
+ln -s /opt/galaxymediatools/remotemasstvtrans /usr/local/bin/remotemasstvtrans &> /dev/null
 ln -s /opt/galaxymediatools/remotewake /usr/local/bin/remotewake &> /dev/null
 ln -s /opt/galaxymediatools/remotesuspend /usr/local/bin/remotesuspend &> /dev/null
-ln -s /opt/galaxymediatools/remotetranstv /usr/local/bin/remotetranstv &> /dev/null
-ln -s /opt/galaxymediatools/remotetransmove /usr/local/bin/remotetransmovie &> /dev/null
+ln -s /opt/galaxymediatools/remotemasstvinteg /usr/local/bin/remotemasstvinteg &> /dev/null
+ln -s /opt/galaxymediatools/remotetransmovie /usr/local/bin/remotetransmovie &> /dev/null
+ln -s /opt/galaxymediatools/remotemassmovie /usr/local/bin/remotemassmovie &> /dev/null
 ln -s /opt/galaxymediatools/statusservers /usr/local/bin/statusservers &> /dev/null
 ln -s /opt/galaxymediatools/remotecmd /usr/local/bin/remotecmd &> /dev/null
 echo " "
