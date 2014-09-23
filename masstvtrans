@@ -172,7 +172,7 @@ echo "Copying file to local drive for transcoding on $fne..."
   printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download on $THISSERVER - $fil \n" >> $LOGF
   if [[ -z $SIM ]]; then 
    printf "$f \n" >> "$LOGDIR/re-downloads.txt"
-   rm -r "$f"
+   mv -f "$f" "$TRASHDIR"
    rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
    rm -r "$TRANSDIR/$fil" &> /dev/null
   fi

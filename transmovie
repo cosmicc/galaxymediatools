@@ -106,7 +106,7 @@ fi
    echo -e "Copying transcoded file back $renamedmovienp"
    printf "`eval date +%m/%d/%y"-"%H:%M` - 03 Copying transcoded file back to filer - $renamedmovienp\n" >> $LOGF
    cp -f "$TRANSDIR/$fnenp.mp4" "$MOVIEDIR/$renamedmovienp"
-   mv -f "$fwewp" "/video/Incoming/process/oldmovietranscodes"
+   mv -f "$fwewp" "$OLDTRANSDIR"
    rm -f "$TRANSDIR/$fnenp.mp4"
    rm -f "$TRANSDIR/$fwenp"
    echo -e "Transcoding finished, ($SOSIZE->$SNSIZE) Original replaced, elapsed time: $GTIME"
@@ -118,7 +118,7 @@ fi
   printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fwenp \n" >> $LOGF
   printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fwenp \n" >> $LOGF
   printf "$fwewp \n" >> "$LOGDIR/re-downloads.txt"
-  #rm -r "$fwewp"
+  mv -f "$fwewp" "$TRASHDIR"
   fi
   rm -r "$TRANSDIR/$fwenp" &> /dev/null
   TTIME=$(date +%s)
