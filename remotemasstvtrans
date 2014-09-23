@@ -13,9 +13,10 @@ fi
 
 if [ "$1" == "-g" ] ||  [ "$2" == "-g" ] ||  [ "$3" == "-g" ] ||  [ "$4" == "-g" ]; then SPAN="yes"; fi
 
-if [ "$2" == "-c" ]; then CURD="$3"
-elif [ "$3" == "-c" ]; then CURD="$4"
-elif [ "$4" == "-c" ]; then CURD="$5"
+if [ "$1" == "-d" ]; then CURD="$2"
+elif [ "$2" == "-d" ]; then CURD="$3"
+elif [ "$3" == "-d" ]; then CURD="$4"
+elif [ "$4" == "-d" ]; then CURD="$5"
 fi
 
 if [ "$CURD" == "." ]; then CURD="$PWD"; fi
@@ -37,9 +38,9 @@ elif [ "$5" == "" ]; then
 ssh $4 "sudo screen -dm sudo /opt/galaxymediatools/masstvtrans"
 echo -e "Remote auto tv transcode started in normal mode on $1"
 elif [ "$5" == "c" ]; then
-ssh $4 "sudo screen -dm sudo /opt/galaxymediatools/masstvtrans -c \"$CURD\""
+ssh $4 "sudo screen -dm sudo /opt/galaxymediatools/masstvtrans -d \"$CURD\""
 echo -e "Remote auto tv transcode started in specified directory mode on $1"
-echo "sudo screen -dm sudo /opt/galaxymediatools/masstvtrans -c \"$CURD\""
+echo "sudo screen -dm sudo /opt/galaxymediatools/masstvtrans -d \"$CURD\""
 else
 echo "ERROR in Script. Exiting."
 exit 1

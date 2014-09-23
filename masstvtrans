@@ -8,7 +8,7 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
 	echo "-s  : Simulation only"
 	echo "-g  : Split list in half (for spanning multiple servers)"
 	echo "-gr : Split list in half and reverse (for second spanning server)"
-        echo "-c  : Current directory only (bypass date chacks)"
+        echo "-d  : Current directory only (bypass date chacks)"
         echo " "
         exit 0
 fi
@@ -17,10 +17,10 @@ if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ] ||  [ "$4" == "-s"
 if [ "$1" == "-g" ] ||  [ "$2" == "-g" ] ||  [ "$3" == "-g" ] ||  [ "$4" == "-g" ]; then SPN="yes"; fi
 if [ "$1" == "-gr" ] ||  [ "$2" == "-gr" ] ||  [ "$3" == "-gr" ] ||  [ "$4" == "-gr" ]; then REV="yes"; fi
 
-if [ "$1" == "-c" ]; then CURD="$2"
-elif [ "$2" == "-c" ]; then CURD="$3"
-elif [ "$3" == "-c" ]; then CURD="$4"
-elif [ "$4" == "-c" ]; then CURD="$5"
+if [ "$1" == "-d" ]; then CURD="$2"
+elif [ "$2" == "-d" ]; then CURD="$3"
+elif [ "$3" == "-d" ]; then CURD="$4"
+elif [ "$4" == "-d" ]; then CURD="$5"
 fi
 
 source "/opt/galaxymediatools/functions/precheck"
@@ -30,6 +30,7 @@ INDXFIL="TTV_fileindex_$THISSERVER.txt"
 if [[ $SIM ]]; then TMODE="Simulation mode"
 elif [[ $REV ]]; then TMODE="Span Reverse mode"
 elif [[ $SPN ]]; then TMODE="Span Forward mode"
+elif [[ $CURD ]]; then TMODE="Single Directory Mode"
 else TMODE="Normal mode"
 fi
 echo "Auto TV Transcode Script Starting in $TMODE..."
@@ -47,7 +48,7 @@ echo "Building index of files to process..."
 if [ -f "$LOGDIR/$INDXFIL" ]; then rm -f $LOGDIR/$INDXFIL; fi
 
 if [[ $CURD ]]; then
-FINDVARS="\"/video/TV Series/Utopia\" -type f ! ! -name *.ntrans.* ! -name *.trans.* -size +200M"
+FINDVARS="\"$CURD\" -type f ! -name *.ntrans.* ! -name *.trans.* -size +200M"
 else
 FINDVARS="\"$TVDIR\" -type f ! -path \"$EXPATH1/*\" ! -path \"$EXPATH2/*\" ! -path \"$EXPATH3/*\" ! -path \"$EXPATH4/*\" ! -path \"$EXPATH5/*\" ! -path \"$EXPATH6/*\" ! -path \"$EXPATH7/*\" ! -path \"$EXPATH8/*\" ! -path \"$EXPATH9/*\" ! -name *.ntrans.* ! -name *.trans.* $ATTRANS"
 fi
@@ -192,7 +193,7 @@ printf "`eval date +%m/%d/%y"-"%H:%M` - *** Auto TV Transcode Script Complete on
 echo "Auto TV Transcode Script Complete."
 FTIME=$((TTIME-STIME))
 #if [[ ! $SIM ]] && [ $FTIME -gt 10 ]; then 
- pm-suspend
+if [[ ! $SIM ]]; then  pm-suspend
  exit 0
 #else
 # echo "Problem!! Script terminated to quickly. NOT suspending server"
