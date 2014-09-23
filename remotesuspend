@@ -22,7 +22,6 @@ if [ "$1" == "$T1NAME" ] || [ "$1" == "all" ]; then
  fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
   if [ "$?" != "0" ]; then
   echo "$T1NAME server already suspended."
-  exit 1
  else
   if (ssh $T1INFO '[ -d /var/lock/gtrans.lock ]'); then
    echo "NOT Suspending server $T1NAME, because server is busy"
@@ -31,7 +30,6 @@ if [ "$1" == "$T1NAME" ] || [ "$1" == "all" ]; then
    ssh $T1INFO 'sudo pm-suspend' &
    echo -e "Transcode server $T1NAME suspended"
   fi
-  exit 0
  fi
 fi
 
@@ -39,7 +37,6 @@ if [ "$1" == "$T2NAME" ] || [ "$1" == "all" ]; then
  fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
   if [ "$?" != "0" ]; then
    echo "$T2NAME server already suspended."
-   exit 1
  else
   if (ssh $T2INFO '[ -d /var/lock/gtrans.lock ]'); then
    echo "NOT Suspending server $T1NAME, because server is busy"
@@ -48,6 +45,5 @@ if [ "$1" == "$T2NAME" ] || [ "$1" == "all" ]; then
    ssh $T2INFO 'sudo pm-suspend' &
    echo -e "Transcode server $T2NAME suspended"
  fi
-  exit 0
  fi
 fi
