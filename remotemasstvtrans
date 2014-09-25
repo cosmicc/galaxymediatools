@@ -6,7 +6,7 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo " "
         echo "-h or --help : Help"
         echo "-g : Span across multiple servers"
-	echo "-c : specify directory only . for current directory"
+	echo "-d : specify directory only . for current directory"
         echo " "
         exit 0
 fi

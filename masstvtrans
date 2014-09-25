@@ -33,8 +33,8 @@ elif [[ $SPN ]]; then TMODE="Span Forward mode"
 elif [[ $CURD ]]; then TMODE="Single Directory Mode"
 else TMODE="Normal mode"
 fi
-echo "Auto TV Transcode Script Starting in $TMODE..."
-printf "`eval date +%m/%d/%y"-"%H:%M` - *** Auto TV Transcode Script in $TMODE Starting on $THISSERVER \n" >> $LOGF
+echo "TV Show Transcoder Starting in $TMODE..."
+printf "`eval date +%m/%d/%y"-"%H:%M` - *** TV Show Transcoder in $TMODE Starting on $THISSERVER \n" >> $LOGF
 touch $LOGF
 echo "Resetting transcode directory $TRANSDIR..."
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Resetting Transcode directory on $THISSERVER \n" >> $LOGF
@@ -78,7 +78,7 @@ done < $LOGDIR/$INDXFIL
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Starting transcode process on ${#file[@]} files on $THISSERVER \n" >> $LOGF
 echo "Starting transcode process on ${#file[@]} files"
 if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Auto TV Transcode Script Starting in $TMODE on $THISSERVER - ${#file[@]} Files to proccess" &> /dev/null; fi
-j=0
+j=1
 for f in "${file[@]}"; do
  fil=${f##*/}
  EXT=${f: -3}

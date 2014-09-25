@@ -13,7 +13,7 @@ echo "deb-src http://www.bunkus.org/ubuntu/trusty/ ./" >> /etc/apt/sources.list 
 echo "Running package update..."
 apt-get update >> /dev/null
 echo "Running Package Installs..."
-apt-get install ssh fping wakeonlan sysstat screen pm-utils mkvtoolnix -y --force-yes
+apt-get install ssh fping wakeonlan sysstat screen pm-utils mkvtoolnix lynx -y --force-yes
 fi
 #echo "Applying Permissions..."
 #chmod ug+wrx /opt/galaxymediatools/pushover.sh
@@ -29,6 +29,14 @@ fi
 #chmod ug+wrx /opt/galaxymediatools/remotecmd
 #chmod ug+wrx /opt/galaxymediatools/checkserver
 #chmod ug+wrx /opt/galaxymediatools/statusservers
+if [ -f "/etc/imdb-mf.conf" ]; then
+ rm -f /etc/imdb-mf.conf
+fi
+touch /etc/imdb-mf.conf
+echo -e "INEEDCOLOR=1\n" >> /etc/imdb-mf.conf
+echo -e "TITLECOLOR=Red\n" >> /etc/imdb-mf.conf
+echo -e "DATACOLOR=Green\n" >> /etc/imdb-mf.conf
+echo -e "LINKCOLOR=Cyan\n" >> /etc/imdb-mf.conf
 echo "Creating Symbolic Links..."
 ln -s /opt/galaxymediatools/nontransdir /usr/local/bin/nontransdir &> /dev/null
 ln -s /opt/galaxymediatools/transmovie /usr/local/bin/transmovie &> /dev/null

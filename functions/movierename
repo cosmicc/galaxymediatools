@@ -65,6 +65,7 @@ function movierename()
     printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine AUDIO CHANNELS - $fil \n" >> $LOGF
     exit 1
    fi
+# add imdb lookup here
    if [ "$YEAR" != "" ]; then
     renamedmoviewp=`echo "$FPATH/$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`
     renamedmovienp=`echo "$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`

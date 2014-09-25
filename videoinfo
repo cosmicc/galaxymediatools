@@ -1,0 +1,156 @@
+#!/bin/bash
+
+fname=${1##*/}
+fyear=`echo "$fname" | grep -oE '\([[:alnum:]]*?\)' | sed 's/[()]//g'`
+mname=`echo "$fname" | sed -e 's/([^()]*)//g' | sed -e 's/\[[^][]*\]//g' | sed 's/....$//' | sed -e 's/^ *//' -e 's/ *$//'`
+
+# ISINTEG HERE
+
+
+WIDTH=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep width | sed -e 's/width=//'`
+HEIGHT=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep height | sed -e 's/height=//'`
+VCODEC=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep codec_long_name | sed -e 's/codec_long_name=//' | head -n 1`
+CDTS=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep codec_tag_string | sed -e 's/codec_tag_string=//' | head -n 1`
+ACODE=`ffprobe -select_streams a -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//'`
+ACODEC1=`ffprobe -select_streams a -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
+ACHANS1=`ffprobe -select_streams a -show_streams "$1" 2>/dev/null | grep channels | sed -e 's/channels=//' | head -n 1`
+ACODEC2=`ffprobe -select_streams a -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | tail -n 1`
+ACHANS2=`ffprobe -select_streams a -show_streams "$1" 2>/dev/null | grep channels | sed -e 's/channels=//' | tail -n 1`
+VBITRATE=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep bit_rate | sed -e 's/bit_rate=//' | tail -n 1`
+VFRAMES=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//' | tail -n 1`
+VTAG=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep TAG:handler_name | sed -e 's/TAG:handler_name=//' | tail -n 1`
+SUBS=`ffprobe -select_streams s -show_streams "$1" 2>/dev/null `
+
+# VERIFIY NAMED CORRECTLY
+
+echo $WIDTH
+echo $HEIGHT
+echo $VCODEC
+echo $CDTS
+echo $ACODE
+echo $VBITRATE
+echo $VFRAMES
+echo $VTAG
+if [[ $SUBS ]]; then
+echo subs
+else
+echo no subs
+fi
+
+echo "Looking up movie on imdb..."
+imdb=`w3m -cols 999 -dump "http://www.omdbapi.com/?s=$mname&y=$fyear"`
+imdbp=()
+
+TITLEP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $1}'`
+IFS="\""; read -a TITLEPR <<< "$TITLEP"; IFS="|"
+TITLE=`echo ${TITLEPR[5]} | tr -d '"'`
+
+TITLE=`echo $TITLE | tr -d "?*/\|<>)\""`
+TITLE=`echo $TITLE | sed 's/:/ -/g'`
+
+
+if [ "$TITLE" == "False" ]; then
+IMDBOK="0"
+else
+IMDBOK="1"
+
+YEARP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $2}'`
+IFS=":"; read -a YEARPR <<< "$YEARP"; IFS="|"
+YEAR=`echo ${YEARPR[1]} | tr -d '"'`
+
+RATINGP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $3}'`
+IFS=":"; read -a RATINGPR <<< "$RATINGP"; IFS="|"
+RATING=`echo ${RATINGPR[1]} | tr -d '"'`
+
+RELEASEP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $4}'`
+IFS=":"; read -a RELEASEPR <<< "$RELEASEP"; IFS="|"
+RELEASE=`echo ${RELEASEPR[1]} | tr -d '"'`
+
+RUNTIMEP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $5}'`
+IFS=":"; read -a RUNTIMEPR <<< "$RUNTIMEP"; IFS="|"
+RUNTIME=`echo ${RUNTIMEPR[1]} | tr -d '"'`
+
+GENREP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $6}'`
+IFS=":"; read -a GENREPR <<< "$GENREP"; IFS="|"
+GENRE=`echo ${GENREPR[1]} | tr -d '"'`
+
+DIRECTORP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $7}'`
+IFS=":"; read -a DIRECTORPR <<< "$DIRECTORP"; IFS="|"
+DIRECTOR=`echo ${DIRECTORPR[1]} | tr -d '"'`
+
+WRITERP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $8}'`
+IFS=":"; read -a WRITERPR <<< "$WRITERP"; IFS="|"
+WRITER=`echo ${WRITERPR[1]} | tr -d '"'`
+
+ACTORSP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $9}'`
+IFS=":"; read -a ACTORSPR <<< "$ACTORSP"; IFS="|"
+ACTORS=`echo ${ACTORSPR[1]} | tr -d '"'`
+
+PLOTP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $10}'`
+IFS=":"; read -a PLOTPR <<< "$PLOTP"; IFS="|"
+PLOT=`echo ${PLOTPR[1]} | tr -d '"'`
+
+AWARDSP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $13}'`
+IFS=":"; read -a AWARDSPR <<< "$AWARDSP"; IFS="|"
+AWARDS=`echo ${AWARDSPR[1]} | tr -d '"'`
+
+METAP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $15}'`
+IFS=":"; read -a METAPR <<< "$METAP"; IFS="|"
+METASCORE=`echo ${METAPR[1]} | tr -d '"'`
+
+IMDBRATINGP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $16}'`
+IFS=":"; read -a IMDBRATINGPR <<< "$IMDBRATINGP"; IFS="|"
+IMDBRATING=`echo ${IMDBRATINGPR[1]} | tr -d '"'`
+
+IMDBVOTESP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $17}'`
+IFS=":"; read -a IMDBVOTESPR <<< "$IMDBVOTESP"; IFS="|"
+IMDBVOTES=`echo ${IMDBVOTESPR[1]} | tr -d '"'`
+
+IMDBIDP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $18}'`
+IFS=":"; read -a IMDBIDPR <<< "$IMDBIDP"; IFS="|"
+IMDBID=`echo ${IMDBIDPR[1]} | tr -d '"'`
+
+fi
+
+if [ "$fyear" != "$YEAR" ]; then
+echo YEAR MISMATCH!!
+fi
+echo $TITLE
+echo $YEAR
+#echo $RATING
+#echo $RELEASE
+#echo $RUNTIME
+#echo $ACTORS
+#echo $DIRECTOR
+#echo $PLOT
+#echo $AWARDS
+#echo $IMDBRATING
+#echo $METASCORE
+#echo $IMDBVOTES
+#echo $IMDBID
+
+exit 0
+
+echo " "
+echo "_________________________________________________________________________"
+echo " "
+echo " Total Movies: $TMC			Total TV Shows: $TTVS"
+echo " $MDS			$TDS"
+echo " "
+echo " High Definition Movies......$THD	Total Show Episodes..$TTVE"
+echo " Standard Definition Movies..$TSD	Total Show Seasons...$TTSE"
+echo " "
+echo " 1080p Movies....$QTEP			Transcoded TV Episodes........$TTE"
+echo " 720p Movies.....$QSTP			Non-Transcodable TV Episodes..$NTE"
+echo " 576p Movies.....$QFSP			Untouched TV Episodes.........$TTS"
+echo " 480p Movies.....$QFEP"
+echo " Sub 480p Movies.$QSD"
+echo " 					Total Stand-Up Comedy Videos..$TSU"
+echo " MP4 Movies......$TMPF			"
+echo " MKV Movies......$TMKV			Total Concert Videos..........$TCV"
+echo " AVI Movies......$TAVI"
+echo " Other Movies....$TOTH			Total Documentary Videos......$TDV"
+echo " "
+echo "`df /video -h`"
+echo " "
+echo "__________________________________________________________________________"
