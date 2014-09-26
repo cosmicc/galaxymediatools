@@ -72,14 +72,14 @@ IFS="\""; read -a TITLEPR <<< "$TITLEP"; IFS="|"
 local TITLE=`echo ${TITLEPR[5]} | tr -d '"'`
 local TITLE=`echo $TITLE | tr -d "?*/\|<>).[]\""`
 local TITLE=`echo $TITLE | sed 's/:/ -/g'`
-if [ "$TITLE" == "False" ]; then
+if [ "$TITLE" == "" ]; then
  local imdb=`w3m -cols 999 -dump "http://www.omdbapi.com/?s=$MNAME"`
  local TITLEP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $1}'`
  IFS="\""; read -a TITLEPR <<< "$TITLEP"; IFS="|"
  local TITLE=`echo ${TITLEPR[5]} | tr -d '"'`
- local TITLE=`echo $TITLE | tr -d "?*/\|<>).[]\""`
+ local TITLE=`echo $TITLE | tr -d "?*/\|<>)[]\""`
  local TITLE=`echo $TITLE | sed 's/:/ -/g'`
-  if [ "$TITLE" == "False" ]; then
+  if [ "$TITLE" == "" ]; then
    IMDBOK="0"
   else
    IMDBOK="1"
@@ -93,24 +93,27 @@ if [ "$TITLE" == "False" ]; then
    IFS=":"; read -a YEARPR <<< "$YEARP"; IFS="|"
    local IYEAR=`echo ${YEARPR[1]} | tr -d '"'`
   fi
- if [ "$MNAME" != "$TITLE" ]; then
-  IMDBOK="0"
- else
+ if [ "$IMDBOK" == "1" ] && [ "$MNAME" != "$TITLE" ]; then
+  echo "`eval date +%m/%d/%y"-"%H:%M` - $MNAME ($YEAR) -> $TITLE ($IYEAR)" >> $LOGDIR/imdbrenamed.txt
+  MNAME="$TITLE"
+ fi
+  if [ "$IMDBOK" == "1" ] && [ "$YEAR" != "$IYEAR" ]; then
   echo "`eval date +%m/%d/%y"-"%H:%M` - $MNAME ($YEAR) -> $TITLE ($IYEAR)" >> $LOGDIR/imdbrenamed.txt
   MNAME="$TITLE"
  fi
 if [ "$IMDBOK" == "0" ]; then
  echo "`eval date +%m/%d/%y"-"%H:%M` - $MNAME ($YEAR) - $TITLE ($IYEAR)" >> $LOGDIR/imdbfailed.txt
+ IYEAR="$YEAR"
 fi
    if [ "$YEAR" != "" ]; then
-    renamedmoviewp=`echo "$FPATH/$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`
-    renamedmovienp=`echo "$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`
+    renamedmoviewp=`echo "$FPATH/$MNAME ($IYEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`
+    renamedmovienp=`echo "$MNAME ($IYEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`
    else
     echo "$FNAME is missing year, marking file in missing year log "
     printf "$FNAME \n" >> "$LOGDIR/missingyear.txt"
     local YEAR="0000"
-    renamedmoviewp=`echo "$FPATH/$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`
-    renamedmovienp=`echo "$MNAME ($YEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`
+    renamedmoviewp=`echo "$FPATH/$MNAME ($IYEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`
+    renamedmovienp=`echo "$MNAME ($IYEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`
    fi
  else
    echo "File Renamer Problem! $1 file does not exist, or bad path. Exiting."
