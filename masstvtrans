@@ -193,7 +193,7 @@ printf "`eval date +%m/%d/%y"-"%H:%M` - *** Auto TV Transcode Script Complete on
 echo "Auto TV Transcode Script Complete."
 FTIME=$((TTIME-STIME))
 #if [[ ! $SIM ]] && [ $FTIME -gt 10 ]; then 
-if [[ ! $SIM ]]; then  pm-suspend
+if [[ -z $SIM ]]; then  pm-suspend
  exit 0
 #else
 # echo "Problem!! Script terminated to quickly. NOT suspending server"
