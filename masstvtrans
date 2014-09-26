@@ -9,6 +9,7 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
 	echo "-g  : Split list in half (for spanning multiple servers)"
 	echo "-gr : Split list in half and reverse (for second spanning server)"
         echo "-d  : Current directory only (bypass date chacks)"
+	echo "-p  : Run a Plex full analyze at end of script"
         echo " "
         exit 0
 fi
@@ -16,6 +17,7 @@ fi
 if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ] ||  [ "$4" == "-s" ]; then SIM="yes"; fi
 if [ "$1" == "-g" ] ||  [ "$2" == "-g" ] ||  [ "$3" == "-g" ] ||  [ "$4" == "-g" ]; then SPN="yes"; fi
 if [ "$1" == "-gr" ] ||  [ "$2" == "-gr" ] ||  [ "$3" == "-gr" ] ||  [ "$4" == "-gr" ]; then REV="yes"; fi
+if [ "$1" == "-p" ] ||  [ "$2" == "-p" ] ||  [ "$3" == "-p" ] ||  [ "$4" == "-p" ]; then PUPD="yes"; fi
 
 if [ "$1" == "-d" ]; then CURD="$2"
 elif [ "$2" == "-d" ]; then CURD="$3"
@@ -25,7 +27,7 @@ fi
 
 source "/opt/galaxymediatools/functions/precheck"
 source "/opt/galaxymediatools/functions/isinteg"
-LOGF="$LOGDIR/TTV_$THISSERVER_$CTS.txt"
+LOGF="$LOGDIR/TV_$THISSERVER_$CTS.txt"
 INDXFIL="TTV_fileindex_$THISSERVER.txt"
 if [[ $SIM ]]; then TMODE="Simulation mode"
 elif [[ $REV ]]; then TMODE="Span Reverse mode"
@@ -77,7 +79,7 @@ do
 done < $LOGDIR/$INDXFIL
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Starting transcode process on ${#file[@]} files on $THISSERVER \n" >> $LOGF
 echo "Starting transcode process on ${#file[@]} files"
-if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Auto TV Transcode Script Starting in $TMODE on $THISSERVER - ${#file[@]} Files to proccess" &> /dev/null; fi
+if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "TV Transcoder Starting in $TMODE on $THISSERVER - ${#file[@]} Files to proccess" &> /dev/null; fi
 j=1
 for f in "${file[@]}"; do
  fil=${f##*/}
@@ -172,7 +174,7 @@ echo "Copying file to local drive for transcoding on $fne..."
   printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test on $THISSERVER - $fil \n" >> $LOGF
   printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download on $THISSERVER - $fil \n" >> $LOGF
   if [[ -z $SIM ]]; then 
-   printf "$f \n" >> "$LOGDIR/re-downloads.txt"
+   printf "`eval date +%m/%d/%y"-"%H:%M` - $f \n" >> "$LOGDIR/re-downloads.txt"
    mv -f "$f" "$TRASHDIR"
    rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
    rm -r "$TRANSDIR/$fil" &> /dev/null
@@ -186,10 +188,10 @@ rm -r $TRANSDIR/* &> /dev/null
 echo "Starting Plex server TV section full video analyze..."
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server full video analyze on $THISSERVER \n" >> $LOGF
 
-if [[ -z $SIM ]]; then ssh $PLEXINFO 'sudo su plex -c "plexscan -b -a -c $PLEXCAT &> /dev/null &"' &> /dev/null & 
+if [[ -z $SIM ]] && [[ $PUPD ]]; then ssh $PLEXINFO 'sudo su plex -c "plexscan -b -a -c $PLEXCAT &> /dev/null &"' &> /dev/null & 
 fi
-if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Auto TV Transcode Script Complete on $THISSERVER - Total Elapsed: $ETIME"; fi
-printf "`eval date +%m/%d/%y"-"%H:%M` - *** Auto TV Transcode Script Complete on $THISSERVER- Elapsed Time: $ETIME\n" >> $LOGF
+if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "TV Transcoder Complete on $THISSERVER - Total Elapsed: $ETIME"; fi
+printf "`eval date +%m/%d/%y"-"%H:%M` - *** TV Transcoder Complete on $THISSERVER- Elapsed Time: $ETIME\n" >> $LOGF
 echo "Auto TV Transcode Script Complete."
 FTIME=$((TTIME-STIME))
 #if [[ ! $SIM ]] && [ $FTIME -gt 10 ]; then 
