@@ -70,7 +70,7 @@ local imdb=`w3m -cols 999 -dump "http://www.omdbapi.com/?t=$MNAME&y=$YEAR"`
 local TITLEP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $1}'`
 IFS="\""; read -a TITLEPR <<< "$TITLEP"; IFS="|"
 local TITLE=`echo ${TITLEPR[3]} | tr -d '"'`
-local TITLE=`echo $TITLE | tr -d "?*/\|<>).[]\""`
+local TITLE=`echo $TITLE | tr -d "?*/\|<>)[]\""`
 local TITLE=`echo $TITLE | sed 's/:/ -/g'`
 echo $TITLE
 if [ "$TITLE" == "False" ]; then
