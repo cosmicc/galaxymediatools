@@ -66,19 +66,28 @@ function movierename()
     exit 1
    fi
 # IMDB Lookup
-local imdb=`w3m -cols 999 -dump "http://www.omdbapi.com/?s=$MNAME&y=$YEAR"`
+local imdb=`w3m -cols 999 -dump "http://www.omdbapi.com/?t=$MNAME&y=$YEAR"`
 local TITLEP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $1}'`
 IFS="\""; read -a TITLEPR <<< "$TITLEP"; IFS="|"
-local TITLE=`echo ${TITLEPR[5]} | tr -d '"'`
+local TITLE=`echo ${TITLEPR[3]} | tr -d '"'`
 local TITLE=`echo $TITLE | tr -d "?*/\|<>).[]\""`
 local TITLE=`echo $TITLE | sed 's/:/ -/g'`
-if [ "$TITLE" == "" ]; then
- local imdb=`w3m -cols 999 -dump "http://www.omdbapi.com/?s=$MNAME"`
+echo $TITLE
+if [ "$TITLE" == "False" ]; then
+ local imdb=`w3m -cols 999 -dump "http://www.omdbapi.com/?s=$MNAME&y=$YEAR"`
  local TITLEP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $1}'`
  IFS="\""; read -a TITLEPR <<< "$TITLEP"; IFS="|"
  local TITLE=`echo ${TITLEPR[5]} | tr -d '"'`
  local TITLE=`echo $TITLE | tr -d "?*/\|<>)[]\""`
  local TITLE=`echo $TITLE | sed 's/:/ -/g'`
+ echo $TITLE
+ if [ "$TITLE" == "" ]; then
+  local imdb=`w3m -cols 999 -dump "http://www.omdbapi.com/?s=$MNAME"`
+  local TITLEP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $1}'`
+  IFS="\""; read -a TITLEPR <<< "$TITLEP"; IFS="|"
+  local TITLE=`echo ${TITLEPR[5]} | tr -d '"'`
+  local TITLE=`echo $TITLE | tr -d "?*/\|<>)[]\""`
+  local TITLE=`echo $TITLE | sed 's/:/ -/g'`
   if [ "$TITLE" == "" ]; then
    IMDBOK="0"
   else
@@ -87,12 +96,18 @@ if [ "$TITLE" == "" ]; then
    IFS=":"; read -a YEARPR <<< "$YEARP"; IFS="|"
    local IYEAR=`echo ${YEARPR[1]} | tr -d '"'`
   fi
-  else
-   IMDBOK="1"
-   local YEARP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $2}'`
-   IFS=":"; read -a YEARPR <<< "$YEARP"; IFS="|"
-   local IYEAR=`echo ${YEARPR[1]} | tr -d '"'`
-  fi
+ else
+  IMDBOK="1"
+  local YEARP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $2}'`
+  IFS=":"; read -a YEARPR <<< "$YEARP"; IFS="|"
+  local IYEAR=`echo ${YEARPR[1]} | tr -d '"'`
+ fi
+else
+ IMDBOK="1"
+ local YEARP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $2}'`
+ IFS=":"; read -a YEARPR <<< "$YEARP"; IFS="|"
+ local IYEAR=`echo ${YEARPR[1]} | tr -d '"'`
+fi
  if [ "$IMDBOK" == "1" ] && [ "$MNAME" != "$TITLE" ]; then
   echo "`eval date +%m/%d/%y"-"%H:%M` - $MNAME ($YEAR) -> $TITLE ($IYEAR)" >> $LOGDIR/imdbrenamed.txt
   MNAME="$TITLE"
