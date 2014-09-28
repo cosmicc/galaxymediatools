@@ -72,6 +72,7 @@ IFS="\""; read -a TITLEPR <<< "$TITLEP"; IFS="|"
 local TITLE=`echo ${TITLEPR[3]} | tr -d '"'`
 local TITLE=`echo $TITLE | tr -d "?*/\|<>)[]\""`
 local TITLE=`echo $TITLE | sed 's/:/ -/g'`
+local TITLE=`echo $TITLE | sed 's/(/ -/g'`
 echo $TITLE
 if [ "$TITLE" == "False" ]; then
  local imdb=`w3m -cols 999 -dump "http://www.omdbapi.com/?s=$MNAME&y=$YEAR"`
@@ -80,6 +81,7 @@ if [ "$TITLE" == "False" ]; then
  local TITLE=`echo ${TITLEPR[5]} | tr -d '"'`
  local TITLE=`echo $TITLE | tr -d "?*/\|<>)[]\""`
  local TITLE=`echo $TITLE | sed 's/:/ -/g'`
+local TITLE=`echo $TITLE | sed 's/(/ -/g'`
  echo $TITLE
  if [ "$TITLE" == "" ]; then
   local imdb=`w3m -cols 999 -dump "http://www.omdbapi.com/?s=$MNAME"`
@@ -88,6 +90,7 @@ if [ "$TITLE" == "False" ]; then
   local TITLE=`echo ${TITLEPR[5]} | tr -d '"'`
   local TITLE=`echo $TITLE | tr -d "?*/\|<>)[]\""`
   local TITLE=`echo $TITLE | sed 's/:/ -/g'`
+local TITLE=`echo $TITLE | sed 's/(/ -/g'`
   if [ "$TITLE" == "" ]; then
    IMDBOK="0"
   else
