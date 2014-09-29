@@ -25,13 +25,16 @@ fi
 }
 
 yellow='\e[1;33m'
-brown='\e[33m'
+dyellow='\e[0;33m'
+red='\e[0;31m'
 cyan='\e[1;36m'
+dcyan='\e[0;36m'
 white='\e[1;37m'
 green='\e[1;32m'
+dgreen='\e[0;32m'
 magenta='\e[1;35m'
 blue='\e[1;34m'
-red='\e[1;31m'
+pink='\e[1;31m'
 rred='\e[1;41m\e[1;37m'
 nocolor='\e[0m'
 bold='\e[1;01m'
