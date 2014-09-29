@@ -12,9 +12,11 @@ T1IP=`sed -e 's#.*@\(\)#\1#' <<< "$T1INFO"`
 T2IP=`sed -e 's#.*@\(\)#\1#' <<< "$T2INFO"`
 
 echo -e "${cmd1color}Pushing files to git repository..."
+printf "${sshcolor}"
 git add *
 git commit -m "working"
 git push origin $GITREPO
+printf "${nocolor}"
 echo -e "Conecting to remote Server ${servercolor}$T1INFO${cmd1color}..."
  fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
   if [ "$?" != "0" ]; then
