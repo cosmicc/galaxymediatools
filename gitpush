@@ -2,15 +2,6 @@
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
-servercolor=${yellow}
-cmd1color=${green}
-cmd2color=${cyan}
-sshcolor=${red}
-errorcolor=${rred}
-
-T1IP=`sed -e 's#.*@\(\)#\1#' <<< "$T1INFO"`
-T2IP=`sed -e 's#.*@\(\)#\1#' <<< "$T2INFO"`
-
 echo -e "${cmd1color}Pushing files to git repository..."
 printf "${sshcolor}"
 git add *
@@ -22,17 +13,17 @@ echo -e "Conecting to remote Server ${servercolor}$T1INFO${cmd1color}..."
   if [ "$?" != "0" ]; then
    WASSLEEPING1="1"
    echo -e "${cmd2color}Waking transcode server ${servercolor}$T1NAME"
-  printf "${sshcolor}"
+  printf "${soutcolor}"
    wakeonlan $T1MAC
    printf "${nocolor}"
    sleep 10
-   echo -e "${cmd2color}Transcode server ${servercolor}$T1NAME ${cmd2color}started"
+   echo -e "${cmd1color}Transcode server ${servercolor}$T1NAME ${cmd1color}started"
   fi
- printf "${sshcolor}"
+ printf "${soutcolor}"
  ssh $T1INFO "sudo $APPDIR/gitpull"
  printf "${nocolor}"
  if [ "$WASSLEEPING1" == "1" ]; then
-  echo -e "${cmd1color}Transcoder server ${servercolor}$T1NAME ${cmd1color}was sleeping, putting back to sleep."
+  echo -e "${cmd2color}Transcoder server ${servercolor}$T1NAME ${cmd2color}was sleeping, putting back to sleep."
   ssh $T1INFO 'sudo pm-suspend' &
  fi
 
@@ -41,16 +32,16 @@ echo -e "${cmd1color}Connecting to remote Server ${servercolor}$T2INFO${cmd1colo
   if [ "$?" != "0" ]; then
   WASSLEEPING2="1"
    echo -e "${cmd2color}Waking transcode server ${servercolor}$T2NAME"
- printf "${sshcolor}"
+ printf "${soutcolor}"
    wakeonlan $T2MAC
  printf "${nocolor}"
    sleep 10
-   echo -e "${cmd2color}Transcode server ${servercolor}$T2NAME ${cmd2color}started"
+   echo -e "${cmd1color}Transcode server ${servercolor}$T2NAME ${cmd1color}started"
   fi
- printf "${sshcolor}"
+ printf "${soutcolor}"
  ssh $T2INFO "sudo $APPDIR/gitpull"
  printf "${nocolor}"
  if [ "$WASSLEEPING2" == "1" ]; then
-  echo -e "${cmd1color}Transcoder server ${servercolor}$T2NAME ${cmd1color}was sleeping, putting back to sleep.${nocolor}"
+  echo -e "${cmd2color}Transcoder server ${servercolor}$T2NAME ${cmd2color}was sleeping, putting back to sleep.${nocolor}"
   ssh $T2INFO 'sudo pm-suspend' &
  fi

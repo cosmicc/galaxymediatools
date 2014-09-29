@@ -10,32 +10,32 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         exit 0
 fi
 
-source "/opt/galaxymediatools/functions/precheck"
+source "/opt/galaxymediatools/functions/prechecknl"
 echo " "
-echo -e "Checking $T1NAME Server Status..."
+echo -e "${cmd1color}Checking ${servercolor}$T1NAME ${cmd1color}Server Status..."
  fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
   if [ "$?" == "0" ]; then
    if (ssh $T1INFO '[ -d /var/lock/gtrans.lock ]'); then
-   T1ST="PROCESSING"
+   T1ST="${yellow}PROCESSING"
    else
-   T1ST="IDLE"
+   T1ST="${blue}IDLE"
  fi
- echo "$T1NAME server is UP and $T1ST."
+ echo -e "${servercolor}$T1NAME ${cmd1color}server is ${green}UP ${cmd1color}and $T1ST."
  else
-  echo "$T1NAME Server is DOWN."
+  echo -e "${servercolor}$T1NAME ${cmd1color}Server is ${red}DOWN."
  fi
 
 echo " "
-echo -e "Checking $T2NAME Server Status..."
+echo -e "${cmd1color}Checking ${servercolor}$T2NAME ${cmd1color}Server Status..."
  fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
   if [ "$?" == "0" ]; then
    if (ssh $T2INFO '[ -d /var/lock/gtrans.lock ]'); then
-   T2ST="PROCESSING"
+   T2ST="${yellow}PROCESSING"
    else
-   T2ST="IDLE"
+   T2ST="${blue}IDLE"
  fi
- echo "$T2NAME server is UP and $T2ST."
+ echo -e "${servercolor}$T2NAME ${cmd1color}server is ${green}UP ${cmd1color}and $T2ST."
  else
-  echo "$T2NAME Server is DOWN."
+  echo -e "${servercolor}$T2NAME ${cmd1color}Server is ${red}DOWN."
  fi
-echo " "
+echo -e "${nocolor}"
