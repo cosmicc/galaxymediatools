@@ -1,11 +1,14 @@
 #!/bin/bash
 
+source "/opt/galaxymediatools/functions/prechecknl"
+source "/opt/galaxymediatools/functions/isinteg"
+source "/opt/galaxymediatools/functions/movierename"
+
 fname=${1##*/}
 fyear=`echo "$fname" | grep -oE '\([[:alnum:]]*?\)' | sed 's/[()]//g'`
 mname=`echo "$fname" | sed -e 's/([^()]*)//g' | sed -e 's/\[[^][]*\]//g' | sed 's/....$//' | sed -e 's/^ *//' -e 's/ *$//'`
 
-# ISINTEG HERE
-
+isinteg "$1"
 
 WIDTH=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep width | sed -e 's/width=//'`
 HEIGHT=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep height | sed -e 's/height=//'`
@@ -21,24 +24,39 @@ VFRAMES=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep nb_fram
 VTAG=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep TAG:handler_name | sed -e 's/TAG:handler_name=//' | tail -n 1`
 SUBS=`ffprobe -select_streams s -show_streams "$1" 2>/dev/null `
 
-# VERIFIY NAMED CORRECTLY
+movierename "$1"
 
-echo $WIDTH
-echo $HEIGHT
-echo $VCODEC
-echo $CDTS
-echo $ACODE
-echo $VBITRATE
-echo $VFRAMES
-echo $VTAG
-if [[ $SUBS ]]; then
-echo subs
+echo -e "${cyan}isinteg passed: ${yellow}$ISINTEG"
+echo " --"
+if [ "$fname" == "$renamedmovienp" ]; then
+echo -e "${green}Movie Named Correctly"
+echo -e "${cyan}Original Movie Title: ${yellow}$fname"
 else
-echo no subs
+echo -e "${green}Movie NOT Named Correctly"
+echo -e "${cyan}Original Movie Title: ${yellow}$fname"
+echo -e "${cyan}Renamed Movie Title: ${yellow}$renamedmovienp"
 fi
-
-echo "Looking up movie on imdb..."
-imdb=`w3m -cols 999 -dump "http://www.omdbapi.com/?s=$mname&y=$fyear"`
+echo " -- "
+echo -e "${cyan}Video Dimentions: ${yellow}$WIDTH x $HEIGHT"
+echo -e "${cyan}Video Codec: ${yellow}$VCODEC"
+echo -e "${cyan}Video Codec Tag: ${yellow}$CDTS"
+echo -e "${cyan}Video Bitrate: ${yellow}$VBITRATE"
+echo -e "${cyan}Video Frames: ${yellow}$VFRAMES"
+echo -e "${cyan}Video Tag: ${yellow}$VTAG"
+if [[ $SUBS ]]; then
+TSUB="Yes"
+else
+TSUB="No"
+fi
+echo -e "${cyan}Subtitles: ${yellow}$TSUB"
+echo " -- "
+echo -e "${cyan}Audio 1 Codec: ${yellow}$ACODEC1"
+echo -e "${cyan}Audio 1 Channels: ${yellow}$ACHANS1"
+echo -e "${cyan}Audio 2 Codec: ${yellow}$ACODEC2"
+echo -e "${cyan}Audio 2 Channels: ${yellow}$ACHANS2"
+echo " --"
+echo -e "${green}Looking up movie on imdb..."
+imdb=`w3m -cols 999 -dump "http://www.omdbapi.com/?t=$mname&y=$fyear"`
 imdbp=()
 
 TITLEP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $1}'`
@@ -113,21 +131,23 @@ IMDBID=`echo ${IMDBIDPR[1]} | tr -d '"'`
 fi
 
 if [ "$fyear" != "$YEAR" ]; then
-echo YEAR MISMATCH!!
+echo -e "${green}YEAR MISMATCH!!"
 fi
-echo $TITLE
-echo $YEAR
-#echo $RATING
-#echo $RELEASE
-#echo $RUNTIME
-#echo $ACTORS
-#echo $DIRECTOR
-#echo $PLOT
-#echo $AWARDS
-#echo $IMDBRATING
-#echo $METASCORE
-#echo $IMDBVOTES
-#echo $IMDBID
+echo -e "${cyan}Title: ${yellow}$TITLE"
+echo -e "${cyan}Year: ${yellow}$YEAR"
+echo -e "${cyan}Rating: ${yellow}$RATING"
+echo -e "${cyan}Release: ${yellow}$RELEASE"
+echo -e "${cyan}Runtime: ${yellow}$RUNTIME"
+echo -e "${cyan}Actors: ${yellow}$ACTORS"
+echo -e "${cyan}Director: ${yellow}$DIRECTOR"
+echo -e "${cyan}Plot: ${yellow}$PLOT"
+echo -e "${cyan}Awards: ${yellow}$AWARDS"
+echo -e "${cyan}IMDB Rating: ${yellow}$IMDBRATING"
+echo -e "${cyan}Metascore: ${yellow}$METASCORE"
+echo -e "${cyan}IMDB Votes: ${yellow}$IMDBVOTES"
+echo -e "${cyan}IMDB Movie ID: ${yellow}$IMDBID"
+
+echo -e "${endcolor}"
 
 exit 0
 
