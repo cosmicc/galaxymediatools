@@ -3,7 +3,7 @@
 source "/opt/galaxymediatools/functions/prechecknl"
 
 echo -e "${cmd1color}Pushing files to git repository..."
-printf "${sshcolor}"
+printf "${syscolor}"
 git add *
 git commit -m "working"
 git push origin $GITREPO

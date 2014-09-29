@@ -46,6 +46,7 @@ cmd1color=${dcyan} # command 1 color
 cmd2color=${pink} # cmmand 2 color
 soutcolor=${dyellow} # Server output color
 errorcolor=${rred} # error color
+syscolor=${blue} # System color
 
 THISSERVER=`hostname`
 APPDIR="/opt/galaxymediatools"
