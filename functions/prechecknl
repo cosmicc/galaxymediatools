@@ -42,9 +42,9 @@ blink='\e[1;05m'
 reverse='\e[1;07m'
 
 servercolor=${magenta} # server name color
-cmd1color=${brown} # command 1 color
-cmd2color=${cyan} # cmmand 2 color
-soutcolor=${red} # Server output color
+cmd1color=${dcyan} # command 1 color
+cmd2color=${pink} # cmmand 2 color
+soutcolor=${dyellow} # Server output color
 errorcolor=${rred} # error color
 
 THISSERVER=`hostname`
@@ -68,13 +68,3 @@ if [ "$LOGDIR" == "" ] || [ "$TVDIR" == "" ] || [ "$TRANSDIR" == "" ] || [ "$POU
 echo -e "${rred}No config information found in config file. Exiting.${nocolor}"
 exit 1
 fi
-
-#if mkdir "/var/lock/gtrans.lock"; then
-#trap control_c SIGINT
-#trap appexit EXIT
-#else
-#echo -e "Process locked. Lock file detected. Can only run 1 transcode script at a time. Exiting."
-#exit 1
-#fi
-
-
