@@ -25,6 +25,10 @@ fi
 touch $LOGF 
 printf "`eval date +%m/%d/%y"-"%H:%M` - *** Script Start \n" >> $LOGF
 echo "Resetting transcode directory $TRANSDIR"
+if [ "$TRANSDIR" == "" ];then
+echo -e "${errorcolor}ERROR! TRANSDIR is null. Exiting."
+exit 1
+fi
 if [ -d $TRANSDIR ]; then
 rm -r $TRANSDIR/* &> /dev/null
 else

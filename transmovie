@@ -27,6 +27,10 @@ LOGF="$LOGDIR/MVT_$THISSERVER_$CTS.txt"
 echo "Script starting up"
 touch $LOGF 
 printf "`eval date +%m/%d/%y"-"%H:%M` - *** Script Start \n" >> $LOGF
+if [ "$TRANSDIR" == "" ];then
+echo -e "${errorcolor}ERROR! TRANSDIR is null. Exiting."
+exit 1
+fi
 if [ ! -d $TRANSDIR ]; then
  mkdir $TRANSDIR
 fi

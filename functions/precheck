@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "/opt/glaxymediatools/functions/prechecknl"
+source "/opt/galaxymediatools/functions/prechecknl"
 
 if mkdir "/var/lock/gtrans.lock"; then
 trap control_c SIGINT

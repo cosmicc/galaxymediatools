@@ -40,6 +40,10 @@ printf "`eval date +%m/%d/%y"-"%H:%M` - *** TV Show Transcoder in $TMODE Startin
 touch $LOGF
 echo "Resetting transcode directory $TRANSDIR..."
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Resetting Transcode directory on $THISSERVER \n" >> $LOGF
+if [ "$TRANSDIR" == "" ];then
+echo -e "${errorcolor}ERROR! TRANSDIR is null. Exiting."
+exit 1
+fi
 if [ -d $TRANSDIR ]; then
  rm -r $TRANSDIR/* &> /dev/null
 else
