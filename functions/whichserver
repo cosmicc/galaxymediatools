@@ -1,40 +1,58 @@
 #!/bin/bash
 
 function whichserver ()
-{ 
+{
+echo "Finding available transcode server..." 
 fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
 if [ "$?" == "0" ]; then
  if (ssh $T1INFO '[ -d /var/lock/gtrans.lock ]'); then
   local T1STAT="2"
+  echo "$T1NAME server attempted, but server is busy."
  else
-  local T1STAT="1"
+  echo "$T1NAME server choosen."
+  WHICHSERVER="$T1NAME"
+  return 0
  fi
 else
- local T1STAT="0"
+  wakeonlan $T1MAC 2>/dev/null 1>/dev/null
+  sleep 10
+  fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null  
+if [ "$?" == "0" ]; then
+  echo "$T1NAME server choosen."
+  WHICHSERVER="$T1NAME"
+  return 0
+else
+  echo "$T1NAME server attempted, but server is not responding."
 fi
+fi
+
 fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
 if [ "$?" == "0" ]; then
  if (ssh $T2INFO '[ -d /var/lock/gtrans.lock ]'); then
   local T2STAT="2"
+  echo "$T2NAME server attempted, but server is busy."
  else
-  local T2STAT="1"
+  echo "$T2NAME server choosen."
+  WHICHSERVER="$T2NAME"
+  return 0
+ fi
+else
+  wakeonlan $T2MAC 2>/dev/null 1>/dev/null
+  sleep 10
+  fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
+if [ "$?" == "0" ]; then
+  echo "$T2NAME server choosen."
+  WHICHSERVER="$T2NAME"
+  return 0
+else
+  echo "$T2NAME server attempted, but server is not responding."
 fi
- else
-  local T2STAT="0"
 fi
-if [ "$T2STAT" == "0" ]; then
- eval /opt/galaxymediatools/remotewake "$T2NAME"
- WHICHSERVER="$T2NAME"
- sleep 10
-elif [ "$T2STAT" == "1" ]; then
- WHICHSERVER="$T2NAME"
-elif [ "$T2STAT" == "2" ] && [ "$T1STAT" == "0" ]; then
- eval /opt/galaxymediatools/remotewake "$T1NAME"
- sleep 10
- WHICHSERVER="$T1NAME"
-elif [ "$T2STAT" == "2" ] && [ "$T1STAT" == "1" ]; then
- WHICHSERVER="$T1NAME"
-elif [ "$T2STAT" == "2" ] && [ "$T1STAT" == "2" ]; then
- WHICHSERVER="NONE"
+if [ "$T1STAT" == "2" ] && [ "$T2STAT" == "2" ]; then
+WHICHSERVER="NONE"
+return 0
 fi
+echo "No transcode servers were available. exiting"
+exit 2
+
 }
