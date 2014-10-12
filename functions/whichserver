@@ -15,7 +15,7 @@ if [ "$?" == "0" ]; then
  fi
 else
   wakeonlan $T1MAC 2>/dev/null 1>/dev/null
-  sleep 10
+  sleep 15
   fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null  
 if [ "$?" == "0" ]; then
   echo "$T1NAME server choosen."
@@ -38,7 +38,7 @@ if [ "$?" == "0" ]; then
  fi
 else
   wakeonlan $T2MAC 2>/dev/null 1>/dev/null
-  sleep 10
+  sleep 15
   fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
 if [ "$?" == "0" ]; then
   echo "$T2NAME server choosen."
