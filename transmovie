@@ -34,6 +34,10 @@ fi
 if [ ! -d $TRANSDIR ]; then
  mkdir $TRANSDIR
 fi
+if [ "$TRANSDIR" == "" ]; then
+echo "TRANSDIR var empty. exiting"
+exit 1
+fi
 rm -f /$TRANSDIR/*
 fwewp="$1"
 fwenp=${1##*/}

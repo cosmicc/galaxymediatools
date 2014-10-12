@@ -72,6 +72,7 @@ fi
 if [[ $REV ]]; then eval /usr/bin/find $FINDVARS | sort -r | head -$FCOUNT1 >> $LOGDIR/$INDXFIL
 elif [[ $SPN ]]; then eval /usr/bin/find $FINDVARS | sort | head -$FCOUNT2 >> $LOGDIR/$INDXFIL
 else eval /usr/bin/find $FINDVARS | sort  >> $LOGDIR/$INDXFIL
+echo $FINDVARS
 fi
 i=0
 while read sfile
@@ -201,6 +202,7 @@ FTIME=$((TTIME-STIME))
 #if [[ ! $SIM ]] && [ $FTIME -gt 10 ]; then 
 if [[ -z $SIM ]]; then  pm-suspend
  exit 0
+fi
 #else
 # echo "Problem!! Script terminated to quickly. NOT suspending server"
 # printf "`eval date +%m/%d/%y"-"%H:%M` - Problem!! Script terminated to quickly. NOT suspending server $THISSERVER\n" >> $LOGF

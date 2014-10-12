@@ -13,7 +13,7 @@ echo "deb-src http://www.bunkus.org/ubuntu/trusty/ ./" >> /etc/apt/sources.list 
 echo "Running package update..."
 apt-get update >> /dev/null
 echo "Running Package Installs..."
-apt-get install ssh fping wakeonlan sysstat screen pm-utils mkvtoolnix lynx -y --force-yes
+apt-get install ssh nfs-common fping wakeonlan sysstat screen pm-utils mkvtoolnix lynx -y --force-yes
 fi
 #echo "Applying Permissions..."
 #chmod ug+wrx /opt/galaxymediatools/pushover.sh
