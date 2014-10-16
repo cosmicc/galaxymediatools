@@ -24,7 +24,7 @@ source "/opt/galaxymediatools/functions/movierename"
 source "/opt/galaxymediatools/functions/isinteg"
 LOGF="$LOGDIR/MMR_$THISSERVER_$CTS.txt"
 INDXFIL="MMR_fileindex_$THISSERVER.txt"
-if [[ $FORCE ]]; then EFED="Forced"; else EFED="Not Forced"; fi
+if [[ $NOTRANS ]]; then EFED="No Transcode"; else EFED="Transcode"; fi
 if [[ $SIM ]]; then
  echo "Script starting up in SIMULATION ($EFED) MODE"
 else
