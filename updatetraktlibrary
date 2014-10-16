@@ -1,0 +1,24 @@
+#!/bin/bash
+
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        echo " "
+        echo "Galaxy Media Tools - Embed Subtitles on Video"
+	echo " "
+	echo "-s : Embed Subtitles into Video (For forign movies)"
+        echo "-d : Downgrade movie from 1080p to 720p"
+	echo "-h or --help : Help"
+        echo " "
+        exit 0
+fi
+
+if [ "$2" == "-d" ] ||  [ "$3" == "-d" ] ||  [ "$4" == "-d" ]; then DOWNGRADE="yes"; fi
+
+source "/opt/galaxymediatools/functions/prechecknl"
+INDEXFILE="$LOGDIR/traktlist_$THISSERVER.txt"
+rm -r "$INDEXFILE" >> /dev/null
+echo "Script starting up"
+find "/video/Movies" -type f -printf '%f\n' >> $INDEXFILE
+python /opt/galaxymediatools/functions/trakt-library.py "$INDEXFILE"
+rm -r "$INDEXFILE" >> /dev/null
+echo "Script complete"
+

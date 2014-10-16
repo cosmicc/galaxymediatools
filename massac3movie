@@ -14,7 +14,7 @@ fi
 if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ] ||  [ "$4" == "-s" ]; then SIM="yes"; fi
 if [ "$1" == "-p" ] ||  [ "$2" == "-p" ] ||  [ "$3" == "-p" ] ||  [ "$4" == "-p" ]; then PUPD="yes"; fi
 
-source "/opt/galaxymediatools/functions/precheck"
+source "/opt/galaxymediatools/functions/prechecknl"
 source "/opt/galaxymediatools/functions/isinteg"
 LOGF="$LOGDIR/MMT_$THISSERVER_$CTS.txt"
 INDXFIL="MMT_fileindex_$THISSERVER.txt"

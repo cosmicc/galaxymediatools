@@ -129,6 +129,8 @@ if [ "$IMDBOK" == "0" ]; then
  IYEAR="$YEAR"
 fi
 fi
+else
+IYEAR=$YEAR
 fi
    if [ "$YEAR" != "" ]; then
     renamedmoviewp=`echo "$FPATH/$MNAME ($IYEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`

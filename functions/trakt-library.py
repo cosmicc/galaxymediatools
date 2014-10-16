@@ -11,7 +11,7 @@ import time
 import hashlib
 import getpass
 
-execfile(/etc/galaxymediatools.conf)
+execfile('/etc/galaxymediatools.conf')
 
 SOURCES = 'brrip|r5|dvdrip|src|dvdscr|pvvrip|cam|telesync| ts |wp|workprint|hdweb|bdrip|bluray'
 CODECS = 'xvid|x264|264|h264|divx|aac|mp3|ac3|dts'
