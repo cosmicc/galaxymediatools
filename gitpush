@@ -15,6 +15,7 @@ echo -e "Conecting to remote Server ${servercolor}$T1INFO${cmd1color}..."
    echo -e "${cmd2color}Waking transcode server ${servercolor}$T1NAME"
   printf "${soutcolor}"
    wakeonlan $T1MAC
+wakeonlan $T1MAC
    printf "${nocolor}"
    sleep 10
    echo -e "${cmd1color}Transcode server ${servercolor}$T1NAME ${cmd1color}started"
@@ -33,6 +34,7 @@ echo -e "${cmd1color}Connecting to remote Server ${servercolor}$T2INFO${cmd1colo
   WASSLEEPING2="1"
    echo -e "${cmd2color}Waking transcode server ${servercolor}$T2NAME"
  printf "${soutcolor}"
+   wakeonlan $T2MAC
    wakeonlan $T2MAC
  printf "${nocolor}"
    sleep 10
