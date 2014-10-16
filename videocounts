@@ -12,6 +12,7 @@ QFSP=`find /video/Movies -type f -name "*576p*" | wc -l`
 THD=$((QTEP+QSTP))
 TSD=$((QFSP+QSD+QFEP))
 
+AC3=`find /video/Movies -type f -name "*AC3*" | wc -l`
 TMKV=`find /video/Movies -type f -name "*.mkv" | wc -l`
 TMPF=`find /video/Movies -type f -name "*.mp4" | wc -l`
 TAVI=`find /video/Movies -type f -name "*.avi" | wc -l`
@@ -51,6 +52,7 @@ echo -e " ${cyan}MP4 Movies......${yellow}$TMPF"
 echo -e " ${cyan}MKV Movies......${yellow}$TMKV"
 echo -e " ${cyan}AVI Movies......${yellow}$TAVI"
 echo -e " ${cyan}Other Movies....${yellow}$TOTH"
+echo -e " ${cyan}AC3 Audio Movies....${yellow}$AC3"
 echo " "
 echo " --"
 echo -e " ${cyan}Total TV Shows: ${yellow}$TTVS"
