@@ -14,6 +14,8 @@ if [ "$?" == "0" ]; then
   return 0
  fi
 else
+  echo "Attempting to wake server $T1NAME..."
+  wakeonlan $T1MAC 2>/dev/null 1>/dev/null
   wakeonlan $T1MAC 2>/dev/null 1>/dev/null
   sleep 15
   fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null  
@@ -22,7 +24,7 @@ if [ "$?" == "0" ]; then
   WHICHSERVER="$T1NAME"
   return 0
 else
-  echo "$T1NAME server attempted, but server is not responding."
+  echo "$T1NAME failed wake and server is not responding."
 fi
 fi
 
@@ -37,6 +39,8 @@ if [ "$?" == "0" ]; then
   return 0
  fi
 else
+  echo "Attempting to wake server $T2NAME..."
+  wakeonlan $T2MAC 2>/dev/null 1>/dev/null
   wakeonlan $T2MAC 2>/dev/null 1>/dev/null
   sleep 15
   fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
@@ -45,7 +49,7 @@ if [ "$?" == "0" ]; then
   WHICHSERVER="$T2NAME"
   return 0
 else
-  echo "$T2NAME server attempted, but server is not responding."
+  echo "$T2NAME failed wake and server is not responding."
 fi
 fi
 if [ "$T1STAT" == "2" ] && [ "$T2STAT" == "2" ]; then
