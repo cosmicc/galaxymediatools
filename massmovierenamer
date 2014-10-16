@@ -6,6 +6,7 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo "-h or --help : Help"
         echo "-s  : Simulation only"
 	echo "-f  : Skip already proper formatting check"
+	echo "-t  : Dont Transcode any movies whatsoever"
 	echo "-i  : Use IMDB matching"
 	echo "-v  : Verbose"
         echo " "
@@ -16,6 +17,7 @@ if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ]; then SIM="yes"; f
 if [ "$1" == "-f" ] ||  [ "$2" == "-f" ] ||  [ "$3" == "-f" ]; then FORCE="yes"; fi
 if [ "$1" == "-v" ] ||  [ "$2" == "-v" ] ||  [ "$3" == "-v" ]; then VERB="yes"; fi
 if [ "$1" == "-i" ] ||  [ "$2" == "-i" ] ||  [ "$3" == "-i" ]; then IMDB="yes"; fi
+if [ "$1" == "-t" ] ||  [ "$2" == "-t" ] ||  [ "$3" == "-t" ]; then NOTRANS="yes"; fi
 
 source "/opt/galaxymediatools/functions/precheck"
 source "/opt/galaxymediatools/functions/movierename"
@@ -72,7 +74,7 @@ for f in "${file[@]}"; do
  EXT=${f: -3}
  EXT=${EXT,,}
  OSIZE=$(wc -c "$f" | cut -f 1 -d ' ')
-if [ "$EXT" == "m4v" ] || [ "$OSIZE" -gt "3000000000" ]; then
+if [ "$EXT" == "m4v" ] && [ "$NOTRANS" != "yes" ] ; then
 echo "M4V or 3Gig+ Movie found, transcoding movie to mp4..."
 rm -rf /var/lock/gtrans.lock &> /dev/null
 eval $APPDIR/transmovie \"$f\"
