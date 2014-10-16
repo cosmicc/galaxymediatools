@@ -6,6 +6,9 @@ function movierename()
    local FFIL=${1##*/}
    local ext=${1: -3}
    local ext=${ext,,}
+   if [ -z "$2" ]; then
+   IMDB="yes"
+   fi
    if [ -f "$1" ] && [ "$FFIL" != "$1" ]; then
    local WIDTH=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep width | sed -e 's/width=//'`
    local HEIGHT=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep height | sed -e 's/height=//'`
@@ -66,6 +69,7 @@ function movierename()
     exit 1
    fi
 # IMDB Lookup
+if [[ $IMDB ]]; then
 if [ "$MNAME" != "$IMEX1" ] || [ "$MNAME" != "$IMEX2" ] || [ "$MNAME" != "$IMEX3" ] || [ "$MNAME" != "$IMEX4" ] || [ "$MNAME" != "$IMEX5" ] || [ "$MNAME" != "$IMEX6" ] || [ "$MNAME" != "$IMEX7" ] || [ "$MNAME" != "$IMEX8" ] || [ "$MNAME" != "$IMEX9" ]; then
 local imdb=`w3m -cols 999 -dump "http://www.omdbapi.com/?t=$MNAME&y=$YEAR"`
 local TITLEP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $1}'`
@@ -74,7 +78,7 @@ local TITLE=`echo ${TITLEPR[3]} | tr -d '"'`
 local TITLE=`echo $TITLE | tr -d "?*/\|<>)[]\""`
 local TITLE=`echo $TITLE | sed 's/:/ -/g'`
 local TITLE=`echo $TITLE | sed 's/(/ -/g'`
-echo $TITLE
+echo "$TITLE"
 if [ "$TITLE" == "False" ]; then
  local imdb=`w3m -cols 999 -dump "http://www.omdbapi.com/?s=$MNAME&y=$YEAR"`
  local TITLEP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $1}'`
@@ -123,6 +127,7 @@ fi
 if [ "$IMDBOK" == "0" ]; then
  echo "`eval date +%m/%d/%y"-"%H:%M` - $MNAME ($YEAR) - $TITLE ($IYEAR)" >> $LOGDIR/imdbfailed.txt
  IYEAR="$YEAR"
+fi
 fi
 fi
    if [ "$YEAR" != "" ]; then

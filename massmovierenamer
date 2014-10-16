@@ -6,6 +6,7 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo "-h or --help : Help"
         echo "-s  : Simulation only"
 	echo "-f  : Skip already proper formatting check"
+	echo "-i  : Use IMDB matching"
 	echo "-v  : Verbose"
         echo " "
         exit 0
@@ -14,6 +15,7 @@ fi
 if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ]; then SIM="yes"; fi
 if [ "$1" == "-f" ] ||  [ "$2" == "-f" ] ||  [ "$3" == "-f" ]; then FORCE="yes"; fi
 if [ "$1" == "-v" ] ||  [ "$2" == "-v" ] ||  [ "$3" == "-v" ]; then VERB="yes"; fi
+if [ "$1" == "-i" ] ||  [ "$2" == "-i" ] ||  [ "$3" == "-i" ]; then IMDB="yes"; fi
 
 source "/opt/galaxymediatools/functions/precheck"
 source "/opt/galaxymediatools/functions/movierename"
@@ -84,7 +86,11 @@ else
   VRESCHK=`echo "$f" | awk -F'[][]' '{print $2}'`
   SCHK=`echo "$f" | sed 's/.*\]\([^]]*\)\[.*/\1/g'`
   if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] && [ "$VRESCHK" != "480p" ] && [ "$VRESCHK" != "SD" ] || [[ $FORCE ]] ; then
-   movierename "$f" 
+  if [[ $IMDB ]]; then
+   movierename "$f" "-i"
+  else
+   movierename "$f"
+  fi
    if [[ -z $SIM ]]; then
     if [ "$f" != "$renamedmoviewp" ]; then
      printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Movie Renamed - $fil -> $renamedmovienp \n" >> $LOGF

@@ -50,5 +50,6 @@ cp -f /etc/galaxymediatools.conf $LOGDIR
   echo -e "${cmd1color}Config file copied to ${servercolor}$T2NAME"
  if [ "$WASSLEEPING2" == "1" ]; then
   echo -e "${cmd2color}Transcoder server ${servercolor}$T2NAME ${cmd2color}was sleeping, putting back to sleep.${nocolor}"
-  ssh $T2INFO 'sudo pm-suspend' &  
- fi
+  ssh $T2INFO 'sudo pm-suspend' &   
+fi
+echo -e "${nocolor}"
