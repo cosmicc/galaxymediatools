@@ -8,6 +8,7 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
 	echo "-t  : Dont Transcode any movies whatsoever"
 	echo "-i  : Use IMDB matching"
 	echo "-p  : Prompt at renames"
+        echo "-n  : No Suspend"
 	echo "-v  : Verbose"
         echo " "
         exit 0
@@ -18,6 +19,7 @@ if [ "$1" == "-v" ] ||  [ "$2" == "-v" ] ||  [ "$3" == "-v" ] ||  [ "$4" == "-v"
 if [ "$1" == "-i" ] ||  [ "$2" == "-i" ] ||  [ "$3" == "-i" ] ||  [ "$4" == "-i" ]; then IMDB="yes"; fi
 if [ "$1" == "-t" ] ||  [ "$2" == "-t" ] ||  [ "$3" == "-t" ] ||  [ "$4" == "-t" ]; then NOTRANS="yes"; fi
 if [ "$1" == "-p" ] ||  [ "$2" == "-p" ] ||  [ "$3" == "-p" ] ||  [ "$4" == "-p" ]; then PROMPT="yes"; fi
+if [ "$1" == "-n" ] ||  [ "$2" == "-n" ] ||  [ "$3" == "-n" ] ||  [ "$4" == "-n" ]; then SUSP="yes"; fi
 
 source "/opt/galaxymediatools/functions/precheck"
 source "/opt/galaxymediatools/functions/movierename"
@@ -97,9 +99,11 @@ else
     if [ "$f" != "$renamedmoviewp" ]; then
      echo " * Movie Renamed - $fil -> $renamedmovienp"
       if [[ $PROMPT ]]; then
-      read -r -p "Would you like to rename movie? [y/N] " response
-      response=${response,,}    # tolower
-      if [[ $response =~ ^(yes|y)$ ]]; then
+
+read -p "Would you like to rename movie [y/N]? " -n 1 -r
+echo    # (optional) move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
       mv "$f" "$renamedmoviewp"
       fi
       else
@@ -147,5 +151,7 @@ echo "Script ended."
 if [[ -z $SIM ]]; then ssh $PLEXINFO -q 'sudo su plex -c "plexscan -s -c $PLEXMCAT &> /dev/null &"' &> /dev/null &
    fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
+if [[ -z $SUSP ]]; then
 pm-suspend
+fi
 #sed 's/\]\ \[/\]\[/g' removes space between brackets
