@@ -5,19 +5,19 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo " "
         echo "-h or --help : Help"
         echo "-s  : Simulation only"
-	echo "-f  : Skip already proper formatting check"
 	echo "-t  : Dont Transcode any movies whatsoever"
 	echo "-i  : Use IMDB matching"
+	echo "-p  : Prompt at renames"
 	echo "-v  : Verbose"
         echo " "
         exit 0
 fi
 
-if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ]; then SIM="yes"; fi
-if [ "$1" == "-f" ] ||  [ "$2" == "-f" ] ||  [ "$3" == "-f" ]; then FORCE="yes"; fi
-if [ "$1" == "-v" ] ||  [ "$2" == "-v" ] ||  [ "$3" == "-v" ]; then VERB="yes"; fi
-if [ "$1" == "-i" ] ||  [ "$2" == "-i" ] ||  [ "$3" == "-i" ]; then IMDB="yes"; fi
-if [ "$1" == "-t" ] ||  [ "$2" == "-t" ] ||  [ "$3" == "-t" ]; then NOTRANS="yes"; fi
+if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ] ||  [ "$4" == "-s" ]; then SIM="yes"; fi
+if [ "$1" == "-v" ] ||  [ "$2" == "-v" ] ||  [ "$3" == "-v" ] ||  [ "$4" == "-v" ]; then VERB="yes"; fi
+if [ "$1" == "-i" ] ||  [ "$2" == "-i" ] ||  [ "$3" == "-i" ] ||  [ "$4" == "-i" ]; then IMDB="yes"; fi
+if [ "$1" == "-t" ] ||  [ "$2" == "-t" ] ||  [ "$3" == "-t" ] ||  [ "$4" == "-t" ]; then NOTRANS="yes"; fi
+if [ "$1" == "-p" ] ||  [ "$2" == "-p" ] ||  [ "$3" == "-p" ] ||  [ "$4" == "-p" ]; then PROMPT="yes"; fi
 
 source "/opt/galaxymediatools/functions/precheck"
 source "/opt/galaxymediatools/functions/movierename"
@@ -89,15 +89,23 @@ else
   SCHK=`echo "$f" | sed 's/.*\]\([^]]*\)\[.*/\1/g'`
   if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] && [ "$VRESCHK" != "480p" ] && [ "$VRESCHK" != "SD" ] || [[ $FORCE ]] ; then
   if [[ $IMDB ]]; then
-   movierename "$f" "-i"
+    movierename "$f" "-i"
   else
-   movierename "$f"
+     movierename "$f"
   fi
    if [[ -z $SIM ]]; then
     if [ "$f" != "$renamedmoviewp" ]; then
-     printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Movie Renamed - $fil -> $renamedmovienp \n" >> $LOGF
      echo " * Movie Renamed - $fil -> $renamedmovienp"
-     mv "$f" "$renamedmoviewp"
+      if [[ $PROMPT ]]; then
+      read -r -p "Would you like to rename movie? [y/N] " response
+      response=${response,,}    # tolower
+      if [[ $response =~ ^(yes|y)$ ]]; then
+      mv "$f" "$renamedmoviewp"
+      fi
+      else
+      mv "$f" "$renamedmoviewp"
+      fi
+     printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Movie Renamed - $fil -> $renamedmovienp \n" >> $LOGF
     else
      if [[ $VERB ]]; then echo "File already has correct name $fil"; fi
      printf "`eval date +%m/%d/%y"-"%H:%M` - 02 File already has correct name - $fil \n" >> $LOGF

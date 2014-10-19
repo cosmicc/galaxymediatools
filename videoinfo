@@ -4,6 +4,7 @@ source "/opt/galaxymediatools/functions/prechecknl"
 source "/opt/galaxymediatools/functions/isinteg"
 source "/opt/galaxymediatools/functions/movierename"
 
+echo -e "${pink}Analyzing video, please wait..."
 fname=${1##*/}
 fyear=`echo "$fname" | grep -oE '\([[:alnum:]]*?\)' | sed 's/[()]//g'`
 mname=`echo "$fname" | sed -e 's/([^()]*)//g' | sed -e 's/\[[^][]*\]//g' | sed 's/....$//' | sed -e 's/^ *//' -e 's/ *$//'`
@@ -24,18 +25,9 @@ VFRAMES=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep nb_fram
 VTAG=`ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep TAG:handler_name | sed -e 's/TAG:handler_name=//' | tail -n 1`
 SUBS=`ffprobe -select_streams s -show_streams "$1" 2>/dev/null `
 
-movierename "$1"
+movierename "$1" "-i"
 
 echo -e "${cyan}isinteg passed: ${yellow}$ISINTEG"
-echo " --"
-if [ "$fname" == "$renamedmovienp" ]; then
-echo -e "${green}Movie Named Correctly"
-echo -e "${cyan}Original Movie Title: ${yellow}$fname"
-else
-echo -e "${green}Movie NOT Named Correctly"
-echo -e "${cyan}Original Movie Title: ${yellow}$fname"
-echo -e "${cyan}Renamed Movie Title: ${yellow}$renamedmovienp"
-fi
 echo " -- "
 echo -e "${cyan}Video Dimentions: ${yellow}$WIDTH x $HEIGHT"
 echo -e "${cyan}Video Codec: ${yellow}$VCODEC"
@@ -60,12 +52,10 @@ imdb=`w3m -cols 999 -dump "http://www.omdbapi.com/?t=$mname&y=$fyear"`
 imdbp=()
 
 TITLEP=`echo $imdb | awk 'BEGIN {FS="\",\""} {print $1}'`
-IFS="\""; read -a TITLEPR <<< "$TITLEP"; IFS="|"
-TITLE=`echo ${TITLEPR[5]} | tr -d '"'`
-
+IFS=":"; read -a TITLEPR <<< "$TITLEP"; IFS="|"
+TITLE=`echo ${TITLEPR[1]} | tr -d '"'`
 TITLE=`echo $TITLE | tr -d "?*/\|<>)\""`
 TITLE=`echo $TITLE | sed 's/:/ -/g'`
-
 
 if [ "$TITLE" == "False" ]; then
 IMDBOK="0"
@@ -146,9 +136,27 @@ echo -e "${cyan}IMDB Rating: ${yellow}$IMDBRATING"
 echo -e "${cyan}Metascore: ${yellow}$METASCORE"
 echo -e "${cyan}IMDB Votes: ${yellow}$IMDBVOTES"
 echo -e "${cyan}IMDB Movie ID: ${yellow}$IMDBID"
+echo -e "${nocolor}"
+echo -e "---"
+if [ "$fname" == "$renamedmovienp" ]; then
+echo -e "${green}Movie Named Correctly"
+echo -e "${cyan}Original Movie Title: ${yellow}$fname"
+else
+echo -e "${green}Movie NOT Named Correctly"
+echo -e "${cyan}Original Movie Title: ${yellow}$fname"
+echo -e "${cyan}Renamed Movie Title: ${yellow}$renamedmovienp"
+echo ""
+read -r -p "Would you like to rename movie? [y/N] " response
+response=${response,,}    # tolower
+if [[ $response =~ ^(yes|y)$ ]]; then
+echo "mv $1 $renamedmoviewp"
+echo -e "this is bs"
 
-echo -e "${endcolor}"
-
+fi
+echo "no shit this is bs"
+fi
+echo "word"
+echo -e "${nocolor}"
 exit 0
 
 echo " "

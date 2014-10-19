@@ -22,7 +22,7 @@ if [ "$2" != "" ]; then
         exit 1
 fi
 
-source /opt/galaxymediatools/precheck
+source /opt/galaxymediatools/functions/prechecknl
 
 checkwake()
 {
@@ -50,7 +50,7 @@ exit 1
 fi
 }
 
-if [ "$1" == "ALL" ]; then
+if [ "$1" == "ALL" ] || [ "$1" == "all" ]; then
 killtrans $T1NAME $T1IP $T1MAC $T1INFO 
 killtrans $T2NAME $T2IP $T2MAC $T2INFO 
 echo "Complete."
@@ -59,7 +59,7 @@ fi
 
 if [ "$1" == "$T1NAME" ]; then
 TNAME=$T1NAME; TIP=$T1IP; TMAC=$T1MAC; TINFO=$T1INFO
-elif [ "$1" == "$T1NAME" ]; then
+elif [ "$1" == "$T2NAME" ]; then
 TNAME=$T2NAME; TIP=$T2IP; TMAC=$T2MAC; TINFO=$T2INFO
 else
 echo "No server exists with that name"
