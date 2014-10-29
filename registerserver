@@ -2,6 +2,8 @@
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
+echo -e "${rred}MAKE SURE TO RUN THIS AS THE SSH USER!!${nocolor}"
+
 echo -e "${cyan}This is the ${pink}$THISSERVER ${cyan}server"
 
 echo -e "${green}checking for proper sudoer file...${white}"

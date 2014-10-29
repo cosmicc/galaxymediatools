@@ -52,4 +52,15 @@ cp -f /etc/galaxymediatools.conf $LOGDIR
   echo -e "${cmd2color}Transcoder server ${servercolor}$T2NAME ${cmd2color}was sleeping, putting back to sleep.${nocolor}"
   ssh $T2INFO 'sudo pm-suspend' &   
 fi
+
+if [ "$THISSERVER" != "$MSNAME" ]; then
+ssh $MSINFO "sudo cp -f $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf && sudo $APPDIR/gitpull"
+echo -e "${cmd1color}Config file copied to ${servercolor}$MSNAME"
+fi 
+
+if [ "$THISSERVER" != "$DSNAME" ]; then
+ssh $DSINFO "sudo cp -f $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf && sudo $APPDIR/gitpull"
+echo -e "${cmd1color}Config file copied to ${servercolor}$DSNAME"
+fi
+
 echo -e "${nocolor}"
