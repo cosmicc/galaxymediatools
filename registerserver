@@ -30,4 +30,6 @@ echo -e "${cyan}Copying ssh keys to download server...${pink}"
 if [ "$THISSERVER" != "$DSNAME" ]; then
 ssh-copy-id $DSINFO
 fi
+echo -e "${cyan}Copying ssh keys to plex server...${pink}"
+ssh-copy-id $PLEXINFO
 echo -e "${nocolor}"
