@@ -2,19 +2,19 @@
 
 if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo " "
-        echo "Galaxy Media Tools - Push local config to Transcode Servers"
+        echo "Galaxy Tools Master Updater - Full update on all servers"
         echo " "
         echo "-h or --help : Help"
-        echo "-u : Upgrade from git only"
         echo " "
         exit 0
 fi
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
-vi /etc/galaxymediatools.conf
-echo -e "${cmd1color}Sending config to remote servers..."
-cp -f /etc/galaxymediatools.conf $LOGDIR
+echo -e "${cmd2color}Updating local server ${servercolor}$THISSERVER"
+ printf "${soutcolor}"
+$APPDIR/functions/masterupdate
+printf "${nocolor}"
  fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
   if [ "$?" != "0" ]; then
    WASSLEEPING1="1"
@@ -26,9 +26,9 @@ cp -f /etc/galaxymediatools.conf $LOGDIR
    echo -e "${cmd1color}Transcode server ${servercolor}$T1NAME ${cmd1color}started"
   fi
  printf "${soutcolor}"
- ssh $T1INFO "sudo cp -f $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf && sudo $APPDIR/gitpull"
+ ssh $T1INFO "sudo $APPDIR/functions/masterupdate"
  printf "${nocolor}"
-  echo -e "${cmd1color}Config file copied to ${servercolor}$T1NAME"
+  echo -e "${cmd1color}Server ${servercolor}$T1NAME ${cmdcolor}updated"
  if [ "$WASSLEEPING1" == "1" ]; then
   echo -e "${cmd2color}Transcoder server ${servercolor}$T1NAME ${cmd2color}was sleeping, putting back to sleep."
   ssh $T1INFO 'sudo pm-suspend' &
@@ -45,9 +45,9 @@ cp -f /etc/galaxymediatools.conf $LOGDIR
    echo -e "${cmd1color}Transcode server ${servercolor}$T2NAME ${cmd1color}started"
   fi
  printf "${soutcolor}"
- ssh $T2INFO "sudo cp -f $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf && sudo $APPDIR/gitpull"
+ ssh $T2INFO "sudo $APPDIR/functions/masterupdate"
   printf "${nocolor}"
-  echo -e "${cmd1color}Config file copied to ${servercolor}$T2NAME"
+  echo -e "${cmd1color}Server ${servercolor}$T2NAME ${cmdcolor}updated"
  if [ "$WASSLEEPING2" == "1" ]; then
   echo -e "${cmd2color}Transcoder server ${servercolor}$T2NAME ${cmd2color}was sleeping, putting back to sleep.${nocolor}"
   ssh $T2INFO 'sudo pm-suspend' &   
@@ -55,16 +55,16 @@ fi
 
 if [ "$THISSERVER" != "$MSNAME" ]; then
 printf "${soutcolor}"
-ssh $MSINFO "sudo cp -f $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf && sudo $APPDIR/gitpull"
+ssh $MSINFO "sudo $APPDIR/functions/masterupdate"
 printf "${nocolor}"
-echo -e "${cmd1color}Config file copied to ${servercolor}$MSNAME"
+echo -e "${cmd1color}Server ${servercolor}$MSNAME ${cmdcolor}updated"
 fi 
 
 if [ "$THISSERVER" != "$DSNAME" ]; then
 printf "${soutcolor}"
-ssh $DSINFO "sudo cp -f $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf && sudo $APPDIR/gitpull"
+ssh $DSINFO "sudo $APPDIR/functions/masterupdate"
 printf "${nocolor}"
-echo -e "${cmd1color}Config file copied to ${servercolor}$DSNAME"
+echo -e "${cmd1color}Server ${servercolor}$DSNAME ${cmdcolor}updated"
 fi
 
 echo -e "${nocolor}"
