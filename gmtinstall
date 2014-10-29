@@ -5,6 +5,9 @@ cp /opt/galaxymediatools/galaxymediatools.conf.sample /etc/galaxymediatools.conf
 else
 echo -e "Config file already exists. Not overwriting."
 fi
+if [ ! -f "/etc/sudoers.d/galaxymediatools" ]; then
+echo "ip ALL = (ALL) NOPASSWD: ALL" > "/etc/sudoers.d/galaxymediatools"
+fi
 read -r -p "Would you like to run apt-get system package update and install? [y/N] " response
 response=${response,,}    # tolower
 if [[ $response =~ ^(yes|y)$ ]]; then

@@ -47,3 +47,13 @@ echo -e "${cmd1color}Connecting to remote Server ${servercolor}$T2INFO${cmd1colo
   echo -e "${cmd2color}Transcoder server ${servercolor}$T2NAME ${cmd2color}was sleeping, putting back to sleep.${nocolor}"
   ssh $T2INFO 'sudo pm-suspend' &
  fi
+
+if [ "$THISSERVER" != "$MSNAME" ]; then
+echo -e "Connecting to remote Server ${servercolor}$MSNAME${cmd1color}..."
+ ssh $MSINFO "sudo $APPDIR/gitpull"
+fi
+
+if [ "$THISSERVER" != "$DSNAME" ]; then
+echo -e "Connecting to remote Server ${servercolor}$DSNAME${cmd1color}..."
+ ssh $DSINFO "sudo $APPDIR/gitpull"
+fi

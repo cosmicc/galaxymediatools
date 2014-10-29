@@ -1,0 +1,24 @@
+#!/bin/bash
+
+source "/opt/galaxymediatools/functions/prechecknl"
+
+if [ "$THISSERVER" == "$T1NAME" ]; then
+
+else
+ 
+fi
+
+if [ "$THISSERVER" == "$T2NAME" ]; then
+
+if [ 
+
+
+apt-get update -y
+apt-get upgrade -y
+cd /usr/local/nzbToMedia
+git pull
+cd /usr/local/couchpotato
+git pull
+cd /usr/local/sickbeard
+git pull
+

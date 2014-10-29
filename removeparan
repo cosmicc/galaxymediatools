@@ -1,0 +1,7 @@
+#!/bin/bash
+for i in *.*
+do
+        x=${i//[\(\)]/}
+        echo "$i renames to: $x"
+        mv "$i" "$x"
+done

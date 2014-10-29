@@ -76,58 +76,60 @@ for f in "${file[@]}"; do
  EXT=${f: -3}
  EXT=${EXT,,}
  OSIZE=$(wc -c "$f" | cut -f 1 -d ' ')
-if [ "$EXT" == "m4v" ] && [ "$NOTRANS" != "yes" ] ; then
-echo "M4V or 3Gig+ Movie found, transcoding movie to mp4..."
-rm -rf /var/lock/gtrans.lock &> /dev/null
-eval $APPDIR/transmovie \"$f\"
-mkdir /var/lock/gtrans.lock &> /dev/null
-echo "M4V Transcode complete."
-else
- isinteg "$f"
- if [ "$ISINTEG" == "1" ]; then
-  if [[ $VERB ]]; then echo "$fil passed integrity check."; fi
-  printf "`eval date +%m/%d/%y"-"%H:%M` - 03 File passed integrity check - $fil \n" >> $LOGF
-  VRESCHK=`echo "$f" | awk -F'[][]' '{print $2}'`
-  SCHK=`echo "$f" | sed 's/.*\]\([^]]*\)\[.*/\1/g'`
-  if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] && [ "$VRESCHK" != "480p" ] && [ "$VRESCHK" != "SD" ] || [[ $FORCE ]] ; then
-  if [[ $IMDB ]]; then
+ if [ "$EXT" == "m4v" ] && [ "$NOTRANS" != "yes" ] ; then
+  echo "M4V or 3Gig+ Movie found, transcoding movie to mp4..."
+  rm -rf /var/lock/gtrans.lock &> /dev/null
+  eval $APPDIR/transmovie \"$f\"
+  mkdir /var/lock/gtrans.lock &> /dev/null
+  echo "M4V Transcode complete."
+ else
+  isinteg "$f"
+  if [ "$ISINTEG" == "1" ]; then
+   if [[ $VERB ]]; then echo "$fil passed integrity check."; fi
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 03 File passed integrity check - $fil \n" >> $LOGF
+   VRESCHK=`echo "$f" | awk -F'[][]' '{print $2}'`
+   SCHK=`echo "$f" | sed 's/.*\]\([^]]*\)\[.*/\1/g'`
+   #if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] && [ "$VRESCHK" != "480p" ] && [ "$VRESCHK" != "SD" ] || [[ $FORCE ]] ; then
+   if [[ $IMDB ]]; then
     movierename "$f" "-i"
-  else
-     movierename "$f"
-  fi
+   else
+    movierename "$f"
+   fi
+
    if [[ -z $SIM ]]; then
+
     if [ "$f" != "$renamedmoviewp" ]; then
      echo " * Movie Renamed - $fil -> $renamedmovienp"
-      if [[ $PROMPT ]]; then
 
-read -p "Would you like to rename movie [y/N]? " -n 1 -r
-echo    # (optional) move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-      mv "$f" "$renamedmoviewp"
+     if [[ $PROMPT ]]; then
+      read -p "Would you like to rename movie [y/N]? " -n 1 -r
+      echo    # (optional) move to a new line
+      if [[ $REPLY =~ ^[Yy]$ ]]; then
+       mv "$f" "$renamedmoviewp"
       fi
-      else
+     else
       mv "$f" "$renamedmoviewp"
-      fi
+     fi
      printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Movie Renamed - $fil -> $renamedmovienp \n" >> $LOGF
+
     else
-     if [[ $VERB ]]; then echo "File already has correct name $fil"; fi
-     printf "`eval date +%m/%d/%y"-"%H:%M` - 02 File already has correct name - $fil \n" >> $LOGF
-    fi
-   else
-    if [ "$f" != "$renamedmoviewp" ]; then
-     printf "`eval date +%m/%d/%y"-"%H:%M` - 01 SIM MODE Movie NOT Renamed - $fil -> $FNAME \n" >> $LOGF
-     echo " * SIM MODE Movie NOT Renamed - $fil -> $FNAME"
-     mv "$f" "$FNAME"
-    else
-     if [[ $VERB ]]; then echo "File already has correct name $fil"; fi
-     printf "`eval date +%m/%d/%y"-"%H:%M` - 02 File already has correct name - $fil \n" >> $LOGF
-    fi
+    if [[ $VERB ]]; then echo "File already has correct name $fil"; fi
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 02 File already has correct name - $fil \n" >> $LOGF
    fi
-  else
-   if [[ $VERB ]]; then echo "Skipping correctly formatted file ($EFED) - $fil"; fi
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 02 Skipping correctly formatted file ($EFED) - $fil \n" >> $LOGF 
-  fi 
+   else
+   if [ "$f" != "$renamedmoviewp" ]; then
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 01 SIM MODE Movie NOT Renamed - $fil -> $FNAME \n" >> $LOGF
+    echo " * SIM MODE Movie NOT Renamed - $fil -> $FNAME"
+    mv "$f" "$FNAME"
+   else
+    if [[ $VERB ]]; then echo "File already has correct name $fil"; fi
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 02 File already has correct name - $fil \n" >> $LOGF
+   fi
+  fi
+#  else
+#  if [[ $VERB ]]; then echo "Skipping correctly formatted file ($EFED) - $fil"; fi
+#  printf "`eval date +%m/%d/%y"-"%H:%M` - 02 Skipping correctly formatted file ($EFED) - $fil \n" >> $LOGF 
+# fi 
  else
   echo "File FAILED integrity test!! Purging file and marking for re-download"
   if [[ -z $SIM ]]; then 
@@ -140,6 +142,7 @@ then
  fi
 fi
 done
+
 TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
 rm -r $TRANSDIR/* &> /dev/null

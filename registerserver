@@ -1,0 +1,31 @@
+#!/bin/bash
+
+source "/opt/galaxymediatools/functions/prechecknl"
+
+echo -e "${cyan}This is the ${pink}$THISSERVER ${cyan}server"
+
+echo -e "${green}checking for proper sudoer file...${white}"
+if [ ! -f "/etc/sudoers.d/galaxymediatools" ]; then
+echo "ip ALL = (ALL) NOPASSWD: ALL" > "/etc/sudoers.d/galaxymediatools"
+fi
+read -r -p "Would you like to generate new ssh auth keys for this server? [y/N] " response
+response=${response,,}    # tolower
+if [[ $response =~ ^(yes|y)$ ]]; then
+ssh-keygen
+fi
+echo -e "${cyan}Copying ssh keys to transcode servers...${pink}"
+if [ "$THISSERVER" != "$T1NAME" ]; then
+ssh-copy-id $T1INFO
+fi
+if [ "$THISSERVER" != "$T2NAME" ]; then
+ssh-copy-id $T2INFO
+fi
+echo -e "${cyan}Copying ssh keys to media management server...${pink}"
+if [ "$THISSERVER" != "$MSNAME" ]; then
+ssh-copy-id $MSINFO
+fi
+echo -e "${cyan}Copying ssh keys to download server...${pink}"
+if [ "$THISSERVER" != "$DSNAME" ]; then
+ssh-copy-id $DSINFO
+fi
+echo -e "${nocolor}"
