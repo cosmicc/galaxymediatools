@@ -8,7 +8,7 @@ git add *
 git commit -m "working"
 git push origin $GITREPO
 printf "${nocolor}"
-echo -e "Conecting to remote Server ${servercolor}$T1INFO${cmd1color}..."
+echo -e "Conecting to remote Server ${servercolor}$T1NAME${cmd1color}..."
  fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
   if [ "$?" != "0" ]; then
    WASSLEEPING1="1"
@@ -28,7 +28,7 @@ wakeonlan $T1MAC
   ssh $T1INFO 'sudo pm-suspend' &
  fi
 
-echo -e "${cmd1color}Connecting to remote Server ${servercolor}$T2INFO${cmd1color}..."
+echo -e "${cmd1color}Connecting to remote Server ${servercolor}$T2NAME${cmd1color}..."
  fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
   if [ "$?" != "0" ]; then
   WASSLEEPING2="1"
@@ -50,10 +50,15 @@ echo -e "${cmd1color}Connecting to remote Server ${servercolor}$T2INFO${cmd1colo
 
 if [ "$THISSERVER" != "$MSNAME" ]; then
 echo -e "Connecting to remote Server ${servercolor}$MSNAME${cmd1color}..."
+ printf "${soutcolor}"
  ssh $MSINFO "sudo $APPDIR/gitpull"
+ printf "${nocolor}"
 fi
 
 if [ "$THISSERVER" != "$DSNAME" ]; then
 echo -e "Connecting to remote Server ${servercolor}$DSNAME${cmd1color}..."
+ printf "${soutcolor}"
  ssh $DSINFO "sudo $APPDIR/gitpull"
+ printf "${nocolor}"
 fi
+echo -e "${nocolor}"
