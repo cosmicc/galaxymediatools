@@ -45,7 +45,7 @@ fwenp=${1##*/}
 fnewp="${1%.*}"
 fnenp="${fwenp%.*}"
 EXT=${1: -3}
-if [ "NOISINTEG" != "yes" ]; then
+if [ "$NOISINTEG" != "yes" ]; then
 echo -e "Checking video file integrity"
 isinteg "$1"
 else
