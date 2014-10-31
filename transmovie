@@ -104,11 +104,11 @@ fi
     printf "`eval date +%m/%d/%y"-"%H:%M` - 99 PROBLEM!! No transcoded file found, something went wrong. Exiting. $fwenp\n" >> $LOGF
     exit 1
    fi
-   if [ "$NSIZE" -lt "400000000" ];then
+   if [ "$NSIZE" -lt "100000000" ];then
     rm -r "$TRANSDIR/$fnenp.trans.mp4"
     rm -r "$TRANSDIR/$fwenp"
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 98 PROBLEM!! Transcoded file under 400 Meg, something went wrong, Exiting. $fwenp\n" >> $LOGF
-    echo -e "PROBLEM!! Transcoded file under 600 Meg, something went wrong, Exiting."
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 98 PROBLEM!! Transcoded file under 100 Meg, something went wrong, Exiting. $fwenp\n" >> $LOGF
+    echo -e "PROBLEM!! Transcoded file under 100 Meg, something went wrong, Exiting."
     exit 1
    fi
 
