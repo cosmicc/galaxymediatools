@@ -6,6 +6,7 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
 	echo " "
 	echo "-s : Embed Subtitles into Video (For forign movies)"
         echo "-d : Downgrade movie from 1080p to 720p"
+	echo "-i : Dont check file for integrity eg. mpg files"
 	echo "-h or --help : Help"
         echo " "
         exit 0
@@ -18,6 +19,7 @@ fi
 
 if [ "$2" == "-s" ] ||  [ "$3" == "-s" ] ||  [ "$4" == "-s" ]; then EMBEDSUBS="yes"; fi
 if [ "$2" == "-d" ] ||  [ "$3" == "-d" ] ||  [ "$4" == "-d" ]; then DOWNGRADE="yes"; fi
+if [ "$2" == "-i" ] ||  [ "$3" == "-i" ] ||  [ "$4" == "-i" ]; then NOISINTEG="yes"; fi
 
 source "/opt/galaxymediatools/functions/precheck"
 source "/opt/galaxymediatools/functions/isinteg"
@@ -43,8 +45,12 @@ fwenp=${1##*/}
 fnewp="${1%.*}"
 fnenp="${fwenp%.*}"
 EXT=${1: -3}
+if [ "NOISINTEG" != "yes" ]; then
 echo -e "Checking video file integrity"
 isinteg "$1"
+else
+ISINTEG="1"
+fi
 if [ "$ISINTEG" == "1" ]; then
  echo -e "Video file passed integrity test."
  printf "`eval date +%m/%d/%y"-"%H:%M` - 06 File passed video integrity test - $fwewp\n" >> $LOGF
