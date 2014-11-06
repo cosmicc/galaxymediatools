@@ -50,6 +50,7 @@ find "$MOVIEDIR" -type f -name *.idx -delete
 find "$MOVIEDIR" -type f -name *.sub -delete
 find "$MOVIEDIR" -type f -name *.nfo -delete
 find "$MOVIEDIR" -type f -name *.txt -delete
+find "$MOVIEDIR" -type f -name *. -delete
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process \n" >> $LOGF
 echo "Building file index..."
 sleep 5
