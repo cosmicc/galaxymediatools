@@ -45,7 +45,6 @@ else
  mkdir $TRANSDIR
 fi
 echo "Cleaning out non-movie files..."
-find "$MOVIEDIR" -type f -name *.srt -delete
 find "$MOVIEDIR" -type f -name *.idx -delete
 find "$MOVIEDIR" -type f -name *.sub -delete
 find "$MOVIEDIR" -type f -name *.nfo -delete
