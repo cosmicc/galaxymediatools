@@ -1,0 +1,36 @@
+find /video/Incoming/process -type f ! -path "/video/Incoming/process/cleancheck/*" ! -path "/video/Incoming/process/UNCAT/*" -printf '%s %p\n' | while read size name; do
+if [ $size -gt 50000000 ]; then
+echo "Size - "$size
+echo "moving" "$name"
+mv -i "$name" /video/Incoming/process/cleancheck
+fi
+done
+rm -r /video/Incoming/process/movies/*
+rm -r /video/Incoming/process/tv/*
+rm -r /video/Incoming/process/comedy/*
+rm -r /video/Incoming/process/concerts/*
+
+find /video/Incoming/complete/deluge -type f ! -path "/video/Incoming/complete/deluge/UNCAT/*" -printf '%s %p\n' | while read size name; do
+if [ $size -gt 50000000 ]; then
+echo "Size - "$size
+echo "moving" "$name"
+mv -i "$name" /video/Incoming/process/cleancheck
+fi
+done
+rm -r /video/Incoming/complete/deluge/movies/*
+rm -r /video/Incoming/complete/deluge/tv/*
+rm -r /video/Incoming/complete/deluge/comedy/*
+rm -r /video/Incoming/complete/deluge/concerts/*
+
+find /video/Incoming/complete/sabnzbd -type f ! -path "/video/Incoming/complete/sabnzbd/UNCAT/*" -printf '%s %p\n' | while read size name; do
+if [ $size -gt 50000000 ]; then
+echo "Size - "$size
+echo "moving" "$name"
+mv -i "$name" /video/Incoming/process/cleancheck
+fi
+done
+rm -r /video/Incoming/complete/sabnzbd/movies/*
+rm -r /video/Incoming/complete/sabnzbd/tv/*
+rm -r /video/Incoming/complete/sabnzbd/comedy/*
+rm -r /video/Incoming/complete/sabnzbd/concerts/*
+
