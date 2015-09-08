@@ -1,0 +1,20 @@
+#! /bin/bash
+
+source "/opt/galaxymediatools/functions/prechecknl"
+echo " "
+ fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
+  if [ "$?" == "0" ]; then
+   if (ssh $T2INFO '[ -d /var/lock/gtrans.lock ]'); then
+    SBUSY="1"
+    else
+    SBUSY="0"
+   fi
+  else
+  SBUSY="0"
+  fi
+
+echo $SBUSY
+
+if [ $SBUSY -eq "0" ]; then
+/opt/galaxymediatools/remotemasstvtrans
+fi

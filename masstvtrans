@@ -202,10 +202,9 @@ FTIME=$((TTIME-STIME))
 #if [[ ! $SIM ]] && [ $FTIME -gt 10 ]; then 
 if [[ -z $SIM ]]; then  pm-suspend
  exit 0
-fi
 #else
 # echo "Problem!! Script terminated to quickly. NOT suspending server"
 # printf "`eval date +%m/%d/%y"-"%H:%M` - Problem!! Script terminated to quickly. NOT suspending server $THISSERVER\n" >> $LOGF
 # if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Problem!! Script terminated to quickly. NOT suspending server $THISSERVER"; fi
 # exit 1
-#fi
+fi

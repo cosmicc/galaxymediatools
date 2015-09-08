@@ -1,0 +1,24 @@
+#!/bin/bash
+ fping -c1 -t2000 8.8.8.8 2>/dev/null 1>/dev/null
+  if [ "$?" == "0" ]; then
+   echo "!"
+   exit
+   else
+   RES=0
+   PCOUNT=0
+   DTIME=$(date +%s)
+   echo "0"
+   while [ $RES -eq 0 ]; do
+	(PCOUNT++)
+	fping -c1 -t2000 8.8.8.8 2>/dev/null 1>/dev/null
+	  if [ "$?" == "0" ]; then
+   	  RES=1
+	  echo "!"
+   else
+	sleep 10
+	echo "."
+   fi
+	done
+	echo $PCOUNT
+ fi
+
