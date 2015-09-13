@@ -14,12 +14,12 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         exit 0
 fi
 
-if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ] ||  [ "$4" == "-s" ]; then SIM="yes"; fi
-if [ "$1" == "-v" ] ||  [ "$2" == "-v" ] ||  [ "$3" == "-v" ] ||  [ "$4" == "-v" ]; then VERB="yes"; fi
-if [ "$1" == "-i" ] ||  [ "$2" == "-i" ] ||  [ "$3" == "-i" ] ||  [ "$4" == "-i" ]; then IMDB="yes"; fi
-if [ "$1" == "-t" ] ||  [ "$2" == "-t" ] ||  [ "$3" == "-t" ] ||  [ "$4" == "-t" ]; then NOTRANS="yes"; fi
-if [ "$1" == "-p" ] ||  [ "$2" == "-p" ] ||  [ "$3" == "-p" ] ||  [ "$4" == "-p" ]; then PROMPT="yes"; fi
-if [ "$1" == "-n" ] ||  [ "$2" == "-n" ] ||  [ "$3" == "-n" ] ||  [ "$4" == "-n" ]; then SUSP="yes"; fi
+if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ] ||  [ "$4" == "-s" ] || [ "$5" == "-s" ] || [ "$6" == "-s" ]; then SIM="yes"; fi
+if [ "$1" == "-v" ] ||  [ "$2" == "-v" ] ||  [ "$3" == "-v" ] ||  [ "$4" == "-v" ] ||  [ "$5" == "-v" ] ||  [ "$6" == "-v" ]; then VERB="yes"; fi
+if [ "$1" == "-i" ] ||  [ "$2" == "-i" ] ||  [ "$3" == "-i" ] ||  [ "$4" == "-i" ] ||  [ "$5" == "-i" ] ||  [ "$6" == "-i" ]; then IMDB="yes"; fi
+if [ "$1" == "-t" ] ||  [ "$2" == "-t" ] ||  [ "$3" == "-t" ] ||  [ "$4" == "-t" ] ||  [ "$5" == "-t" ] ||  [ "$6" == "-t" ]; then NOTRANS="yes"; fi
+if [ "$1" == "-p" ] ||  [ "$2" == "-p" ] ||  [ "$3" == "-p" ] ||  [ "$4" == "-p" ] ||  [ "$5" == "-p" ] ||  [ "$6" == "-p" ]; then PROMPT="yes"; fi
+if [ "$1" == "-n" ] ||  [ "$2" == "-n" ] ||  [ "$3" == "-n" ] ||  [ "$4" == "-n" ] || [ "$5" == "-n" ] || [ "$6" == "-n" ]; then SUSP="yes"; fi
 
 source "/opt/galaxymediatools/functions/precheck"
 source "/opt/galaxymediatools/functions/movierename"
@@ -118,9 +118,8 @@ for f in "${file[@]}"; do
    fi
    else
    if [ "$f" != "$renamedmoviewp" ]; then
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 01 SIM MODE Movie NOT Renamed - $fil -> $FNAME \n" >> $LOGF
-    echo " * SIM MODE Movie NOT Renamed - $fil -> $FNAME"
-    mv "$f" "$FNAME"
+    printf "`eval date +%m/%d/%y"-"%H:%M` - 01 SIM MODE Movie NOT Renamed - $fil -> $renamedmovienp \n" >> $LOGF
+    echo " * SIM MODE Movie NOT Renamed - $fil -> $renamedmovienp"
    else
     if [[ $VERB ]]; then echo "File already has correct name $fil"; fi
     printf "`eval date +%m/%d/%y"-"%H:%M` - 02 File already has correct name - $fil \n" >> $LOGF
