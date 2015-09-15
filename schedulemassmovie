@@ -16,5 +16,5 @@ echo " "
 echo $SBUSY
 
 if [ $SBUSY -eq "0" ]; then
-/opt/galaxymediatools/remotemasstvtrans
+/opt/galaxymediatools/remotemassmovie
 fi

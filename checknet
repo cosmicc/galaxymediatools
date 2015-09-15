@@ -1,24 +1,51 @@
 #!/bin/bash
- fping -c1 -t2000 8.8.8.8 2>/dev/null 1>/dev/null
-  if [ "$?" == "0" ]; then
-   echo "!"
-   exit
-   else
-   RES=0
-   PCOUNT=0
-   DTIME=$(date +%s)
-   echo "0"
-   while [ $RES -eq 0 ]; do
-	(PCOUNT++)
-	fping -c1 -t2000 8.8.8.8 2>/dev/null 1>/dev/null
-	  if [ "$?" == "0" ]; then
-   	  RES=1
-	  echo "!"
-   else
-	sleep 10
-	echo "."
-   fi
-	done
-	echo $PCOUNT
- fi
 
+LOCKDIR=/run/lock/checknet
+
+function cleanup {
+    if rmdir $LOCKDIR; then
+     exit
+    else
+        echo "Failed to remove lock directory '$LOCKDIR'"
+        exit 1
+    fi
+}
+
+if mkdir $LOCKDIR; then
+ trap "cleanup" EXIT
+ STIME=$(date +%s)
+ fping -c1 -t2000 8.8.8.8 2>/dev/null 1>/dev/null
+ if [ "$?" == "0" ]; then
+  exit
+ else
+  RES=0
+  PCOUNT=0
+  DTIME=$(date +%s)
+ while [ $RES -eq 0 ]; do
+  (PCOUNT++)
+  fping -c1 -t2000 8.8.8.8 2>/dev/null 1>/dev/null
+  if [ "$?" == "0" ]; then
+   RES=1
+   else
+   sleep 10
+  fi
+ done
+ if [ $PCOUNT -gt 1 ] && [ $PCOUNT -lt 11 ]; then
+  $APPDIR/pushover.sh -T "a2DmJYt1AgDxLWX6JQSDDPmAvbrtnY" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Network Outage: Heavy Dropped Packets" &> /dev/null
+  elif [ $PCOUNT -gt 10 ]; then
+  ETIME=$(date +%s)
+  TTIME=$(($2 - $1))
+  MIN=$((TTIME / 60))
+  HRS=$((MIN / 60))
+  MINR=$((MIN % 60))
+  if [ "$HRS" != "0" ]; then
+   $APPDIR/pushover.sh -T "a2DmJYt1AgDxLWX6JQSDDPmAvbrtnY" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Network Outage: $HRS Hours and $MINR Minutes" &> /dev/null
+   else
+   $APPDIR/pushover.sh -T "a2DmJYt1AgDxLWX6JQSDDPmAvbrtnY" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Network Outage: $MIN Minutes" &> /dev/null
+   fi
+  fi
+ fi 
+else
+ echo "Could not create lock directory '$LOCKDIR'"
+ exit 1
+fi
