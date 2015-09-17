@@ -15,7 +15,7 @@ function cleanup {
 if mkdir $LOCKDIR; then
  trap "cleanup" EXIT
  STIME=$(date +%s)
- fping -c1 -t2000 8.8.8.8 2>/dev/null 1>/dev/null
+ fping -c1 -t3000 8.8.8.8 2>/dev/null 1>/dev/null
  if [ "$?" == "0" ]; then
   exit
  else
@@ -23,15 +23,16 @@ if mkdir $LOCKDIR; then
   PCOUNT=0
   DTIME=$(date +%s)
  while [ $RES -eq 0 ]; do
-  (PCOUNT++)
-  fping -c1 -t2000 8.8.8.8 2>/dev/null 1>/dev/null
+  ((PCOUNT++))
+  fping -c1 -t3000 8.8.8.8 2>/dev/null 1>/dev/null
   if [ "$?" == "0" ]; then
    RES=1
    else
    sleep 10
   fi
  done
- if [ $PCOUNT -gt 1 ] && [ $PCOUNT -lt 11 ]; then
+echo $PCOUNT
+ if [ $PCOUNT -gt 3 ] & [ $PCOUNT -lt 11 ]; then
   $APPDIR/pushover.sh -T "a2DmJYt1AgDxLWX6JQSDDPmAvbrtnY" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Network Outage: Heavy Dropped Packets" &> /dev/null
   elif [ $PCOUNT -gt 10 ]; then
   ETIME=$(date +%s)
