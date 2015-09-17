@@ -153,6 +153,7 @@ echo "Script ended."
 if [[ -z $SIM ]]; then ssh $PLEXINFO -q 'sudo su plex -c "plexscan -s -c $PLEXMCAT &> /dev/null &"' &> /dev/null &
    fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
+sleep 10
 if [[ -z $SUSP ]]; then
 pm-suspend
 fi
