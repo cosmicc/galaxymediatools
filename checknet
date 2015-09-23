@@ -32,8 +32,8 @@ if mkdir $LOCKDIR; then
   fi
  done
 echo $PCOUNT
- if [ $PCOUNT -gt 3 ] & [ $PCOUNT -lt 11 ]; then
-  $APPDIR/pushover.sh -T "a2DmJYt1AgDxLWX6JQSDDPmAvbrtnY" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Network Outage: Heavy Dropped Packets" &> /dev/null
+ if [ $PCOUNT -gt 5 ] && [ $PCOUNT -lt 11 ]; then
+  $APPDIR/pushover.sh -T "a2DmJYt1AgDxLWX6JQSDDPmAvbrtnY" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Network Outage: Heavy Dropped Packets Detected" &> /dev/null
   elif [ $PCOUNT -gt 10 ]; then
   ETIME=$(date +%s)
   TTIME=$(($2 - $1))
