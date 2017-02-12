@@ -28,8 +28,8 @@ TTS=$((TTVE-TTE-NTE))
 TTSE=$((TTSA-TTVS))
 
 TCV=`find "/video/Concerts" -type f | wc -l`
-TSU=`find "/video/Stand-Up Comedy" -type f | wc -l`
-TDV=`find "/video/Documentaries & Specials" -type f | wc -l`
+TSU=`find "/video/Comedy" -type f | wc -l`
+TDV=`find "/video/UFC Events" -type f | wc -l`
 
 MDS=`du /video/Movies -h | tail -1`
 TDS=`du "/video/TV Series" -h | tail -1` 
@@ -69,7 +69,7 @@ echo -e " ${cyan}Untouched TV Episodes.........${yellow}$TTS"
 echo " "
 echo -e " ${cyan}Total Stand-Up Comedy Videos..${yellow}$TSU"
 echo -e " ${cyan}Total Concert Videos..........${yellow}$TCV"
-echo -e " ${cyan}Total Documentary Videos......${yellow}$TDV"
+echo -e " ${cyan}Total UFC Event Videos......${yellow}$TDV"
 echo " "
 echo -e "${green}`df /video -h`${endcolor}"
 echo " "

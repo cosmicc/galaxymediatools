@@ -1,0 +1,210 @@
+#!/bin/bash
+
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        echo " "
+        echo "Galaxy Media Tools - Automatic UFC Event Transcoder"
+	echo " "
+	echo "-h or --help : Help"
+	echo "-s  : Simulation only"
+	echo "-g  : Split list in half (for spanning multiple servers)"
+	echo "-gr : Split list in half and reverse (for second spanning server)"
+        echo "-d  : Current directory only (bypass date chacks)"
+	echo "-p  : Run a Plex full analyze at end of script"
+        echo " "
+        exit 0
+fi
+
+if [ "$1" == "-s" ] ||  [ "$2" == "-s" ] ||  [ "$3" == "-s" ] ||  [ "$4" == "-s" ]; then SIM="yes"; fi
+if [ "$1" == "-g" ] ||  [ "$2" == "-g" ] ||  [ "$3" == "-g" ] ||  [ "$4" == "-g" ]; then SPN="yes"; fi
+if [ "$1" == "-gr" ] ||  [ "$2" == "-gr" ] ||  [ "$3" == "-gr" ] ||  [ "$4" == "-gr" ]; then REV="yes"; fi
+if [ "$1" == "-p" ] ||  [ "$2" == "-p" ] ||  [ "$3" == "-p" ] ||  [ "$4" == "-p" ]; then PUPD="yes"; fi
+
+if [ "$1" == "-d" ]; then CURD="$2"
+elif [ "$2" == "-d" ]; then CURD="$3"
+elif [ "$3" == "-d" ]; then CURD="$4"
+elif [ "$4" == "-d" ]; then CURD="$5"
+fi
+
+source "/opt/galaxymediatools/functions/precheck"
+source "/opt/galaxymediatools/functions/isinteg"
+LOGF="$LOGDIR/UFC_$THISSERVER_$CTS.txt"
+INDXFIL="UFC_fileindex_$THISSERVER.txt"
+if [[ $SIM ]]; then TMODE="Simulation mode"
+elif [[ $REV ]]; then TMODE="Span Reverse mode"
+elif [[ $SPN ]]; then TMODE="Span Forward mode"
+elif [[ $CURD ]]; then TMODE="Single Directory Mode"
+else TMODE="Normal mode"
+fi
+echo "UFC Event Transcoder Starting in $TMODE..."
+printf "`eval date +%m/%d/%y"-"%H:%M` - *** UFC Event Transcoder in $TMODE Starting on $THISSERVER \n" >> $LOGF
+touch $LOGF
+echo "Resetting transcode directory $TRANSDIR..."
+printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Resetting Transcode directory on $THISSERVER \n" >> $LOGF
+if [ "$TRANSDIR" == "" ];then
+echo -e "${errorcolor}ERROR! TRANSDIR is null. Exiting."
+exit 1
+fi
+if [ -d $TRANSDIR ]; then
+ rm -r $TRANSDIR/* &> /dev/null
+else
+ mkdir $TRANSDIR
+fi
+printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process on $THISSERVER \n" >> $LOGF
+echo "Building index of files to process..."
+if [ -f "$LOGDIR/$INDXFIL" ]; then rm -f $LOGDIR/$INDXFIL; fi
+
+if [[ $CURD ]]; then
+FINDVARS="\"$CURD\" -type f ! -name *.ntrans.* ! -name *.trans.* -size +1G"
+else
+FINDVARS="\"$UFCDIR\" -type f ! -name *.ntrans.* ! -name *.trans.* -size +1G"
+fi
+FCNT=`eval /usr/bin/find "$FINDVARS" | wc -l`
+
+if [[ $SPN ]] || [[ $REV ]]; then
+FCOUNT1=$((FCNT/2))
+FRCOUNT=$((FCNT%2))
+if [ "$FRCOUNT" == "0" ]; then 
+ FCOUNT2=$FCOUNT1
+else
+ FCOUNT2=$((FCOUNT1+1))
+fi
+fi
+if [[ $REV ]]; then eval /usr/bin/find $FINDVARS | sort -r | head -$FCOUNT1 >> $LOGDIR/$INDXFIL
+elif [[ $SPN ]]; then eval /usr/bin/find $FINDVARS | sort | head -$FCOUNT2 >> $LOGDIR/$INDXFIL
+else eval /usr/bin/find $FINDVARS | sort  >> $LOGDIR/$INDXFIL
+echo $FINDVARS
+fi
+i=0
+while read sfile
+do
+    if [[ -f $sfile ]]; then
+        file[$i]=$sfile
+        i=$(($i+1))
+    fi
+done < $LOGDIR/$INDXFIL
+printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Starting transcode process on ${#file[@]} files on $THISSERVER \n" >> $LOGF
+echo "Starting transcode process on ${#file[@]} files"
+if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "UFC Event Transcoder Starting in $TMODE on $THISSERVER - ${#file[@]} Files to proccess" &> /dev/null; fi
+j=1
+for f in "${file[@]}"; do
+ fil=${f##*/}
+ EXT=${f: -3}
+ transc=`echo "$f" | cut -d "." -f3`
+ transd=`echo "$f" | cut -d "." -f2`
+ OSIZE=$(wc -c "$f" | cut -f 1 -d ' ')
+ fne="${f%.*}"
+ fng="${fne##*/}"
+ fleft=$((${#file[@]}-$j))
+ if [ -f "$fne.trans.mp4" ]; then
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 70 File already has transcoded version existing on $THISSERVER - removing $fne.trans.mp4 \n" >> $LOGF
+  echo "File already has transcoded version existing - removing $fne.trans.mp4"
+  if [[ -z $SIM ]]; then rm -f "$fne.trans.mp4"; fi
+ fi
+ echo "Checking video file integrity of $fne..."
+ isinteg "$f"
+ if [ "$ISINTEG" == "1" ]; then
+  echo -e "File passed video integrity test - $fne"
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 06 File passed video integrity test on $THISSERVER - $fne\n" >> $LOGF 
+echo "Copying file to local drive for transcoding on $fne..."
+ printf "`eval date +%m/%d/%y"-"%H:%M` - 04 Copying file to local drive for transcoding on $THISSERVER $fne\n" >> $LOGF
+ if [[ -z $SIM ]]; then cp -f "$f" "$TRANSDIR"; fi
+  FRAMES=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
+  HEIGHT=`ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep height | sed -e 's/height=//'`
+ if [ "$WIDTH" -gt "1290" ]; then
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file $FRAMES frames (1080p to 720p) - $fwenp\n" >> $LOGF
+  $APPDIR/pushover.sh -T $POAK -U $POUK "Processing Movie on $THISSERVER, $FRAMES frames (1080p to 720p) - $fwenp" &> /dev/null
+  ffmpegsw="-c:v libx264 -preset slow -sn -crf $UFCQUAL -profile:v high -s hd720 -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
+ else
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file $FRAMES frames - $fwenp\n" >> $LOGF
+  $APPDIR/pushover.sh -T $POAK -U $POUK "Processing Movie on $THISSERVER, $FRAMES frames - $fwenp" &> /dev/null
+  ffmpegsw="-c:v libx264 -preset slow -sn -crf $UFCQUAL -profile:v high -codec:a libfaac -ac 2 -ar 44100 -b:a 128k"
+   asd="(Not Resized)"
+  fi
+  TSTIME=$(date +%s)
+  if [[ -z $SIM ]]; then nice -n -10 ffmpeg -i "$TRANSDIR/$fil" $ffmpegsw "$TRANSDIR/$fng.trans.mp4" < /dev/null &> /dev/null; fi
+  TETIME=$(date +%s)
+  GTIME=$(gettime "$TSTIME" "$TETIME")
+  SOSIZE=$((OSIZE/1000000))
+  NSIZE=$(wc -c "$TRANSDIR/$fng.trans.mp4" | cut -f 1 -d ' ')
+  SNSIZE=$((NSIZE/1000000))
+  echo "Transcoding finished on $THISSERVER, $asd ($SOSIZE->$SNSIZE) elapsed time: $GTIME - $fleft left."
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 02 Transcoding Finished on $THISSERVER. ($SOSIZE->$SNSIZE) $fleft Left, Elapsed time: $GTIME - $fil \n" >> $LOGF
+  
+  if [ ! -f "$TRANSDIR/$fng.trans.mp4" ]; then
+   echo "PROBLEM!! No transcoded file found, something went wrong. Exiting."
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 99 PROBLEM!! No transcoded file found, something went wrong on $THISSERVER. Exiting. $fil\n" >> $LOGF
+   if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "PROBLEM!! No transcoded file found, something went wrong on $THISSERVER. Exiting. $fil" &> /dev/null; fi
+   exit 1
+  fi
+  
+  if [ "$NSIZE" -lt "25000000" ];then
+   rm -r "$TRANSDIR/$fne.trans.mp4"
+   rm -r "$TRANSDIR/$fil"
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 98 PROBLEM!! Transcoded file under 25 Meg, something went wrong on $THISSERVER, Exiting. $fil\n" >> $LOGF
+   echo "PROBLEM!! Transcoded file under 25 Meg, something went wrong, Exiting."
+   if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "PROBLEM!! Transcoded file under 25 Meg, something went wrong on $THISSERVER. Exiting. $fil" &> /dev/null; fi
+   exit 1
+  fi
+  
+  if [ "$OSIZE" -gt "$NSIZE" ] && [ "$NSIZE" -gt "10000000" ]; then
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 09 Transcoded file is smaller as intended on $THISSERVER- Deleting original $fil\n" >> $LOGF
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 03 Copying transcoded file back to filer on $THISSERVER - $fng.trans.mp4\n" >> $LOGF
+   echo "Transcoded file is smaller as intended, Deleting Original and copying transcoded file back $fng.trans.mp4"
+   if [[ -z $SIM ]]; then 
+    $APPDIR/pushover.sh -T $POAK -U $POUK "Transcode Finished on $THISSERVER - $asd ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME - Original Replaced - $fleft Left." &> /dev/null
+    cp -f "$TRANSDIR/$fng.trans.mp4" "$fne.trans.mp4"
+    rm -f "$f"
+    rm -f "$TRANSDIR/$fng.trans.mp4"
+    rm -f "$TRANSDIR/$fil"
+   fi 
+  else
+   if [[ -z $SIM ]]; then rm -f "$TRANSDIR/$fng.trans.mp4"; fi
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 80 Transcoded file is BIGGER then intended on $THISSERVER - Deleting transcode $fne.trans.mp4\n" >> $LOGF
+   printf "`eval date +%m/%d/%y"-"%H:%M` - 80 Marking original file non transcodable on $THISSERVER - $fne.ntrans.$EXT\n" >> $LOGF
+   echo "Transcoded file is BIGGER then intended on $THISSERVER - Keeping Original and Deleting transcode $fne.trans.mp4"
+   if [[ -z $SIM ]]; then
+   $APPDIR/pushover.sh -T $POAK -U $POUK "Transcode Finished on $THISSERVER - $asd ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME - Original Kept, Non-Transcodable - $fleft Left." &> /dev/null
+    mv "$f" "$fne.ntrans.$EXT"
+    rm -f "$TRANSDIR/$fil"
+    rm -f "$TRANSDIR/$fng.trans.mp4"
+   fi
+  fi
+  echo "Running Plex Server Stand-Up Comedy Section Scan..."
+  if [[ -z $SIM ]]; then ssh $PLEXINFO 'sudo su plex -c "plexscan -s -c $PLEXCCAT &> /dev/null &"' &> /dev/null &
+  fi
+ else
+  echo "File FAILED integrity test!! Purging file and marking for re-download"
+  if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "File FAILED integrity test! on $THISSERVER $fil - Marking for redownload"; fi
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test on $THISSERVER - $fil \n" >> $LOGF
+  printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download on $THISSERVER - $fil \n" >> $LOGF
+  if [[ -z $SIM ]]; then 
+   printf "`eval date +%m/%d/%y"-"%H:%M` - $f \n" >> "$LOGDIR/re-downloads.txt"
+   mv -f "$f" "$TRASHDIR"
+   rm -r "$TRANSDIR/isinteg.$EXT" &> /dev/null
+   rm -r "$TRANSDIR/$fil" &> /dev/null
+  fi
+fi
+j=$(($j+1))
+done
+TTIME=$(date +%s)
+ETIME=$(gettime "$STIME" "$TTIME")
+rm -r $TRANSDIR/* &> /dev/null
+echo "Starting Plex server UFC Event section full video analyze..."
+printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server full video analyze on $THISSERVER \n" >> $LOGF
+
+if [[ -z $SIM ]] && [[ $PUPD ]]; then ssh $PLEXINFO 'sudo su plex -c "plexscan -b -a -c $PLEXCCAT &> /dev/null &"' &> /dev/null & 
+fi
+if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "UFC Event Transcoder Complete on $THISSERVER - Total Elapsed: $ETIME"; fi
+printf "`eval date +%m/%d/%y"-"%H:%M` - *** UFC Event Transcoder Complete on $THISSERVER- Elapsed Time: $ETIME\n" >> $LOGF
+echo "Auto UFC Event Transcode Script Complete."
+FTIME=$((TTIME-STIME))
+#if [[ ! $SIM ]] && [ $FTIME -gt 10 ]; then 
+if [[ -z $SIM ]]; then  pm-suspend
+ exit 0
+fi
+#else
+# echo "Problem!! Script terminated to quickly. NOT suspending server"
+# printf "`eval date +%m/%d/%y"-"%H:%M` - Problem!! Script terminated to quickly. NOT suspending server $THISSERVER\n" >> $LOGF
+# if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Problem!! Script terminated to quickly. NOT suspending server $THISSERVER"; fi
+# exit 1
+#fi
