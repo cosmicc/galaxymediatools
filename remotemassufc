@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        echo " "
+        echo "Galaxy Media Tools - Remote Mass UFC Transcoder"
+        echo " "
+        echo "-h or --help : Help"
+	echo " "
+        exit 0
+fi
+
+source "/opt/galaxymediatools/functions/precheck"
+source "/opt/galaxymediatools/functions/whichserver"
+
+if [ "$1" == "-i" ] ||  [ "$2" == "-i" ] ||  [ "$3" == "-i" ]; then IMDB="yes"; fi
+if [ "$1" == "-t" ] ||  [ "$2" == "-t" ] ||  [ "$3" == "-t" ]; then NOTRANs="yes"; fi
+
+whichserver
+
+if [ "$WHICHSERVER" == "$T1NAME" ]; then
+ echo "Starting remote mass UFC transcoder on $T1NAME"
+  ssh $T1INFO "sudo screen -dm sudo /opt/galaxymediatools/massufctrans"
+ echo -e "Remote mass UFC transcoder started on $T1NAME"
+ exit 0
+elif [ "$WHICHSERVER" == "$T2NAME" ]; then
+ echo "Starting remote UFC transcoder on $T2NAME"
+ ssh $T2INFO "sudo screen -dm sudo /opt/galaxymediatools/massufctrans"
+ echo -e "Remote mass UFC transcoder started on $T2NAME"
+ exit 0
+elif [ "$WHICHSERVER" == "NONE" ]; then
+ echo -e "All servers are busy. Exiting."
+fi
+
