@@ -119,7 +119,7 @@ fi
 
    echo -e "Copying transcoded file back $renamedmovienp"
    printf "`eval date +%m/%d/%y"-"%H:%M` - 03 Copying transcoded file back to filer - $renamedmovienp\n" >> $LOGF
-   cp -f "$TRANSDIR/$fnenp.mp4" "$MOVIEDIR/$renamedmovienp"
+   cp -f "$TRANSDIR/$fnenp.mp4" "$UFCDIR/$renamedmovienp"
    mv -f "$fwewp" "$OLDTRANSDIR"
    rm -f "$TRANSDIR/$fnenp.mp4"
    rm -f "$TRANSDIR/$fwenp"
