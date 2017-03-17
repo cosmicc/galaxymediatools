@@ -171,7 +171,7 @@ echo "Copying file to local drive for transcoding on $fne..."
    fi
   fi
   echo "Running Plex Server TV Section Scan..."
-  if [[ -z $SIM ]]; then ssh $PLEXINFO 'sudo su plex -c "plexscan -s -c $PLEXCAT &> /dev/null &"' &> /dev/null &
+  if [[ -z $SIM ]]; then curl "http://172.25.1.26:32400/library/sections/3/refresh?X-Plex-Token=HvscgmK51nrqnQaxTNBi"
   fi
  else
   echo "File FAILED integrity test!! Purging file and marking for re-download"
@@ -193,7 +193,7 @@ rm -r $TRANSDIR/* &> /dev/null
 echo "Starting Plex server TV section full video analyze..."
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server full video analyze on $THISSERVER \n" >> $LOGF
 
-if [[ -z $SIM ]] && [[ $PUPD ]]; then ssh $PLEXINFO 'sudo su plex -c "plexscan -b -a -c $PLEXCAT &> /dev/null &"' &> /dev/null & 
+if [[ -z $SIM ]] && [[ $PUPD ]]; then curl "http://172.25.1.26:32400/library/sections/3/refresh?X-Plex-Token=HvscgmK51nrqnQaxTNBi" 
 fi
 if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "TV Transcoder Complete on $THISSERVER - Total Elapsed: $ETIME"; fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - *** TV Transcoder Complete on $THISSERVER- Elapsed Time: $ETIME\n" >> $LOGF
