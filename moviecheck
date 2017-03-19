@@ -1,9 +1,51 @@
 #!/bin/bash
 
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        echo " "
+        echo "Galaxy Media Tools - Movie Integrity Validator"
+        echo " "
+        echo "-h or --help : Help"
+        echo "-v : Verbose output "
+        exit 0
+fi
+
+if [ "$1" == "" ] && [ "$1" =! "-v" ]; then
+        echo "Argument missing. Specify a full path movie to verify"
+        exit 1
+fi
+
+
 source=/opt/galaxymediatools/prechecknl
 
-QFEP=`find /video/Movies -type f -name "*480p*"`
-#QSD=`find /video/Movies -type f -name "*SD*"`
-#THISYEAR=`find /video/Movies -type f -name "*(2016)*"`
 
-echo $QFEP
+for i in {0..39} ; do ffmpeg -accurate_seek -ss `echo $i*2000.0 | bc` -i $1 -frames:v 1 integ_$i.bmp &> ffmpeg.log ; done
+compare -metric RMSE integ_1.bmp integ_2.bmp integ.bmp &> integvalue.log
+INTEG=`head -c 1 integvalue.log`
+
+if [[ $INTEG == "0" ]]
+then
+ if [[ $2 != "-v" ]]
+ then
+  echo "0"
+ else
+  echo "Movie FAILED integrity check! Duplicate frames detected"
+ fi
+
+else
+  if [[ $2 != "-v" ]]
+ then
+ echo "1"
+ else
+ echo "Movie PASSED integrity check!"
+ fi
+fi
+
+if [[ $2 == "-v" ]]
+then
+RAW=`head integvalue.log`
+echo "Raw Value: $RAW"
+fi
+
+rm *.bmp
+rm integvalue.log
+rm ffmpeg.log
