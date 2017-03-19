@@ -17,11 +17,12 @@ rm -r /opt/galaxymediatools/ffmpeginstall
 set -e
 mkdir /opt/galaxymediatools/ffmpeginstall
 cd /opt/galaxymediatools/ffmpeginstall
-apt-get install make libfftw3-dev pkg-config autoconf automake libtool unzip yasm libfaac-dev libass-dev -y
+apt-get install make libfftw3-dev pkg-config autoconf automake libtool unzip yasm mercurial libfaac-dev libass-dev -y
 #wget http://downloads.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
 #wget http://217.20.164.161/~tipok/aacplus/libaacplus-2.0.2.tar.gz
 #wget http://ffmpeg.gusari.org/uploads/libaacplus-2.0.2.tar.gz
 git clone http://git.videolan.org/git/x264.git
+hg clone http://hg.videolan.org/x265
 git clone https://github.com/FFmpeg/FFmpeg.git
 
 #tar -xzf lame-3.99.5.tar.gz
