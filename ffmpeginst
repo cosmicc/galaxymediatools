@@ -17,12 +17,12 @@ rm -r /opt/galaxymediatools/ffmpeginstall
 set -e
 mkdir /opt/galaxymediatools/ffmpeginstall
 cd /opt/galaxymediatools/ffmpeginstall
-apt-get install make libfftw3-dev pkg-config autoconf automake libtool unzip yasm mercurial libfaac-dev libass-dev -y
+apt-get install make cmake libfftw3-dev pkg-config autoconf automake libtool unzip yasm mercurial libx264-dev libfdk-aac-dev libass-dev -y
 #wget http://downloads.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
 #wget http://217.20.164.161/~tipok/aacplus/libaacplus-2.0.2.tar.gz
 #wget http://ffmpeg.gusari.org/uploads/libaacplus-2.0.2.tar.gz
-git clone http://git.videolan.org/git/x264.git
-hg clone http://hg.videolan.org/x265
+#git clone http://git.videolan.org/git/x264.git
+#hg clone http://hg.videolan.org/x265
 git clone https://github.com/FFmpeg/FFmpeg.git
 
 #tar -xzf lame-3.99.5.tar.gz
@@ -41,17 +41,17 @@ git clone https://github.com/FFmpeg/FFmpeg.git
 #ldconfig
 #cd ..
 
-cd x264
-./configure --enable-shared --enable-pic
-make
-make install
-ldconfig
-cd ..
-
-#cd ffmpeg
-#./configure --enable-gpl --enable-postproc --enable-swscale --enable-pthreads --enable-x11grab --enable-libdc1394 --enable-libfaac --enable-libfaad --enable-libgsm --enable-libmp3lame --enable-libtheora --enable-libvorbis --enable-libx264 --enable-libxvid --enable-nonfree --enable-libass
+#cd x264
+#./configure --enable-shared --enable-pic
 #make
 #make install
+#ldconfig
+#cd ..
+
+cd ffmpeg
+./configure --enable-gpl --enable-postproc --enable-swscale --enable-pthreads --enable-libmp3lame --enable-libx264 --enable-libx265 --enable-libfdk-aac --enable-nonfree --enable-libass
+make
+make install
 
 trap : 0
 echo >&2 '
