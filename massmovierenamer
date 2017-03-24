@@ -150,7 +150,7 @@ if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass Movie Renamer
 fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server movie section update  \n" >> $LOGF
 echo "Script ended."
-if [[ -z $SIM ]]; then curl "http://172.25.1.26:32400/library/sections/1/refresh?X-Plex-Token=qerZZzQdcyefQx7tNbiC"
+if [[ -z $SIM ]]; then curl "http://172.25.1.26:32400/library/sections/1/refresh?X-Plex-Token=HvscgmK51nrqnQaxTNBi"
    fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
 sleep 10
