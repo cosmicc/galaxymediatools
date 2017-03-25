@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Find UUID: ls -l /dev/disk/by-uuid 
+
+source "/opt/galaxymediatools/functions/prechecknl"
+LOGF="/video/Incoming/logs/mediabackup/$CTS-Movies.txt"
+LOGM="/video/Incoming/logs/mediabackup/!backupmaster"
+
+ST=`date +%m/%d/%y" "%l:%M%P`
+echo "***Starting Movie Library backup at $ST"
+echo "***Starting Movie Library backup at $ST" >> $LOGF
+echo "***Starting Movie Library backup at $ST" >> $LOGM
+
+MOVIECOUNT=`ls -1qR /video/Movies | wc -l`
+if [[ $MOVIECOUNT < 1900 ]]; then 
+ echo "Movie library file count too low!! Only $MOVIECOUNT files found. Exiting."
+ echo "Movie library file count too low!! Only $MOVIECOUNT files found. Exiting." >> $LOGF
+ echo "Movie library file count too low!! Only $MOVIECOUNT files found. Exiting." >> $LOGM
+ exit
+else
+ echo "Found $MOVIECOUNT Movies in library to backup"
+ echo "Found $MOVIECOUNT Movies in library to backup" >> $LOGF
+fi
+
+if mountpoint -q /mnt/backup1
+ then
+  echo "Executing rsync..."
+  echo "Executing rsync..." >> $LOGF
+  rsync -archv --stats --delete /video/Movies/ /mnt/backup1/Movies 2>&1 | tee -a $LOGF
+ else
+  mount UUID=F42E2DF82E2DB510 /mnt/backup1
+  if mountpoint -q /mnt/backup1
+   then
+    echo "Executing rsync..."
+    echo "Executing rsync..." >> $LOGF
+    rsync -archv --stats --delete /video/Movies/ /mnt/backup1/Movies 2>&1 | tee -a $LOGF
+   else
+    echo "USB Drive backup1 not mounted. Exiting"
+    echo "USB Drive backup1 not mounted. Exiting" >> $LOGF
+    echo "USB Drive backup1 not mounted. Exiting Movie library backup." >> $LOGM
+    exit
+   fi
+fi
+ ET=`date +%m/%d/%y" "%l:%M%P`
+ echo "***Ended Movie Library backup at $ET"
+ echo "***Ended Movie Library backup at $ET" >> $LOGF
+ echo "***Ended Movie Library backup at $ET" >> $LOGM

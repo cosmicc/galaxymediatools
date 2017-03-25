@@ -1,0 +1,13 @@
+#!/bin/bash
+
+LOGF="/video/Incoming/logs/mediabackup/!backupmaster.txt"
+
+if mountpoint -q /video
+then
+ DT=`date +%m/%d/%y" "%l:%M%P`
+ echo "-------- BACKUP SCRIPT STARTING at $DT --------" >> $LOGF
+ screen -dm bash -c "/opt/galaxymediatools/backupscripts/backup1exec"
+ screen -dm bash -c "/opt/galaxymediatools/backupscripts/backup2exec"
+else
+ echo "Video NFS Share NOT MOUNTED!! Exiting." >> $LOGF
+fi

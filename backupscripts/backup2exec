@@ -1,0 +1,5 @@
+#!/bin/bash
+
+LOGF="/video/Incoming/logs/mediabackup/backupmaster.txt"
+
+/opt/galaxymediatools/backupscripts/backuptvshows.exec

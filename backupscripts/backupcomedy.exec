@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Find UUID: ls -l /dev/disk/by-uuid 
+
+source "/opt/galaxymediatools/functions/prechecknl"
+LOGF="/video/Incoming/logs/mediabackup/$CTS-Comedy.txt"
+LOGM="/video/Incoming/logs/mediabackup/!backupmaster.txt"
+
+ST=`date +%m/%d/%y" "%l:%M%P`
+echo "***Starting Stand-Up Comedy Library backup at $ST"
+echo "***Starting Stand-Up Comedy Library backup at $ST" >> $LOGF
+echo "***Starting Stand-Up Comedy Library backup at $ST" >> $LOGM
+
+FILECOUNT=`ls -1qR /video/Comedy | wc -l`
+if [[ $FILECOUNT < 125 ]]; then 
+ echo "Stand-Up Comedy library file count too low!! Only $FILECOUNT files found. Exiting."
+ echo "Stand-Up Comedy library file count too low!! Only $FILECOUNT files found. Exiting." >> $LOGF
+ echo "Stand-Up Comedy library file count too low!! Only $FILECOUNT files found. Exiting." >> $LOGM
+ exit
+else
+ echo "Found $FILECOUNT Stand-Up Comedy files in library to backup."
+ echo "Found $FILECOUNT Stand-Up Comedy files in library to backup." >> $LOGF
+fi
+
+if mountpoint -q /mnt/backup1
+ then
+  echo "Executing rsync..."
+  echo "Executing rsync..." >> $LOGF
+  rsync -archv --stats --delete /video/Comedy/ /mnt/backup1/Comedy 2>&1 | tee -a $LOGF
+ else
+  mount UUID=F42E2DF82E2DB510 /mnt/backup1
+  if mountpoint -q /mnt/backup1
+   then
+    echo "Executing rsync..."
+    echo "Executing rsync..." >> $LOGF
+    rsync -archv --stats --delete /video/Comedy/ /mnt/backup1/Comedy 2>&1 | tee -a $LOGF
+   else
+    echo "USB Drive Backup1 not mounted. Exiting"
+    echo "USB Drive Backup1 not mounted. Exiting" >> $LOGF
+    echo "USB Drive Backup1 not mounted. Exiting Stand-Up Comedy library backup." >> $LOGM
+    exit
+   fi
+ ET=`date +%m/%d/%y" "%l:%M%P`
+ echo "***Ended Stand-Up Comedy Library backup at $ET"
+ echo "***Ended Stand-Up Comedy Library backup at $ET" >> $LOGF
+ echo "***Ended Stand-Up Comedy Library backup at $ET" >> $LOGM
+fi
+
