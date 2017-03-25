@@ -4,7 +4,7 @@
 
 source "/opt/galaxymediatools/functions/prechecknl"
 LOGF="/video/Incoming/logs/mediabackup/$CTS-Movies.txt"
-LOGM="/video/Incoming/logs/mediabackup/!backupmaster"
+LOGM="/video/Incoming/logs/mediabackup/!backupmaster.txt"
 
 ST=`date +%m/%d/%y" "%l:%M%P`
 echo "***Starting Movie Library backup at $ST"
