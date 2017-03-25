@@ -11,8 +11,28 @@ echo "***Starting TV Show Library backup at $ST"
 echo "***Starting TV Show Library backup at $ST" >> $LOGF
 echo "***Starting TV Show Library backup at $ST" >> $LOGM
 
-FILECOUNT=`ls -1qR '/video/TV Series' | wc -l`
-if [[ $FILECOUNT < 18000 ]]; then 
+if mountpoint -q /mnt/backup2
+ then
+  FILECOUNT=`ls -1qR '/video/TV Series' | wc -l`
+if [[ $FILECOUNT < 18000 ]]; then
+ echo "TV Show library file count too low!! Only $FILECOUNT files found. Exiting."
+ echo "TV Show library file count too low!! Only $FILECOUNT files found. Exiting." >> $LOGF
+ echo "TV Show library file count too low!! Only $FILECOUNT files found. Exiting." >> $LOGM
+curl -s --form-string "token=aUsZyfBbjKGwUJUMdGfTqm63YydCBS" --form-string "user=ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" --form-string "message=TV Show Library Backup ERROR! File Count Too LOW!" http://api.pushover.net/1/messages.json
+ exit
+else
+ echo "Found $FILECOUNT TV Show episodes in library to backup."
+ echo "Found $FILECOUNT TV Show episodes in library to backup." >> $LOGF
+fi
+  echo "Executing rsync..."
+  echo "Executing rsync..." >> $LOGF
+  rsync -arhv --stats --delete '/video/TV Series/' '/mnt/backup2/TV Shows' 2>&1 | tee -a $LOGF
+ else
+  mount UUID=5F66-17ED /mnt/backup2
+  if mountpoint -q /mnt/backup2
+   then
+  FILECOUNT=`ls -1qR '/video/TV Series' | wc -l`
+if [[ $FILECOUNT < 18000 ]]; then
  echo "TV Show library file count too low!! Only $FILECOUNT files found. Exiting."
  echo "TV Show library file count too low!! Only $FILECOUNT files found. Exiting." >> $LOGF
  echo "TV Show library file count too low!! Only $FILECOUNT files found. Exiting." >> $LOGM
@@ -21,27 +41,27 @@ else
  echo "Found $FILECOUNT TV Show episodes in library to backup."
  echo "Found $FILECOUNT TV Show episodes in library to backup." >> $LOGF
 fi
-
-if mountpoint -q /mnt/backup2
- then
-  echo "Executing rsync..."
-  echo "Executing rsync..." >> $LOGF
-  rsync -archv --stats --delete '/video/TV Series/' '/mnt/backup2/TV Shows' 2>&1 | tee -a $LOGF
- else
-  mount UUID=F42E2DF82E2DB511 /mnt/backup2
-  if mountpoint -q /mnt/backup2
-   then
     echo "Executing rsync..."
     echo "Executing rsync..." >> $LOGF
-    rsync -archv --stats --delete '/video/TV Series/' '/mnt/backup2/TV Shows' 2>&1 | tee -a $LOGF
+    rsync -arhv --stats --delete '/video/TV Series/' '/mnt/backup2/TV Shows' 2>&1 | tee -a $LOGF
    else
     echo "USB Drive Backup2 not mounted. Exiting"
     echo "USB Drive Backup2 not mounted. Exiting" >> $LOGF
-    echo "USB Drive Backup2 not mounted. Exiting TV Show library backup." >> $LOGM
-    exit
+    echo "USB Drive Backup2 not mounted. Exiting TV Show library backup." >> $LOGM 
+curl -s --form-string "token=aUsZyfBbjKGwUJUMdGfTqm63YydCBS" --form-string "user=ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" --form-string "message=TV Show Library Backup ERROR! Backup2 Not Mounted!" http://api.pushover.net/1/messages.json
+     ET=`date +%m/%d/%y" "%l:%M%P`
+ echo "***Ended TV Show Library backup at $ET"
+ echo "***Ended TV Show Comedy Library backup at $ET" >> $LOGF
+ echo "***Ended TV Show Comedy Library backup at $ET" >> $LOGM
+   exit
+
    fi
 fi
+TTIME=$(date +%s)
+   ETIME=$(gettime "$STIME" "$TTIME")
  ET=`date +%m/%d/%y" "%l:%M%P`
- echo "***Ended TV Show Library backup at $ET"
- echo "***Ended TV Show Library backup at $ET" >> $LOGF
- echo "***Ended TV Show Library backup at $ET" >> $LOGM
+ echo "***Ended TV Show Library backup at $ET Elapsed: $ETIME"
+ echo "***Ended TV Show Library backup at $ET Elapsed: $ETIME" >> $LOGF
+ echo "***Ended TV Show Library backup at $ET Elapsed: $ETIME" >> $LOGM
+curl -s --form-string "token=aUsZyfBbjKGwUJUMdGfTqm63YydCBS" --form-string "user=ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" --form-string "message=TV Show Library Backup Finished, $FILECOUNT Files Elapsed: $ETIME" http://api.pushover.net/1/messages.json
+

@@ -16,6 +16,7 @@ if [[ $MOVIECOUNT < 1900 ]]; then
  echo "Movie library file count too low!! Only $MOVIECOUNT files found. Exiting."
  echo "Movie library file count too low!! Only $MOVIECOUNT files found. Exiting." >> $LOGF
  echo "Movie library file count too low!! Only $MOVIECOUNT files found. Exiting." >> $LOGM
+ curl -s --form-string "token=aUsZyfBbjKGwUJUMdGfTqm63YydCBS" --form-string "user=ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" --form-string "message=Movie Library Backup ERROR! File Count Too LOW!" http://api.pushover.net/1/messages.json
  exit
 else
  echo "Found $MOVIECOUNT Movies in library to backup"
@@ -26,22 +27,31 @@ if mountpoint -q /mnt/backup1
  then
   echo "Executing rsync..."
   echo "Executing rsync..." >> $LOGF
-  rsync -archv --stats --delete /video/Movies/ /mnt/backup1/Movies 2>&1 | tee -a $LOGF
+#  curl -s --form-string "token=aUsZyfBbjKGwUJUMdGfTqm63YydCBS" --form-string "user=ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" --form-string "message=Movie Library Backup Started. $MOVIECOUNT Files." http://api.pushover.net/1/messages.json >> $LOGF
+  rsync -arhv --stats --delete /video/Movies/ /mnt/backup1/Movies 2>&1 | tee -a $LOGF
  else
   mount UUID=F42E2DF82E2DB510 /mnt/backup1
   if mountpoint -q /mnt/backup1
    then
     echo "Executing rsync..."
     echo "Executing rsync..." >> $LOGF
-    rsync -archv --stats --delete /video/Movies/ /mnt/backup1/Movies 2>&1 | tee -a $LOGF
+    rsync -arhv --stats --delete /video/Movies/ /mnt/backup1/Movies 2>&1 | tee -a $LOGF
    else
     echo "USB Drive backup1 not mounted. Exiting"
     echo "USB Drive backup1 not mounted. Exiting" >> $LOGF
     echo "USB Drive backup1 not mounted. Exiting Movie library backup." >> $LOGM
-    exit
-   fi
-fi
- ET=`date +%m/%d/%y" "%l:%M%P`
+curl -s --form-string "token=aUsZyfBbjKGwUJUMdGfTqm63YydCBS" --form-string "user=ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" --form-string "message=Movie Library Backup ERROR! Backup1 Not Mounted!" http://api.pushover.net/1/messages.json
+    ET=`date +%m/%d/%y" "%l:%M%P`
  echo "***Ended Movie Library backup at $ET"
  echo "***Ended Movie Library backup at $ET" >> $LOGF
  echo "***Ended Movie Library backup at $ET" >> $LOGM
+ exit
+   fi
+fi
+TTIME=$(date +%s)
+   ETIME=$(gettime "$STIME" "$TTIME")
+ ET=`date +%m/%d/%y" "%l:%M%P`
+ echo "***Ended Movie Library backup at $ET $MOVIECOUNT Files Elapsed: $ETIME"
+ echo "***Ended Movie Library backup at $ET $MOVIECOUNT Files Elapsed: $ETIME" >> $LOGF
+ echo "***Ended Movie Library backup at $ET $MOVIECOUNT Files Elapsed: $ETIME" >> $LOGM
+curl -s --form-string "token=aUsZyfBbjKGwUJUMdGfTqm63YydCBS" --form-string "user=ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" --form-string "message=Movie Library Backup Finished, $MOVIECOUNT Files Elapsed: $ETIME" http://api.pushover.net/1/messages.json

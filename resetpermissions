@@ -1,0 +1,4 @@
+#!/bin/bash
+
+chmod ugo+rw /video/Incoming -R
+chmod ugo+rw "/video/Recorded TV" -R
