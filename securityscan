@@ -70,4 +70,9 @@ echo "Sophos definition update result: $SUEXIT" >> $LOGF
 echo "Sophos scan result: $SAVCODE" >> $LOGF
 echo " " >> $LOGF
 echo "-------- SECURITY SCAN COMPLETED on \"$HOSTNAME\" at $ET Elapsed: $ETIME --------" >> $LOGF
+
+if [[ $HOSTNAME == "astroid2" ]]; then
+/opt/galaxymediatools/galaxy_maintenance
+fi
+
 exit 0
