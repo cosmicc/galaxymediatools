@@ -1,5 +1,14 @@
 #!/bin/bash
 
 LOGF="/video/Incoming/logs/mediabackup/backupmaster.txt"
+DUUID="F42E2DF82E2DB510"
+MOUNT=/mnt/backup2
+
+if mountpoint -q $MOUNT
+then
+umount $MOUNT
+fi
+
+ntfsfix /dev/disk/by-uuid/$DUUID >> $LOGF
 
 /opt/galaxymediatools/backupscripts/backuptvshows.exec
