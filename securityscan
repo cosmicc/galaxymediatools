@@ -1,0 +1,73 @@
+#!/bin/bash
+
+source "/opt/galaxymediatools/functions/prechecknl"
+
+if mountpoint -q /video
+then
+LOGF="/video/Incoming/logs/security/$CTS-$HOSTNAME.txt"
+else
+LOGF="/var/log/$CTS-SECURITYSCAN.txt"
+fi
+
+ST=`date +%m/%d/%y" "%l:%M%P`
+echo "-------- SECURITY SCAN STARTING on \"$HOSTNAME\" at $ST --------" >> $LOGF
+echo " " >> $LOGF
+
+chkrootkit -n | grep 'INFECTED|Vulnerable'
+    if [ $? -eq 0 ]; then
+      /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Security threat from chkrootkit found on $HOSTNAME" &> /dev/null
+    CHKEXIT="Threat Found!!"
+    else
+    CHKEXIT="No Threats Found."
+    fi
+
+lynis audit system --cronjob --quiet &>> $LOGF
+    if [ $? -ne 0 ]; then
+      /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Lynis Execution error on $HOSTNAME. Check $LOGF" &> /dev/null
+    LYNEXIT="Execution Error!!"
+    else
+    LYNEXIT="Success"
+    fi
+
+echo " " >> $LOGF
+/opt/sophos-av/bin/savupdate &>> $LOGF
+    if [ $? -ne 0 ]; then
+      /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Sophos definition update error on $HOSTNAME. Check $LOGF" &> /dev/null
+    SUEXIT="Update Error!!"
+    else
+    SUEXIT="Success"
+    fi
+
+savscan -ss -archive -suspicious --stay-on-machine --skip-special /root >> $LOGF
+
+if [ $? -eq 0 ]; then
+  SAVCODE="Success"
+else
+  if [ $? -eq 1 ]; then
+    SAVCODE="Scan Interrupted"
+  else
+    if [ $? -eq 2 ]; then
+      SAVCODE="Scan Error"
+      /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Sophos Execution error on $HOSTNAME. Check $LOGF" &> /dev/null
+  else
+    if [ $? -eq 3 ]; then
+      SAVCODE="Threat Found!!"
+      /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Security Threat Found on $HOSTNAME. Check $LOGF" &> /dev/null 
+    fi
+    fi
+  fi
+fi
+
+
+TTIME=$(date +%s)
+   ETIME=$(gettime "$STIME" "$TTIME")
+ ET=`date +%m/%d/%y" "%l:%M%P`
+
+echo " " >> $LOGF
+echo "Chkrootkit result: $CHKEXIT" >> $LOGF
+echo "Lynis result: $LYNEXIT" >> $LOGF
+echo "Sophos definition update result: $SUEXIT" >> $LOGF
+echo "Sophos scan result: $SAVCODE" >> $LOGF
+echo " " >> $LOGF
+echo "-------- SECURITY SCAN COMPLETED on \"$HOSTNAME\" at $ET Elapsed: $ETIME --------" >> $LOGF
+exit 0

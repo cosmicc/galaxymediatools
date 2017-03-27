@@ -1,0 +1,60 @@
+#!/bin/bash
+
+source "/opt/galaxymediatools/functions/prechecknl"
+
+if mountpoint -q /video
+then
+ echo " "
+else
+ echo "/video NOT MOUNTED!! Exiting."
+ /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "NASscan Error: /video not mounted, cannot continue." &> /dev/null
+ exit 1
+fi
+
+LOGF="/video/Incoming/logs/security/$CTS-NASscan.txt"
+THREAT="No threats found."
+
+ST=`date +%m/%d/%y" "%l:%M%P`
+echo "-------- SECURITY FILE SCAN STARTING at $ST --------" >> $LOGF
+
+echo " " >> $LOGF
+
+function scanfiles {
+echo "*Scanning $1" >> $LOGF
+savscan -ss -archive -suspicious -move=/video/Other/infected $1 >> $LOGF
+  if [ $? -eq 1 ]; then
+    THREAT="Scan Interrupted"
+  else
+    if [ $? -eq 2 ]; then
+     # /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Sophos Execution error on NASscan. Check $LOGF" &> /dev/null
+    THREAT="Execution Error"
+   else
+    if [ $? -eq 3 ]; then
+      THREAT="THREAT FOUND!!"
+    #  /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Security Threat Found on NASscan. Check $LOGF" &> /dev/null
+    fi
+  fi
+fi
+}
+
+/opt/sophos-av/bin/savupdate &>> $LOGF
+    if [ $? -ne 0 ]; then
+      /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Sophos definition update error on NASscan. Check logs." &> /dev/null
+    SUEXIT="Update Error!!"
+    else
+    SUEXIT="Success"
+    fi
+
+scanfiles /video/Incoming
+scanfiles /pictures
+scanfiles /files
+
+TTIME=$(date +%s)
+   ETIME=$(gettime "$STIME" "$TTIME")
+ ET=`date +%m/%d/%y" "%l:%M%P`
+
+/opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Security file scan complete. $THREAT Elapsed: $ETIME" &> /dev/null
+
+echo " " >> $LOGF
+echo "-------- SECURITY FILE SCAN COMPLETED at $ET Elapsed: $ETIME --------" >> $LOGF
+exit 0

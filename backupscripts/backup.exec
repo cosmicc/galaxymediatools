@@ -1,3 +1,4 @@
+#!/bin/bash
 
 ST=`date +%m/%d/%y" "%l:%M%P`
 echo "***Starting $LIBRARY Library backup at $ST" 

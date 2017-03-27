@@ -1,0 +1,78 @@
+#!/bin/bash
+
+source "/opt/galaxymediatools/functions/prechecknl"
+
+LOGF="/video/Incoming/logs/maintenance/$CTS-Maintenance.txt"
+
+if mountpoint -q /video
+then
+RUNCHECK1=`ps uxa | grep "galaxy_maintenance" | wc -l`
+
+ ST=`date +%m/%d/%y" "%l:%M%P`
+ echo "-------- GALAXY MAINTENANCE STARTING at $ST --------" >> $LOGF
+ if [[ $RUNCHECK1 < 4 ]]; then
+ 
+  echo " " >> $LOGF
+  PTIME=$(date +%s)  
+  echo "*Starting file cleanup..." >> $LOGF
+  /opt/galaxymediatools/filecleanup >> $LOGF
+  OTIME=$(date +%s)
+  RTIME=$(gettime "$PTIME" "$OTIME")
+  echo "*Completed file cleanup. Elapsed: $RTIME" >> $LOGF
+ 
+  echo " " >> $LOGF 
+  PTIME=$(date +%s)
+  echo "*Starting file permission reset..." >> $LOGF
+  /opt/galaxymediatools/filepermissions >> $LOGF
+  OTIME=$(date +%s)
+  RTIME=$(gettime "$PTIME" "$OTIME")
+  echo "*Completed file permission reset. Elapsed: $RTIME" >> $LOGF
+
+  echo " " >> $LOGF
+  PTIME=$(date +%s)
+  echo "*Starting file security scan..." >> $LOGF
+  /opt/galaxymediatools/filescan >> $LOGF
+  OTIME=$(date +%s)
+  RTIME=$(gettime "$PTIME" "$OTIME")
+  echo "*Completed file security scan. Elapsed: $RTIME" >> $LOGF
+
+  echo " " >> $LOGF
+  PTIME=$(date +%s)
+  echo "Executing Mass Movie Renamer..." >> $LOGF
+  /opt/galaxymediatools/massmovierenamer &> /dev/null
+  OTIME=$(date +%s)
+  RTIME=$(gettime "$PTIME" "$OTIME")
+  echo "*Mass Movie renamer complete. Elapsed: $RTIME" >> $LOGF
+
+  echo " " >> $LOGF
+  PTIME=$(date +%s)
+  echo "Executing Mass TV Transcoder..." >> $LOGF
+  /opt/galaxymediatools/masstvtrans &> /dev/null
+  OTIME=$(date +%s)
+  RTIME=$(gettime "$PTIME" "$OTIME")
+  echo "*Mass TV Transcoder complete. Elapsed: $RTIME" >> $LOGF
+
+  echo " " >> $LOGF
+  PTIME=$(date +%s)
+  echo "Executing master backup script..." >> $LOGF
+  #/opt/galaxymediatools/backupstart
+  OTIME=$(date +%s)
+  RTIME=$(gettime "$PTIME" "$OTIME")
+  echo "*master backup script complete. Elapsed: $RTIME *This process branchs off" >> $LOGF
+
+  else
+   echo "Maintenance script already running.  Not executing another session." >> $LOGF
+   exit 1
+ fi
+
+TTIME=$(date +%s)
+   ETIME=$(gettime "$STIME" "$TTIME")
+ ET=`date +%m/%d/%y" "%l:%M%P`
+
+echo "" >> $LOGF
+echo "-------- GALAXY MAINTENANCE COMPLETE at $ET Elapsed: $ETIME --------" >> $LOGF
+ 
+else
+ echo "Video NFS Share NOT MOUNTED!! Exiting." >> $LOGF
+ exit 1
+fi

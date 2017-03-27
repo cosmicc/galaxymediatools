@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if mount|grep "/video" > /dev/null; then
+echo "File permission reset running..."
+
+chmod ugo+rw /video/Incoming -R
+chmod ugo+rw "/video/Recorded TV" -R
+chmod ugo+rw "/video/Movies" -R
+chmod ugo+rw "/video/TV Series" -R
+
+else
+echo "/video NOT MOUNTED!! Exiting."
+exit 1
+fi
+
+echo "File permission reset Complete."
+exit 0

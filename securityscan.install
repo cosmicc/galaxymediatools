@@ -1,0 +1,33 @@
+#!/bin/bash
+
+:'
+
+apt-get update
+apt-get install chkrootkit
+
+wget -O - http://packages.cisofy.com/keys/cisofy-software-public.key | sudo apt-key add - > /dev/null
+
+echo "deb [arch=amd64] https://packages.cisofy.com/community/lynis/deb/ trusty main" | sudo tee -a /etc/apt/sources.list.d/cisofy-lynis.list
+
+apt-get install apt-transport-https
+
+apt-get update
+
+apt-get install lynis
+
+cd /opt
+
+tar xvfz /video/Other/sav-linux-free-9.tgz
+
+mv /opt/sophos-av /opt/sophos-install
+
+/opt/sophos-install/install.sh
+
+rm /opt/sophos-install -R
+
+/opt/sophos-av/bin/savupdate
+
+'
+
+line="0 0 * * * sleep \$(expr \$RANDOM % 15); /opt/galaxymediatools/securityscan"
+(crontab -u root -l; echo "$line") | crontab -u root -
