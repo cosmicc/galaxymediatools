@@ -38,7 +38,7 @@ echo " " >> $LOGF
     SUEXIT="Success"
     fi
 
-savscan -ss -archive -suspicious --stay-on-machine --skip-special /root >> $LOGF
+savscan -ss -archive -suspicious --stay-on-machine --skip-special / >> $LOGF
 
 if [ $? -eq 0 ]; then
   SAVCODE="Success"
