@@ -1,6 +1,5 @@
 #!/bin/bash
 
-:'
 
 apt-get update
 apt-get install chkrootkit
@@ -26,8 +25,6 @@ mv /opt/sophos-av /opt/sophos-install
 rm /opt/sophos-install -R
 
 /opt/sophos-av/bin/savupdate
-
-'
 
 line="0 0 * * * sleep \$(expr \$RANDOM % 15); /opt/galaxymediatools/securityscan"
 (crontab -u root -l; echo "$line") | crontab -u root -
