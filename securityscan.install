@@ -2,17 +2,17 @@
 
 
 apt-get update
-apt-get install chkrootkit
+apt-get install chkrootkit -y --force-yes
 
 wget -O - http://packages.cisofy.com/keys/cisofy-software-public.key | sudo apt-key add - > /dev/null
 
 echo "deb [arch=amd64] https://packages.cisofy.com/community/lynis/deb/ trusty main" | sudo tee -a /etc/apt/sources.list.d/cisofy-lynis.list
 
-apt-get install apt-transport-https
+apt-get install apt-transport-https -y --force-yes
 
 apt-get update
 
-apt-get install lynis
+apt-get install lynis -y --force-yes
 
 cd /opt
 
