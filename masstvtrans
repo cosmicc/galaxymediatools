@@ -195,7 +195,7 @@ printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server full video analyze on $TH
 
 if [[ -z $SIM ]] && [[ $PUPD ]]; then curl "http://172.25.1.26:32400/library/sections/3/refresh?X-Plex-Token=qerZZzQdcyefQx7tNbiC" 
 fi
-if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "TV Transcoder Complete on $THISSERVER - Total Elapsed: $ETIME"; fi
+if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "TV Transcoder Complete. ${#file[@]} episodes processed. Elapsed: $ETIME"; fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - *** TV Transcoder Complete on $THISSERVER- Elapsed Time: $ETIME\n" >> $LOGF
 echo "Auto TV Transcode Script Complete."
 FTIME=$((TTIME-STIME))
@@ -207,4 +207,4 @@ FTIME=$((TTIME-STIME))
 # printf "`eval date +%m/%d/%y"-"%H:%M` - Problem!! Script terminated to quickly. NOT suspending server $THISSERVER\n" >> $LOGF
 # if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Problem!! Script terminated to quickly. NOT suspending server $THISSERVER"; fi
 # exit 1
-fi
+#fi
