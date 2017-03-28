@@ -122,7 +122,7 @@ echo "Copying file to local drive for transcoding on $fne..."
    asd="(Not Resized)"
   fi
   TSTIME=$(date +%s)
-  if [[ -z $SIM ]]; then nice -n -10 /usr/bin/ffmpeg -i "$TRANSDIR/$fil" $ffmpegsw -strict -2 "$TRANSDIR/$fng.trans.mp4" #< /dev/null &> /dev/null; 
+  if [[ -z $SIM ]]; then nice -n -10 /usr/local/bin/ffmpeg -i "$TRANSDIR/$fil" $ffmpegsw "$TRANSDIR/$fng.trans.mp4" #< /dev/null &> /dev/null; 
   fi
   TETIME=$(date +%s)
   GTIME=$(gettime "$TSTIME" "$TETIME")
