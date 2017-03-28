@@ -10,15 +10,15 @@ function movierename()
    IMDB="yes"
    fi
    if [ -f "$1" ] && [ "$FFIL" != "$1" ]; then
-   local WIDTH=`/usr/bin/ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep width | sed -e 's/width=//'`
-   local HEIGHT=`/usr/bin/ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep height | sed -e 's/height=//'`
-   local VCODEC=`/usr/bin/ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
-   local CDTS=`/usr/bin/ffprobe -select_streams v -show_streams "$1" 2>/dev/null | grep codec_tag_string | sed -e 's/codec_tag_string=//' | head -n 1`
-   local ACODE=`/usr/bin/ffprobe -select_streams a -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//'`
-   local ACODEC1=`/usr/bin/ffprobe -select_streams a -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
-   local ACHANS1=`/usr/bin/ffprobe -select_streams a -show_streams "$1" 2>/dev/null | grep channels | sed -e 's/channels=//' | head -n 1`
-   local ACODEC2=`/usr/bin/ffprobe -select_streams a -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | tail -n 1`
-   local ACHANS2=`/usr/bin/ffprobe -select_streams a -show_streams "$1" 2>/dev/null | grep channels | sed -e 's/channels=//' | tail -n 1`
+   local WIDTH=`/usr/bin/ffprobe -strict -2 -select_streams v -show_streams "$1" 2>/dev/null | grep width | sed -e 's/width=//'`
+   local HEIGHT=`/usr/bin/ffprobe -strict -2 -select_streams v -show_streams "$1" 2>/dev/null | grep height | sed -e 's/height=//'`
+   local VCODEC=`/usr/bin/ffprobe -strict -2 -select_streams v -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
+   local CDTS=`/usr/bin/ffprobe -strict -2 -select_streams v -show_streams "$1" 2>/dev/null | grep codec_tag_string | sed -e 's/codec_tag_string=//' | head -n 1`
+   local ACODE=`/usr/bin/ffprobe -strict -2 -select_streams a -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//'`
+   local ACODEC1=`/usr/bin/ffprobe -strict -2 -select_streams a -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
+   local ACHANS1=`/usr/bin/ffprobe -strict -2 -select_streams a -show_streams "$1" 2>/dev/null | grep channels | sed -e 's/channels=//' | head -n 1`
+   local ACODEC2=`/usr/bin/ffprobe -strict -2 -select_streams a -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | tail -n 1`
+   local ACHANS2=`/usr/bin/ffprobe -strict -2 -select_streams a -show_streams "$1" 2>/dev/null | grep channels | sed -e 's/channels=//' | tail -n 1`
    local ACNT=`wc -l <<< "$ACODE"`
    if [ "$ACNT" -gt "1" ]; then
     local ACODEC=`echo ${ACODEC1^^}"-"$ACHANS1"ch+"${ACODEC2^^}"-"$ACHANS2"ch"`
