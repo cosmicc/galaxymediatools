@@ -10,8 +10,8 @@ function movierename()
    IMDB="yes"
    fi
    if [ -f "$1" ] && [ "$FFIL" != "$1" ]; then
-   local WIDTH=`/usr/bin/ffprobe -strict experimental -select_streams v -show_streams "$1" 2>/dev/null | grep width | sed -e 's/width=//'`
-   local HEIGHT=`/usr/bin/ffprobe -strict experimental -select_streams v -show_streams "$1" 2>/dev/null | grep height | sed -e 's/height=//'`
+   local WIDTH=`/usr/bin/ffprobe -strict experimental -select_streams v -show_streams "$1" 2>/dev/null | grep coded_width | sed -e 's/coded_width=//'`
+   local HEIGHT=`/usr/bin/ffprobe -strict experimental -select_streams v -show_streams "$1" 2>/dev/null | grep coded_height | sed -e 's/coded_height=//'`
    local VCODEC=`/usr/bin/ffprobe -strict experimental -select_streams v -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | head -n 1`
    local CDTS=`/usr/bin/ffprobe -strict experimental -select_streams v -show_streams "$1" 2>/dev/null | grep codec_tag_string | sed -e 's/codec_tag_string=//' | head -n 1`
    local ACODE=`/usr/bin/ffprobe -strict experimental -select_streams a -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//'`
@@ -27,17 +27,17 @@ function movierename()
    fi
    local YEAR=`echo "$FFIL" | grep -oE '\([[:alnum:]]*?\)' | sed 's/[()]//g'`
    local MNAME=`echo "$FFIL" | sed -e 's/([^()]*)//g' | sed -e 's/\[[^][]*\]//g' | sed 's/....$//' | sed -e 's/^ *//' -e 's/ *$//'`
-   if [[ "$WIDTH" == "1920" ]]; then
+   if [ $WIDTH -eq 1920 ]; then
     local VRES="1080p"
-   elif [[ "$WIDTH" -gt "1279" ]] && [[ "$WIDTH" -lt "1920" ]]; then
+   elif [ $WIDTH -gt 1279 ] && [ $WIDTH -lt 1920 ]; then
     local VRES="720p"
-   elif [[ "$WIDTH" -gt "719" ]] && [[ "$WIDTH" -lt "1280" ]]; then
-    if [[ "$HEIGHT" -gt "570" ]]; then
+   elif [ $WIDTH -gt 719 ] && [ $WIDTH -lt 1280 ]; then
+    if [ $HEIGHT -gt 570 ]; then
      local VRES="576p"
     else
      local VRES="480p"
     fi
-   elif [[ "$WIDTH" -lt "720" ]]; then
+   elif [ $WIDTH -lt 720 ]; then
     local VRES="SD"
    fi
    if [[ "$VCODEC" == "mpeg4" ]]; then
