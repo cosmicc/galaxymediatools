@@ -26,6 +26,9 @@ source "/opt/galaxymediatools/functions/movierename"
 source "/opt/galaxymediatools/functions/isinteg"
 LOGF="$LOGDIR/MMR_$THISSERVER_$CTS.txt"
 INDXFIL="MMR_fileindex_$THISSERVER.txt"
+IMREN=0
+IMFAIL=0
+MISSYR=0
 if [[ $NOTRANS ]]; then EFED="No Transcode"; else EFED="Transcode"; fi
 if [[ $SIM ]]; then
  echo "Script starting up in SIMULATION ($EFED) MODE"
@@ -82,7 +85,7 @@ for f in "${file[@]}"; do
   mkdir /var/lock/gtrans.lock &> /dev/null
   echo "M4V Transcode complete."
  else
-  isinteg "$f"
+  /opt/galaxymediatools/functions/isinteg "$f"
   if [ "$ISINTEG" == "1" ]; then
    if [[ $VERB ]]; then echo "$fil passed integrity check."; fi
    printf "`eval date +%m/%d/%y"-"%H:%M` - 03 File passed integrity check - $fil \n" >> $LOGF
@@ -90,9 +93,9 @@ for f in "${file[@]}"; do
    SCHK=`echo "$f" | sed 's/.*\]\([^]]*\)\[.*/\1/g'`
    #if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] && [ "$VRESCHK" != "480p" ] && [ "$VRESCHK" != "SD" ] || [[ $FORCE ]] ; then
    if [[ $IMDB ]]; then
-    movierename "$f" "-i"
+    /opt/galaxymediatools/functions/movierename "$f" "-i"
    else
-    movierename "$f"
+    /opt/galaxymediatools/functions/movierename "$f"
    fi
 
    if [[ -z $SIM ]]; then
@@ -145,7 +148,7 @@ TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
 rm -r $TRANSDIR/* &> /dev/null
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover completion notification\n" >> $LOGF
-if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass Movie Renamer Complete on $THISSERVER - Total Elapsed: $ETIME"
+if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass Movie Renamer Complete. $IMREN Renamed, $IMFAIL IMDB not found, $MISSYR No Year - Total Elapsed: $ETIME"
 fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server movie section update  \n" >> $LOGF
 echo "Script ended."

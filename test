@@ -1,0 +1,4 @@
+#!/bin/bash
+IMREN=0
+((IMREN++))
+echo $IMREN

@@ -119,14 +119,17 @@ fi
  if [ "$IMDBOK" == "1" ] && [ "$MNAME" != "$TITLE" ]; then
   echo "`eval date +%m/%d/%y"-"%H:%M` - $MNAME ($YEAR) -> $TITLE ($IYEAR)" >> $LOGDIR/imdbrenamed.txt
   MNAME="$TITLE"
+ ((IMREN++))
  fi
   if [ "$IMDBOK" == "1" ] && [ "$YEAR" != "$IYEAR" ]; then
   echo "`eval date +%m/%d/%y"-"%H:%M` - $MNAME ($YEAR) -> $TITLE ($IYEAR)" >> $LOGDIR/imdbrenamed.txt
   MNAME="$TITLE"
+ ((IMREN++))
  fi
 if [ "$IMDBOK" == "0" ]; then
  echo "`eval date +%m/%d/%y"-"%H:%M` - $MNAME ($YEAR) - $TITLE ($IYEAR)" >> $LOGDIR/imdbfailed.txt
  IYEAR="$YEAR"
+ ((IMFAIL++))
 fi
 fi
 else
@@ -139,6 +142,7 @@ fi
     echo "$FNAME is missing year, marking file in missing year log "
     echo "$FNAME" >> "$LOGDIR/missingyear.txt"
     local YEAR="0000"
+    ((MISSYR++))
     renamedmoviewp=`echo "$FPATH/$MNAME ($IYEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`
     renamedmovienp=`echo "$MNAME ($IYEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`
    fi
