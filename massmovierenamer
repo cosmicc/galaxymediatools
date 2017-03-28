@@ -156,7 +156,6 @@ if [[ -z $SIM ]]; then curl "http://172.25.1.26:32400/library/sections/1/refresh
    fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
 sleep 10
-if [[ -z $SUSP ]]; then
-pm-suspend
-fi
+#if [[ -z $SUSP ]]; then pm-suspend
+
 #sed 's/\]\ \[/\]\[/g' removes space between brackets

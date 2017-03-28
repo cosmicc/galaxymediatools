@@ -56,7 +56,7 @@ if [ -f "$LOGDIR/$INDXFIL" ]; then rm -f $LOGDIR/$INDXFIL; fi
 if [[ $CURD ]]; then
 FINDVARS="\"$CURD\" -type f ! -name *.ntrans.* ! -name *.trans.* -size +100M"
 else
-FINDVARS="\"$TVDIR\" -type f -path \"/video/Recorded TV\" ! -path \"$EXPATH1/*\" ! -path \"$EXPATH2/*\" ! -path \"$EXPATH3/*\" ! -path \"$EXPATH4/*\" ! -path \"$EXPATH5/*\" ! -path \"$EXPATH6/*\" ! -path \"$EXPATH7/*\" ! -path \"$EXPATH8/*\" ! -path \"$EXPATH9/*\" ! -name *.ntrans.* ! -name *.trans.* $ATTRANS"
+FINDVARS="\"$TVDIR\" \"$TVDIR2\" -type f ! -path \"$EXPATH1/*\" ! -path \"$EXPATH2/*\" ! -path \"$EXPATH3/*\" ! -path \"$EXPATH4/*\" ! -path \"$EXPATH5/*\" ! -path \"$EXPATH6/*\" ! -path \"$EXPATH7/*\" ! -path \"$EXPATH8/*\" ! -path \"$EXPATH9/*\" ! -name *.ntrans.* ! -name *.trans.* $ATTRANS"
 fi
 FCNT=`eval /usr/bin/find "$FINDVARS" | wc -l`
 
@@ -200,7 +200,7 @@ printf "`eval date +%m/%d/%y"-"%H:%M` - *** TV Transcoder Complete on $THISSERVE
 echo "Auto TV Transcode Script Complete."
 FTIME=$((TTIME-STIME))
 #if [[ ! $SIM ]] && [ $FTIME -gt 10 ]; then 
-if [[ -z $SIM ]]; then  pm-suspend
+#if [[ -z $SIM ]]; then  pm-suspend
  exit 0
 #else
 # echo "Problem!! Script terminated to quickly. NOT suspending server"
