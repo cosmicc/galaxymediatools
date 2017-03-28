@@ -2,6 +2,7 @@
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
+cp /root/.ssh/id_rsa /root/.ssh/github_id_rsa -f
 echo -e "${cmd1color}Pushing files to git repository..."
 printf "${syscolor}"
 git add *
