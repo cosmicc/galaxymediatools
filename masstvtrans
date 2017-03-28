@@ -101,7 +101,7 @@ for f in "${file[@]}"; do
   if [[ -z $SIM ]]; then rm -f "$fne.trans.mp4"; fi
  fi
  echo "Checking video file integrity of $fne..."
- /opt/galaxymediatools/functions/isinteg "$f"
+ isinteg "$f"
  if [ "$ISINTEG" == "1" ]; then
   echo -e "File passed video integrity test - $fne"
   printf "`eval date +%m/%d/%y"-"%H:%M` - 06 File passed video integrity test on $THISSERVER - $fne\n" >> $LOGF 

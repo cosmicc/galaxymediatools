@@ -85,7 +85,7 @@ for f in "${file[@]}"; do
   mkdir /var/lock/gtrans.lock &> /dev/null
   echo "M4V Transcode complete."
  else
-  /opt/galaxymediatools/functions/isinteg "$f"
+  isinteg "$f"
   if [ "$ISINTEG" == "1" ]; then
    if [[ $VERB ]]; then echo "$fil passed integrity check."; fi
    printf "`eval date +%m/%d/%y"-"%H:%M` - 03 File passed integrity check - $fil \n" >> $LOGF
@@ -93,9 +93,9 @@ for f in "${file[@]}"; do
    SCHK=`echo "$f" | sed 's/.*\]\([^]]*\)\[.*/\1/g'`
    #if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] && [ "$VRESCHK" != "480p" ] && [ "$VRESCHK" != "SD" ] || [[ $FORCE ]] ; then
    if [[ $IMDB ]]; then
-    /opt/galaxymediatools/functions/movierename "$f" "-i"
+    movierename "$f" "-i"
    else
-    /opt/galaxymediatools/functions/movierename "$f"
+    movierename "$f"
    fi
 
    if [[ -z $SIM ]]; then
