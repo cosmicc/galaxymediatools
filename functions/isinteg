@@ -6,7 +6,7 @@ function isinteg ()
  local EXT=${1: -3}
  if [ "$EXT" == "mp4" ] || [ "$EXT" == "avi" ] || [ "$EXT" == "mkv" ] || [ "$EXT" == "m4v" ] || [ "$EXT" == "M4V" ] || [ "$EXT" == "AVI" ] || [ "$EXT" == "MP4" ] || [ "$EXT" == "M4V" ]; then
  local WRONGEXT="0"
-/usr/bin/ffmpeg -strict -2 -v error -i "$1" -vframes 10 -y "$TRANSDIR/isinteg.$EXT" < /dev/null
+/usr/bin/ffmpeg -strict experimental -v error -i "$1" -vframes 10 -y "$TRANSDIR/isinteg.$EXT" < /dev/null
 else
  local WRONGEXT="1"
 fi
