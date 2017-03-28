@@ -20,50 +20,50 @@ function movierename()
    local ACODEC2=`/usr/bin/ffprobe -strict -2 -select_streams a -show_streams "$1" 2>/dev/null | grep codec_name | sed -e 's/codec_name=//' | tail -n 1`
    local ACHANS2=`/usr/bin/ffprobe -strict -2 -select_streams a -show_streams "$1" 2>/dev/null | grep channels | sed -e 's/channels=//' | tail -n 1`
    local ACNT=`wc -l <<< "$ACODE"`
-   if [ "$ACNT" -gt "1" ]; then
+   if [ $ACNT -gt 1 ]; then
     local ACODEC=`echo ${ACODEC1^^}"-"$ACHANS1"ch+"${ACODEC2^^}"-"$ACHANS2"ch"`
    else
      local ACODEC=`echo ${ACODEC1^^}"-"$ACHANS1"ch"`
    fi
    local YEAR=`echo "$FFIL" | grep -oE '\([[:alnum:]]*?\)' | sed 's/[()]//g'`
    local MNAME=`echo "$FFIL" | sed -e 's/([^()]*)//g' | sed -e 's/\[[^][]*\]//g' | sed 's/....$//' | sed -e 's/^ *//' -e 's/ *$//'`
-   if [ "$WIDTH" == "1920" ]; then
+   if [[ "$WIDTH" == "1920" ]]; then
     local VRES="1080p"
-   elif [ "$WIDTH" -gt "1279" ] && [ "$WIDTH" -lt "1920" ]; then
+   elif [[ "$WIDTH" -gt "1279" ]] && [[ "$WIDTH" -lt "1920" ]]; then
     local VRES="720p"
-   elif [ "$WIDTH" -gt "719" ] && [ "$WIDTH" -lt "1280" ]; then
-    if [ "$HEIGHT" -gt "570" ]; then
+   elif [[ "$WIDTH" -gt "719" ]] && [[ "$WIDTH" -lt "1280" ]]; then
+    if [[ "$HEIGHT" -gt "570" ]]; then
      local VRES="576p"
     else
      local VRES="480p"
     fi
-   elif [ "$WIDTH" -lt "720" ]; then
+   elif [[ "$WIDTH" -lt "720" ]]; then
     local VRES="SD"
    fi
-   if [ "$VCODEC" == "mpeg4" ]; then
+   if [[ "$VCODEC" == "mpeg4" ]]; then
     local VCODEC=`echo $CDTS | awk '{print tolower($0)}'`
    fi
-   if [ "$HEIGHT" == "" ]; then
+   if [[ "$HEIGHT" == "" ]]; then
     echo "Cannot determine video HEIGHT. Exiting."
     printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine VIDEO HEIGHT - $fil \n" >> $LOGF
     exit 1
    fi
-   if [ "$WIDTH" == "" ]; then
+   if [[ "$WIDTH" == "" ]]; then
     echo "Cannot determine video WIDTH. Exiting."
     printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine VIDEO WIDTH - $fil \n" >> $LOGF
     exit 1
    fi
-   if [ "$VCODEC" == "" ]; then
+   if [[ "$VCODEC" == "" ]]; then
     echo "Cannot determine video codec. Exiting."
     printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine VIDEO CODEC - $fil \n" >> $LOGF
     exit 1
    fi
-   if [ "$ACODEC1" == "" ]; then
+   if [[ "$ACODEC1" == "" ]]; then
     echo "Cannot determine audio codec. Exiting."
     printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine AUDIO CODEC - $fil \n" >> $LOGF
     exit 1
    fi
-   if [ "$ACHANS1" == "" ]; then
+   if [[ "$ACHANS1" == "" ]]; then
     echo "Cannot determine audio channels. Exiting."
     printf "`eval date +%m/%d/%y"-"%H:%M` - 98 Cannot determine AUDIO CHANNELS - $fil \n" >> $LOGF
     exit 1
