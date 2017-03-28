@@ -39,7 +39,7 @@ RUNCHECK1=`ps uxa | grep "galaxy_maintenance" | wc -l`
   echo " " >> $LOGF
   PTIME=$(date +%s)
   echo "Executing Mass Movie Renamer..." >> $LOGF
-  /opt/galaxymediatools/massmovierenamer &> /dev/null
+  /opt/galaxymediatools/massmovierenamer -i &> /dev/null
   OTIME=$(date +%s)
   RTIME=$(gettime "$PTIME" "$OTIME")
   echo "*Mass Movie renamer complete. Elapsed: $RTIME" >> $LOGF

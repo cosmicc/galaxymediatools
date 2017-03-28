@@ -137,7 +137,7 @@ fi
     renamedmovienp=`echo "$MNAME ($IYEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`
    else
     echo "$FNAME is missing year, marking file in missing year log "
-    printf "$FNAME \n" >> "$LOGDIR/missingyear.txt"
+    echo "$FNAME" >> "$LOGDIR/missingyear.txt"
     local YEAR="0000"
     renamedmoviewp=`echo "$FPATH/$MNAME ($IYEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`
     renamedmovienp=`echo "$MNAME ($IYEAR) [$VRES][$VCODEC][$ACODEC].$ext" | sed 's/ \+/ /g'`

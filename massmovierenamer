@@ -56,7 +56,7 @@ sleep 5
 if [ -f "$LOGDIR/$INDXFIL" ]; then
  rm -f $LOGDIR/$INDXFIL
 fi
-find "$MOVIEDIR" -type f | sort >> $LOGDIR/$INDXFIL
+find "$MOVIEDIR" -mtime -1 -type f | sort >> $LOGDIR/$INDXFIL
 i=0
 while read sfile
 do
