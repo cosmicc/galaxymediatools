@@ -108,8 +108,8 @@ for f in "${file[@]}"; do
 echo "Copying file to local drive for transcoding on $fne..."
  printf "`eval date +%m/%d/%y"-"%H:%M` - 04 Copying file to local drive for transcoding on $THISSERVER $fne\n" >> $LOGF
  if [[ -z $SIM ]]; then cp -f "$f" "$TRANSDIR"; fi
-  FRAMES=`/usr/bin/ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
-  HEIGHT=`/usr/bin/ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep coded_height | sed -e 's/coded_height=//'`
+  FRAMES=`/usr/local/bin/ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
+  HEIGHT=`/usr/local/bin/ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep coded_height | sed -e 's/coded_height=//'`
   if [ $HEIGHT -gt 406 ]; then
    printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file (Resized) Frames: $FRAMES on $THISSERVER - $fil\n" >> $LOGF
    echo "*Processing video file (Resized) Frames: $FRAMES - $fil..."
