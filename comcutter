@@ -1,0 +1,5 @@
+#!/bin/bash
+
+LOGF="/video/logs/comcutter.log"
+
+/opt/Comskip/comskip "$1" --ini=/opt/Comskip/comskip.ini --output=/video/logs/comskip /vidro/logs/comskip &>> $LOGF
