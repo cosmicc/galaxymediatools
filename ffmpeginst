@@ -17,13 +17,14 @@ rm -r /opt/galaxymediatools/ffmpeginstall
 set -e
 mkdir /opt/galaxymediatools/ffmpeginstall
 cd /opt/galaxymediatools/ffmpeginstall
-apt-get install make cmake libfftw3-dev pkg-config autoconf automake libtool unzip yasm mercurial libx264-dev libfdk-aac-dev libass-dev -y
+apt-get install make cmake libfftw3-dev pkg-config autoconf automake libtool unzip yasm mercurial mencoder libargtable2-dev libx264-dev libfdk-aac-dev libass-dev -y
 #wget http://downloads.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
 #wget http://217.20.164.161/~tipok/aacplus/libaacplus-2.0.2.tar.gz
 wget http://ffmpeg.gusari.org/uploads/libaacplus-2.0.2.tar.gz
 git clone http://git.videolan.org/git/x264.git
 #hg clone http://hg.videolan.org/x265
 git clone https://github.com/FFmpeg/FFmpeg.git
+git clone git://github.com/erikkaashoek/Comskip
 
 #tar -xzf lame-3.99.5.tar.gz
 #cd lame-3.99.5
@@ -52,6 +53,12 @@ cd FFmpeg
 ./configure --enable-gpl --enable-postproc --enable-swscale --enable-pthreads --enable-libmp3lame --enable-libx264 --enable-libx265 --enable-libfdk-aac --enable-nonfree --enable-libass
 make
 make install
+cd ..
+
+cd Comskip
+./autogen.sh
+./configure
+make
 
 trap : 0
 echo >&2 '
