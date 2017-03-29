@@ -113,16 +113,16 @@ echo "Copying file to local drive for transcoding on $fne..."
   if [ $HEIGHT -gt 406 ]; then
    printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file (Resized) Frames: $FRAMES on $THISSERVER - $fil\n" >> $LOGF
    echo "*Processing video file (Resized) Frames: $FRAMES - $fil..."
-   ffmpegsw="-c:v libx264 -preset slow -sn -crf $TVQUAL -profile:v high -vf scale=720:400 -codec:a libfdk-aac -ac 2 -ar 44100 -b:a 128k"
+   ffmpegsw="-c:v libx264 -preset slow -sn -crf $TVQUAL -profile:v high -vf scale=720:400 -codec:a aac -ac 2 -ar 44100 -b:a 128k"
    asd="(Resized)"
   else
    printf "`eval date +%m/%d/%y"-"%H:%M` - 05 Processing video file (Not-Resized) Frames: $FRAMES on $THISSERVER - $fil\n" >> $LOGF
    echo "*Processing video file (Not-Resized) Frames: $FRAMES - $fil..."
-   ffmpegsw="-c:v libx264 -preset slow -sn -crf $TVQUAL -profile:v high -codec:a libfdk-aac -ac 2 -ar 44100 -b:a 128k"
+   ffmpegsw="-c:v libx264 -preset slow -sn -crf $TVQUAL -profile:v high -codec:a aac -ac 2 -ar 44100 -b:a 128k"
    asd="(Not Resized)"
   fi
   TSTIME=$(date +%s)
-  if [[ -z $SIM ]]; then nice -n -10 /usr/local/bin/ffmpeg -i "$TRANSDIR/$fil" $ffmpegsw "$TRANSDIR/$fng.trans.mp4" #< /dev/null &> /dev/null; 
+  if [[ -z $SIM ]]; then nice -n -10 /usr/local/bin/ffmpeg -i "$TRANSDIR/$fil" $ffmpegsw "$TRANSDIR/$fng.trans.mp4" < /dev/null &> /dev/null; 
   fi
   TETIME=$(date +%s)
   GTIME=$(gettime "$TSTIME" "$TETIME")
