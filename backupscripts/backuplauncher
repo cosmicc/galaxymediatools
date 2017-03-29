@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOGF="/video/Incoming/logs/mediabackup/!backupmaster.txt"
+LOGF="/video/Incoming/logs/backupmaster.log"
 DUUID1="F42E2DF82E2DB510"
 DUUID2="01D2A5E1CE162C70"
 MOUNT1=/mnt/backup1

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOGF="/video/Incoming/logs/mediabackup/!backupmaster.txt"
+LOGF="/video/Incoming/logs/backupmaster.log"
 
 if mountpoint -q /video
 then

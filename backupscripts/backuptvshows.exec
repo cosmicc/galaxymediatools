@@ -4,8 +4,8 @@
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
-LOGF="/video/Incoming/logs/mediabackup/$CTS-TVShows.txt"
-LOGM="/video/Incoming/logs/mediabackup/!backupmaster.txt"
+LOGF="/video/Incoming/logs/mediabackup/backup_tv.log"
+LOGM="/video/Incoming/logs/backupmaster.log"
 LIBRARY="TV Show"
 MOUNT=/mnt/backup2
 DUUID="01D2A5E1CE162C70"

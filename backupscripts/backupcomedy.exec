@@ -4,8 +4,8 @@
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
-LOGF="/video/Incoming/logs/mediabackup/$CTS-Comedy.txt"
-LOGM="/video/Incoming/logs/mediabackup/!backupmaster.txt"
+LOGF="/video/Incoming/logs/backup_comedy.log"
+LOGM="/video/Incoming/logs/backupmaster.log"
 LIBRARY="Stand-Up Comedy"
 MOUNT=/mnt/backup1
 DUUID="F42E2DF82E2DB510"

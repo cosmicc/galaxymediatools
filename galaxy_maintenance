@@ -2,7 +2,7 @@
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
-LOGF="/video/Incoming/logs/maintenance/$CTS-Maintenance.txt"
+LOGF="/video/Incoming/logs/maintenance.log"
 
 if mountpoint -q /video
 then
