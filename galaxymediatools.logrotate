@@ -1,48 +1,11 @@
 #this goes in /etc/logrotate.d
 
-/video/Incoming/logs/transcoder/MMR_20*.txt {
+/video/Incoming/logs/*.log {
     daily
-    rotate 5
-    olddir /video/Incoming/logs/transcoder/archived_logs
+    rotate 100
+    olddir /video/Incoming/logs/archived_logs
     compress
     missingok
     copytruncate
 }
-
-/video/Incoming/logs/transcoder/TV_20*.txt {
-    daily
-    rotate 5
-    olddir /video/Incoming/logs/transcoder/archived_logs
-    compress
-    missingok
-    copytruncate
-}
-
-/video/Incoming/logs/transcoder/MVT*.txt {
-    daily
-    rotate 5
-    olddir /video/Incoming/logs/transcoder/archived_logs
-    compress
-    missingok
-    copytruncate
-}
-
-/video/Incoming/logs/security/*.txt {
-    weekly
-    rotate 1
-    olddir /video/Incoming/logs/security/archived_logs
-    compress
-    missingok
-    copytruncate
-}
-
-/video/Incoming/logs/nzbtomedia/*.log {
-    daily
-    rotate 5
-    olddir /video/Incoming/logs/nzbtomedia/archived_logs
-    compress
-    missingok
-    copytruncate
-}
-
 
