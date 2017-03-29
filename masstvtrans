@@ -27,8 +27,8 @@ fi
 
 source "/opt/galaxymediatools/functions/precheck"
 source "/opt/galaxymediatools/functions/isinteg"
-LOGF="$LOGDIR/TV_$THISSERVER_$CTS.txt"
-INDXFIL="TTV_fileindex_$THISSERVER.txt"
+LOGF="$LOGDIR/tvtranscoder.log"
+INDXFIL="tvtranscoder.idx"
 if [[ $SIM ]]; then TMODE="Simulation mode"
 elif [[ $REV ]]; then TMODE="Span Reverse mode"
 elif [[ $SPN ]]; then TMODE="Span Forward mode"

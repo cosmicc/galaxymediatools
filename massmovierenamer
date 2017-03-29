@@ -24,8 +24,8 @@ if [ "$1" == "-n" ] ||  [ "$2" == "-n" ] ||  [ "$3" == "-n" ] ||  [ "$4" == "-n"
 source "/opt/galaxymediatools/functions/precheck"
 source "/opt/galaxymediatools/functions/movierename"
 source "/opt/galaxymediatools/functions/isinteg"
-LOGF="$LOGDIR/MMR_$THISSERVER_$CTS.txt"
-INDXFIL="MMR_fileindex_$THISSERVER.txt"
+LOGF="$LOGDIR/movierenamer.log"
+INDXFIL="movierenamer.idx"
 IMREN=0
 IMFAIL=0
 MISSYR=0
