@@ -55,7 +55,7 @@ RUNCHECK1=`ps uxa | grep "galaxy_maintenance" | wc -l`
   echo " " >> $LOGF
   PTIME=$(date +%s)
   echo "Executing master backup script..." >> $LOGF
-  #/opt/galaxymediatools/backupstart
+  /opt/galaxymediatools/backupstart &> /dev/null
   OTIME=$(date +%s)
   RTIME=$(gettime "$PTIME" "$OTIME")
   echo "*master backup script complete. Elapsed: $RTIME *This process branchs off" >> $LOGF

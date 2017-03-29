@@ -4,7 +4,7 @@ source "/opt/galaxymediatools/functions/prechecknl"
 
 if mountpoint -q /video
 then
-LOGF="/video/Incoming/logs/security/$CTS-$HOSTNAME.txt"
+LOGF="/video/Incoming/logs/security/securityscan-$HOSTNAME.log"
 else
 LOGF="/var/log/$CTS-SECURITYSCAN.txt"
 fi

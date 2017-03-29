@@ -4,29 +4,22 @@ LOGF="/video/Incoming/logs/mediabackup/!backupmaster.txt"
 
 if mountpoint -q /video
 then
-RUNCHECK1=`ps uxa | grep "rsync -archv --stats --delete /video/Comedy/ /mnt/backup1/Comedy" | wc -l`
-RUNCHECK2=`ps uxa | grep "rsync -archv --stats --delete /video/Movies/ /mnt/backup1/Movies" | wc -l`
-RUNCHECK3=`ps uxa | grep "rsync -archv --stats --delete /video/TV Series/ /mnt/backup1/TV Shows" | wc -l`
+RUNCHECK1=`ps uxa | grep "backuplauncher" | wc -l`
 
  DT=`date +%m/%d/%y" "%l:%M%P`
  echo "-------- BACKUP SCRIPT STARTING at $DT --------" >> $LOGF
 
- if [[ $RUNCHECK1 < 2 ]]; then
-  if [[ $RUNCHECK2 < 2 ]]; then
-   screen -dm bash -c "/opt/galaxymediatools/backupscripts/backup1exec"
+ if [[ $RUNCHECK1 > 1 ]]; then
+  if [[ $RUNCHECK2 > 1 ]]; then
+   screen -dm bash -c "/opt/galaxymediatools/backupscripts/backuplauncher"
   else
-   echo "Movie library backup already running.  Not executing another session." >> $LOGF
+   echo "Backup already running.  Not executing another session." >> $LOGF
+   exit 1
   fi
  else
-  echo "Stand-Up Comedy library backup already running.  Not executing another session." >> $LOGF
+  echo "Backup already running.  Not executing another session." >> $LOGF
+  exit 1
  fi
-
- if [[ $RUNCHECK3 < 2 ]]; then
-  screen -dm bash -c "/opt/galaxymediatools/backupscripts/backup2exec"
  else
-  echo "TV Show library backup already running.  Not executing another session." >> $LOGF
- fi
-
-else
- echo "Video NFS Share NOT MOUNTED!! Exiting." >> $LOGF
+echo "Video NFS Share NOT MOUNTED!! Exiting." >> $LOGF
 fi

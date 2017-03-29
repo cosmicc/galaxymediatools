@@ -15,3 +15,4 @@ MINFILES=18000
 
 source "/opt/galaxymediatools/backupscripts/backup.exec"
 
+pm-suspend

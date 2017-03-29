@@ -1,0 +1,27 @@
+#!/bin/bash
+
+LOGF="/video/Incoming/logs/mediabackup/!backupmaster.txt"
+DUUID1="F42E2DF82E2DB510"
+DUUID2="01D2A5E1CE162C70"
+MOUNT1=/mnt/backup1
+MOUNT2=/mnt/backup2
+
+if mountpoint -q $MOUNT1
+then
+umount $MOUNT1
+fi
+
+if mountpoint -q $MOUNT2
+then
+umount $MOUNT2
+fi
+
+ntfsfix /dev/disk/by-uuid/$DUUID1 >> $LOGF 
+
+/opt/galaxymediatools/backupscripts/backupcomedy.exec 
+/opt/galaxymediatools/backupscripts/backupmovies.exec
+
+ntfsfix /dev/disk/by-uuid/$DUUID2 >> $LOGF
+
+/opt/galaxymediatools/backupscripts/backuptvshows.exec
+
