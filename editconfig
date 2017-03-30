@@ -34,24 +34,24 @@ cp -f /etc/galaxymediatools.conf $LOGDIR
   ssh $T1INFO 'sudo pm-suspend' &
  fi
 
- fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
-  if [ "$?" != "0" ]; then
-  WASSLEEPING2="1"
-   echo -e "${cmd2color}Waking transcode server ${servercolor}$T2NAME"
-   printf "${soutcolor}"
-   wakeonlan $T2MAC
-   printf "${nocolor}"
-   sleep 10
-   echo -e "${cmd1color}Transcode server ${servercolor}$T2NAME ${cmd1color}started"
-  fi
- printf "${soutcolor}"
- ssh $T2INFO "sudo cp -f $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf && sudo $APPDIR/gitpull"
-  printf "${nocolor}"
-  echo -e "${cmd1color}Config file copied to ${servercolor}$T2NAME"
- if [ "$WASSLEEPING2" == "1" ]; then
-  echo -e "${cmd2color}Transcoder server ${servercolor}$T2NAME ${cmd2color}was sleeping, putting back to sleep.${nocolor}"
-  ssh $T2INFO 'sudo pm-suspend' &   
-fi
+# fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
+#  if [ "$?" != "0" ]; then
+#  WASSLEEPING2="1"
+#   echo -e "${cmd2color}Waking transcode server ${servercolor}$T2NAME"
+#   printf "${soutcolor}"
+#   wakeonlan $T2MAC
+#   printf "${nocolor}"
+#   sleep 10
+#   echo -e "${cmd1color}Transcode server ${servercolor}$T2NAME ${cmd1color}started"
+#  fi
+# printf "${soutcolor}"
+# ssh $T2INFO "sudo cp -f $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf && sudo $APPDIR/gitpull"
+#  printf "${nocolor}"
+#  echo -e "${cmd1color}Config file copied to ${servercolor}$T2NAME"
+# if [ "$WASSLEEPING2" == "1" ]; then
+#  echo -e "${cmd2color}Transcoder server ${servercolor}$T2NAME ${cmd2color}was sleeping, putting back to sleep.${nocolor}"
+#  ssh $T2INFO 'sudo pm-suspend' &   
+#fi
 
 if [ "$THISSERVER" != "$MSNAME" ]; then
 printf "${soutcolor}"
@@ -65,6 +65,13 @@ printf "${soutcolor}"
 ssh $DSINFO "sudo cp -f $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf && sudo $APPDIR/gitpull"
 printf "${nocolor}"
 echo -e "${cmd1color}Config file copied to ${servercolor}$DSNAME"
+fi
+
+if [ "$THISSERVER" != "$PLEXNAME" ]; then
+printf "${soutcolor}"
+ssh $PLEXINFO "sudo cp -f $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf && sudo $APPDIR/gitpull"
+printf "${nocolor}"
+echo -e "${cmd1color}Config file copied to ${servercolor}$PLEXNAME"
 fi
 
 echo -e "${nocolor}"

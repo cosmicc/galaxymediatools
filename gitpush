@@ -62,4 +62,12 @@ echo -e "Connecting to remote Server ${servercolor}$DSNAME${cmd1color}..."
  ssh $DSINFO "sudo $APPDIR/gitpull"
  printf "${nocolor}"
 fi
+
+if [ "$THISSERVER" != "$PLEXNAME" ]; then
+echo -e "Connecting to remote Server ${servercolor}$PLEXNAME${cmd1color}..."
+ printf "${soutcolor}"
+ ssh $PLEXINFO "sudo $APPDIR/gitpull"
+ printf "${nocolor}"
+fi
+
 echo -e "${nocolor}"
