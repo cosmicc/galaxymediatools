@@ -16,8 +16,7 @@ RUNCHECK1=`ps uxa | grep "backup.exec" | wc -l`
    echo "`eval date +%m/%d/%y"-"%H:%M` Backup already running.  Not executing another session." >> $LOGF
    exit 1
   fi
- else
-  echo "`eval date +%m/%d/%y"-"%H:%M` Backup already running.  Not executing another session." >> $LOGF
-  exit 1
- fi
+
+else
 echo "`eval date +%m/%d/%y"-"%H:%M` Video NFS Share NOT MOUNTED!! Exiting." >> $LOGF
+fi

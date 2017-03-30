@@ -4,7 +4,7 @@ ST=`date +%m/%d/%y" "%l:%M%P`
 echo "`eval date +%m/%d/%y"-"%H:%M` Starting $LIBRARY Library backup" 
 echo "`eval date +%m/%d/%y"-"%H:%M` Starting $LIBRARY Library backup" >> $LOGF
 echo "`eval date +%m/%d/%y"-"%H:%M` Starting $LIBRARY Library backup" >> $LOGM
-if mountpoint -q $MOUNT
+if [ mountpoint -q $MOUNT ]
  then
   FILECOUNT=`ls -1qR "$SDIR" | wc -l`
 if [[ $FILECOUNT < $MINFILES ]]; then
@@ -22,7 +22,7 @@ fi
   rsync -arhv --stats --delete "$SDIR" "$DDIR" 2>&1 | tee -a $LOGF
  else
   mount UUID=$DUUID $MOUNT
-  if mountpoint -q $MOUNT
+  if [ mountpoint -q $MOUNT ]
    then
   FILECOUNT=`ls -1qR "$SDIR" | wc -l`
 if [[ $FILECOUNT < $MINFILES ]]; then
