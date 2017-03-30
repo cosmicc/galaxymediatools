@@ -13,18 +13,19 @@ if [ "$1" == "" ]; then
         exit 1
 fi
 
-
-source /etc/galaxymediatools.conf
+source "/opt/galaxymediatools/functions/prechecknl"
 
 if [ "$1" == "movies" ]; then
 echo "Sending update notification to Plex Server to update MOVIES"
-PLEXC="6"
+PLEXC=$PLEXMCAT
 elif [ "$1" == "tv" ]; then
 echo "Sending update notification to Plex Server to update TV SHOWS"
-PLEXC="4"
+PLEXC=$PLEXCAT
 else
 echo "Wrong option specified. use /"tv/" or /"movies/""
 exit 1
 fi
-ssh $PLEXINFO -q 'sudo su plex -c "plexscan -s -c $PLEXC &> /dev/null &"' &> /dev/null &
+
+curl "http://172.25.1.26:32400/library/sections/$PLEXC/refresh?X-Plex-Token=$PLEXTOKEN"
+
 echo "Section is being scanned."

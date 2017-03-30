@@ -84,7 +84,7 @@ do
 done < $LOGDIR/$INDXFIL
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Starting transcode process on ${#file[@]} files on $THISSERVER \n" >> $LOGF
 echo "Starting transcode process on ${#file[@]} files"
-#if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "TV Transcoder Starting in $TMODE on $THISSERVER - ${#file[@]} Files to proccess" &> /dev/null; fi
+if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "TV Transcoder Starting in $TMODE on $THISSERVER - ${#file[@]} Files to proccess" &> /dev/null; fi
 j=1
 for f in "${file[@]}"; do
  fil=${f##*/}
@@ -153,7 +153,8 @@ echo "Copying file to local drive for transcoding on $fne..."
    printf "`eval date +%m/%d/%y"-"%H:%M` - 03 Copying transcoded file back to filer on $THISSERVER - $fng.trans.mp4\n" >> $LOGF
    echo "Transcoded file is smaller as intended, Deleting Original and copying transcoded file back $fng.trans.mp4"
    if [[ -z $SIM ]]; then 
-    $APPDIR/pushover.sh -T $POAK -U $POUK "Transcode Finished on $THISSERVER - $asd ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME - Original Replaced - $fleft Left." &> /dev/null
+    ((NRESIZE++))
+    #$APPDIR/pushover.sh -T $POAK -U $POUK "Transcode Finished on $THISSERVER - $asd ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME - Original Replaced - $fleft Left." &> /dev/null
     cp -f "$TRANSDIR/$fng.trans.mp4" "$fne.trans.mp4"
     rm -f "$f"
     rm -f "$TRANSDIR/$fng.trans.mp4"
@@ -165,7 +166,8 @@ echo "Copying file to local drive for transcoding on $fne..."
    printf "`eval date +%m/%d/%y"-"%H:%M` - 80 Marking original file non transcodable on $THISSERVER - $fne.ntrans.$EXT\n" >> $LOGF
    echo "Transcoded file is BIGGER then intended on $THISSERVER - Keeping Original and Deleting transcode $fne.trans.mp4"
    if [[ -z $SIM ]]; then
-   $APPDIR/pushover.sh -T $POAK -U $POUK "Transcode Finished on $THISSERVER - $asd ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME - Original Kept, Non-Transcodable - $fleft Left." &> /dev/null
+   ((RESIZE++))
+   #$APPDIR/pushover.sh -T $POAK -U $POUK "Transcode Finished on $THISSERVER - $asd ($SOSIZE->$SNSIZE) - $fil Elapsed Time: $GTIME - Original Kept, Non-Transcodable - $fleft Left." &> /dev/null
     mv "$f" "$fne.ntrans.$EXT"
     rm -f "$TRANSDIR/$fil"
     rm -f "$TRANSDIR/$fng.trans.mp4"
@@ -196,7 +198,7 @@ printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server full video analyze on $TH
 
 if [[ -z $SIM ]] && [[ $PUPD ]]; then curl "http://172.25.1.26:32400/library/sections/$PLEXCAT/refresh?X-Plex-Token=$PLEXTOKEN" 
 fi
-if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "TV Transcoder Complete. ${#file[@]} episodes processed. Elapsed: $ETIME"; fi
+if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "TV Transcoder Complete. ${#file[@]} episodes processed. $RESIZE Resized, $NRESIZE Not-Resized. Elapsed: $ETIME"; fi
 printf "`eval date +%m/%d/%y"-"%H:%M` - *** TV Transcoder Complete on $THISSERVER- Elapsed Time: $ETIME\n" >> $LOGF
 echo "Auto TV Transcode Script Complete."
 FTIME=$((TTIME-STIME))

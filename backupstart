@@ -7,19 +7,19 @@ then
 RUNCHECK1=`ps uxa | grep "backuplauncher" | wc -l`
 
  DT=`date +%m/%d/%y" "%l:%M%P`
- echo "-------- BACKUP SCRIPT STARTING at $DT --------" >> $LOGF
+ echo "`eval date +%m/%d/%y"-"%H:%M` ---> Backup script starting" >> $LOGF
 
  if [[ $RUNCHECK1 > 1 ]]; then
   if [[ $RUNCHECK2 > 1 ]]; then
    screen -dm bash -c "/opt/galaxymediatools/backupscripts/backuplauncher"
   else
-   echo "Backup already running.  Not executing another session." >> $LOGF
+   echo "`eval date +%m/%d/%y"-"%H:%M` Backup already running.  Not executing another session." >> $LOGF
    exit 1
   fi
  else
-  echo "Backup already running.  Not executing another session." >> $LOGF
+  echo "`eval date +%m/%d/%y"-"%H:%M` Backup already running.  Not executing another session." >> $LOGF
   exit 1
  fi
  else
-echo "Video NFS Share NOT MOUNTED!! Exiting." >> $LOGF
+echo "`eval date +%m/%d/%y"-"%H:%M` Video NFS Share NOT MOUNTED!! Exiting." >> $LOGF
 fi

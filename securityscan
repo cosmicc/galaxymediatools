@@ -10,8 +10,7 @@ LOGF="/var/log/SECURITYSCAN.log"
 fi
 
 ST=`date +%m/%d/%y" "%l:%M%P`
-echo "-------- SECURITY SCAN STARTING on \"$HOSTNAME\" at $ST --------" >> $LOGF
-echo " " >> $LOGF
+echo "`eval date +%m/%d/%y"-"%H:%M` ---> security scan starting on \"$HOSTNAME\"" >> $LOGF
 
 /usr/sbin/chkrootkit -n | grep 'INFECTED|Vulnerable'
     if [ $? -eq 0 ]; then
@@ -57,19 +56,14 @@ else
     fi
   fi
 fi
-
-
 TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
  ET=`date +%m/%d/%y" "%l:%M%P`
-
-echo " " >> $LOGF
-echo "Chkrootkit result: $CHKEXIT" >> $LOGF
-echo "Lynis result: $LYNEXIT" >> $LOGF
-echo "Sophos definition update result: $SUEXIT" >> $LOGF
-echo "Sophos scan result: $SAVCODE" >> $LOGF
-echo " " >> $LOGF
-echo "-------- SECURITY SCAN COMPLETED on \"$HOSTNAME\" at $ET Elapsed: $ETIME --------" >> $LOGF
+echo "* Chkrootkit result: $CHKEXIT" >> $LOGF
+echo "* Lynis result: $LYNEXIT" >> $LOGF
+echo "* Sophos definition update result: $SUEXIT" >> $LOGF
+echo "* Sophos scan result: $SAVCODE" >> $LOGF
+echo "`eval date +%m/%d/%y"-"%H:%M` <--- Security scan completed on \"$HOSTNAME\" Elapsed: $ETIME --------" >> $LOGF
 
 if [[ $HOSTNAME == "astroid2" ]]; then
 /opt/galaxymediatools/galaxy_maintenance
