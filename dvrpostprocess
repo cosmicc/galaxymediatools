@@ -14,7 +14,7 @@ if [ $? -ne 0 ]; then
   echo "Attempting to wake server $T1NAME..." >> $LOGF
   wakeonlan $T1MAC 2>/dev/null 1>/dev/null
   wakeonlan $T1MAC 2>/dev/null 1>/dev/null
-  sleep 15
+  sleep 60
   fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
 if [ $? -ne 0 ]; then
   echo "$T1NAME failed wake and server is not responding." >> $LOGF
@@ -22,7 +22,7 @@ if [ $? -ne 0 ]; then
 fi
 fi
 
-ssh $T1INFO /opt/galaxymediatools/dvrprocess/PlexComskip.py "$1" &
+ssh $T1INFO "sudo /opt/galaxymediatools/dvrprocess/PlexComskip.py" "$1" &
 
 echo "Executing remote PlexComskip script" >> $LOGF
 
@@ -32,7 +32,7 @@ if [ $SLEPT -eq 1 ]; then
 echo "$T1NAME was originally sleeping, putting back to sleep" >> $LOGF
 ssh $T1INFO  
 fi
-
+#curl http://[PMS_IP_ADDRESS]:32400/library/sections/5/refresh?X-Plex-Token=$PLEXTOKEN
 echo " " >> $LOGF
 echo "---------- COMPLETED RECORDED TV POST PROCESS ----------" >> $LOGF
 

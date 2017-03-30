@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source "/opt/galaxymediatools/functions/prechecknl"
+
+curl http://172.25.1.26:32400/library/sections?X-Plex-Token=$PLEXTOKEN
