@@ -2,10 +2,11 @@
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
-LOGF="/video/Incoming/logs/dvrpostporcess.log"
+LOGF="/video/Incoming/logs/dvrpostprocess.log"
 SLEPT=0
 
 echo "`eval date +%m/%d/%y"-"%H:%M` ---> Starting Recorded TV post process" >> $LOGF
+echo "`eval date +%m/%d/%y"-"%H:%M` Running on recording: $1" >> $LOGF
 echo "`eval date +%m/%d/%y"-"%H:%M` Checking transcode server state..." >> $LOGF
 fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
 if [ $? -ne 0 ]; then

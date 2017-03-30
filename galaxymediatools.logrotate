@@ -1,8 +1,8 @@
 #this goes in /etc/logrotate.d
 
 /video/Incoming/logs/*.log {
-    daily
-    rotate 100
+    monthly
+    rotate 12
     olddir /video/Incoming/logs/archived_logs
     compress
     missingok
