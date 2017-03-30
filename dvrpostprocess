@@ -3,13 +3,15 @@
 source "/opt/galaxymediatools/functions/prechecknl"
 
 LOGF="/video/Incoming/logs/dvrpostporcess.log"
+SLEPT=0
 
 echo " " >> $LOGF
 echo "---------- STARTING RECORDED TV POST PROCESS ----------" >> $LOGF
 echo "Checking transcode server state..." >> $LOGF
 fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
 if [ $? -ne 0 ]; then
-   echo "Attempting to wake server $T1NAME..." >> $LOGF
+  SLEPT=1
+  echo "Attempting to wake server $T1NAME..." >> $LOGF
   wakeonlan $T1MAC 2>/dev/null 1>/dev/null
   wakeonlan $T1MAC 2>/dev/null 1>/dev/null
   sleep 15
@@ -18,14 +20,20 @@ if [ $? -ne 0 ]; then
   echo "$T1NAME failed wake and server is not responding." >> $LOGF
   exit 1
 fi
-else
+fi
 
 ssh $T1INFO /opt/galaxymediatools/dvrprocess/PlexComskip.py "$1" &
 
 echo "Executing remote PlexComskip script" >> $LOGF
 
 wait
+
+if [ $SLEPT -eq 1 ]; then
+echo "$T1NAME was originally sleeping, putting back to sleep" >> $LOGF
+ssh $T1INFO  
+fi
+
 echo " " >> $LOGF
 echo "---------- COMPLETED RECORDED TV POST PROCESS ----------" >> $LOGF
-fi
+
 
