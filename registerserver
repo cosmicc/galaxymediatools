@@ -2,34 +2,54 @@
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
-echo -e "${rred}MAKE SURE TO RUN THIS AS THE SSH USER!!${nocolor}"
+#echo -e "${rred}MAKE SURE TO RUN THIS AS THE SSH USER!!${nocolor}"
+echo -e "${cyan}This is the ${yellow}$THISSERVER ${cyan}server"
 
-echo -e "${cyan}This is the ${pink}$THISSERVER ${cyan}server"
-
-echo -e "${green}checking for proper sudoer file...${white}"
-if [ ! -f "/etc/sudoers.d/galaxymediatools" ]; then
-echo "ip ALL = (ALL) NOPASSWD: ALL" > "/etc/sudoers.d/galaxymediatools"
-fi
+if [ -f "/root/.ssh/id_rsa" ]; then
+echo -e "${green}Existing RSA key found.${white}"
+else 
+echo -e "${red}Existing RSA key NOT FOUND!!${white}"
 read -r -p "Would you like to generate new ssh auth keys for this server? [y/N] " response
 response=${response,,}    # tolower
 if [[ $response =~ ^(yes|y)$ ]]; then
 ssh-keygen
+else
+echo -e "${red}No RSA key. Cannot continue.${white}"
+exit 1
 fi
-echo -e "${cyan}Copying ssh keys to transcode servers...${pink}"
+fi
+
+if [ -f "/root/.ssh/id_rsa" ]; then
+echo -e "${green}Existing GitHub RSA key found.${white}"
+else
+echo -e "${green}No GitHub key found. Copying key to GitHub key...${white}"
+cp -f /root/.ssh/id_rsa /root/.ssh/github_id_rsa 
+fi
+
+if [ ! -f "/etc/sudoers.d/galaxymediatools" ]; then
+echo -e "${red}checking for proper sudoer file...${white}"
+echo "ip ALL = (ALL) NOPASSWD: ALL" > "/etc/sudoers.d/galaxymediatools"
+else
+echo -e "${green}Existing sudoers file found${white}"
+fi
+
 if [ "$THISSERVER" != "$T1NAME" ]; then
+echo -e "${cyan}Copying ssh keys to transcode servers...${yellow}"
 ssh-copy-id $T1INFO
 fi
-if [ "$THISSERVER" != "$T2NAME" ]; then
-ssh-copy-id $T2INFO
-fi
-echo -e "${cyan}Copying ssh keys to media management server...${pink}"
+#if [ "$THISSERVER" != "$T2NAME" ]; then
+#ssh-copy-id $T2INFO
+#fi
 if [ "$THISSERVER" != "$MSNAME" ]; then
+echo -e "${cyan}Copying ssh keys to media management server. ${yellow}"
 ssh-copy-id $MSINFO
 fi
-echo -e "${cyan}Copying ssh keys to download server...${pink}"
 if [ "$THISSERVER" != "$DSNAME" ]; then
+echo -e "${cyan}Copying ssh keys to download server...${yellow}"
 ssh-copy-id $DSINFO
 fi
-echo -e "${cyan}Copying ssh keys to plex server...${pink}"
+if [ "$THISSERVER" != "$PLEXNAME" ]; then
+echo -e "${cyan}Copying ssh keys to plex server...${yellow}"
 ssh-copy-id $PLEXINFO
+fi
 echo -e "${nocolor}"
