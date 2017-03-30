@@ -1,0 +1,23 @@
+#!/bin/bash
+
+ FNO=${1##*/} # filename only with extentions
+ EXT=${1: -3} # extention only
+ FPNE="${1%.*}"  # filename with path no extention
+ FNPNE="${FPNE##*/}"  # no path no extention
+DIR=$(dirname "${1}")
+
+echo "Merging Video Files:"
+echo "$1 + $2"
+echo " "
+
+mencoder -oac copy -ovc copy "$1" "$2" -o "$DIR/FNPNE.merged.$EXT"
+
+if [ $? -ne 0 ]; then
+  echo "MERGE ERROR!! Keeping original files"
+else
+  echo "Merge Complete. Deleting original files."
+  #rm "$1"
+  #rm "$2"
+fi
+
+
