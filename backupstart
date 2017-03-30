@@ -2,7 +2,7 @@
 
 LOGF="/video/Incoming/logs/backupmaster.log"
 
-if [ mountpoint -q /video ]
+if /bin/mountpoint -q /video
 then
 
  DT=`date +%m/%d/%y" "%l:%M%P`
@@ -11,7 +11,7 @@ then
 RUNCHECK1=`ps uxa | grep "backup.exec" | wc -l`
 
  if [[ $RUNCHECK1 < 3 ]]; then
-   screen -dm bash -c "/opt/galaxymediatools/backupscripts/backup.exec"
+   /usr/bin/screen -dm bash -c "/opt/galaxymediatools/backupscripts/backup.exec"
   else
    echo "`eval date +%m/%d/%y"-"%H:%M` Backup already running.  Not executing another session." >> $LOGF
    exit 1
