@@ -3,7 +3,7 @@
 source "/opt/galaxymediatools/functions/prechecknl"
 
 #echo -e "${rred}MAKE SURE TO RUN THIS AS THE SSH USER!!${nocolor}"
-echo -e "${cyan}This is the ${yellow}$THISSERVER ${cyan}server"
+echo -e "${cmd1color}This is the ${servercolor}$THISSERVER ${cmd1color}server"
 
 if [ -f "/root/.ssh/id_rsa" ]; then
 echo -e "${green}Existing RSA key found.${white}"
@@ -34,22 +34,22 @@ echo -e "${green}Existing sudoers file found${white}"
 fi
 
 if [ "$THISSERVER" != "$T1NAME" ]; then
-echo -e "${cyan}Copying ssh keys to transcode servers...${yellow}"
+echo -e "${cmd1color}Copying ssh keys to the ${servercolor}$T1NAME${cmd1color} server...${soutcolor}"
 ssh-copy-id $T1INFO
 fi
 #if [ "$THISSERVER" != "$T2NAME" ]; then
 #ssh-copy-id $T2INFO
 #fi
 if [ "$THISSERVER" != "$MSNAME" ]; then
-echo -e "${cyan}Copying ssh keys to media management server. ${yellow}"
+echo -e "${cmd1color}Copying ssh keys to the ${servercolor}$MSNAME${cmd1color} server... ${soutcolor}"
 ssh-copy-id $MSINFO
 fi
 if [ "$THISSERVER" != "$DSNAME" ]; then
-echo -e "${cyan}Copying ssh keys to download server...${yellow}"
+echo -e "${cmd1color}Copying ssh keys to the ${servercolor}$DSNAME${cmd1color} server... ${soutcolor}"
 ssh-copy-id $DSINFO
 fi
 if [ "$THISSERVER" != "$PLEXNAME" ]; then
-echo -e "${cyan}Copying ssh keys to plex server...${yellow}"
+echo -e "${cmd1color}Copying ssh keys to the ${servercolor}$PLEXNAME${cmd1color} server...${soutcolor}"
 ssh-copy-id $PLEXINFO
 fi
 echo -e "${nocolor}"
