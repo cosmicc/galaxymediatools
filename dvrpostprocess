@@ -1,0 +1,41 @@
+#!/bin/bash
+
+source "/opt/galaxymediatools/functions/prechecknl"
+
+LOGF="/video/Incoming/logs/dvrpostporcess.log"
+ FNO=${1##*/} # filename only with extentions
+ EXT=${1: -3} # extention only
+ FPNE="${1%.*}"  # filename with path no extention
+ FNPNE="${FPNE##*/}"  # no path no extention
+ DIR=$(dirname "${1}") # path only
+
+echo "Staring automatic commercial editor script" >> $LOGF
+
+echo "Full passed filename: $1" >> $LOGF
+echo "Running on file: $FNO" >> $LOGF
+
+echo "Running comskip commercial locator..." >> $LOGF
+/opt/Comskip/comskip "$1" --ini=/opt/Comskip/comskip.ini --output=$LOGDIR/comskip $LOGDIR/comskip
+if [ $? -ne 0 ]; then
+echo "COMSKIP ERROR. Exiting" >> $LOGF
+exit 1
+else
+echo "Comskip processing complete." >> $LOGF
+fi
+
+ check here for exit code
+ add execute times
+
+echo "Running mencoder to remove commercials..." >> $LOGF
+mencoder "$1" -edl "$LOGDIR/comskip/$FNPNE.edl" -oac copy -ovc copy -of mpeg -o "TRANSCODE/$FNO"
+if [ $? -ne 0 ]; then
+echo "MENCODER ERROR. Exiting" >> $LOGF
+exit 1
+else
+echo "Mencoder processing complete." >> $LOGF
+fi
+
+mv /TRANSCODE/$FNO $LOGDIR
+
+echo "Completed automatic commercial editor script" >> $LOGF
+
