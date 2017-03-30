@@ -15,7 +15,7 @@ echo "Full passed filename: $1" >> $LOGF
 echo "Running on file: $FNO" >> $LOGF
 
 echo "Running comskip commercial locator..." >> $LOGF
-/opt/Comskip/comskip "$1" --ini=/opt/Comskip/comskip.ini --output=$LOGDIR/comskip $LOGDIR/comskip
+/opt/Comskip/comskip "$1" --ini=/opt/Comskip/comskip.ini --output=/video/Other/recordedtv_commercial_cutfiles /video/Other/recordedtv_commercial_cutfiles
 if [ $? -ne 0 ]; then
 echo "COMSKIP ERROR. Exiting" >> $LOGF
 exit 1
@@ -27,7 +27,7 @@ fi
  add execute times
 
 echo "Running mencoder to remove commercials..." >> $LOGF
-mencoder "$1" -edl "$LOGDIR/comskip/$FNPNE.edl" -oac copy -ovc copy -of mpeg -o "TRANSCODE/$FNO"
+mencoder "$1" -edl "/video/Other/recordedtv_commercial_cutfiles/$FNPNE.edl" -oac copy -ovc copy -of mpeg -o "TRANSCODE/$FNO"
 if [ $? -ne 0 ]; then
 echo "MENCODER ERROR. Exiting" >> $LOGF
 exit 1
