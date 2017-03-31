@@ -1,36 +1,37 @@
 #!/bin/bash
 
+LOGF="/video/Incoming/logs/dvrpostprocess.log"
+
 source "/opt/galaxymediatools/functions/prechecknl"
 
-LOGF="/video/Incoming/logs/dvrpostprocess.log"
 SLEPT=0
 
-echo "`eval date +%m/%d/%y"-"%H:%M` ---> Starting Recorded TV post process" >> $LOGF
-echo "`eval date +%m/%d/%y"-"%H:%M` Running on recording: $1" >> $LOGF
-echo "`eval date +%m/%d/%y"-"%H:%M` Checking transcode server state..." >> $LOGF
+log "INFO" "---> Starting Recorded TV post process"
+log "INFO" " Running on recording: $1"
+log "INFO" "Checking transcode server state..."
 fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
 if [ $? -ne 0 ]; then
   SLEPT=1
-  echo "`eval date +%m/%d/%y"-"%H:%M` Attempting to wake server $T1NAME..." >> $LOGF
+  log "INFO" "Attempting to wake server $T1NAME..."
   wakeonlan $T1MAC 2>/dev/null 1>/dev/null
   wakeonlan $T1MAC 2>/dev/null 1>/dev/null
   sleep 60
   fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
 if [ $? -ne 0 ]; then
-  echo "`eval date +%m/%d/%y"-"%H:%M` $T1NAME failed wake and server is not responding." >> $LOGF
+  log "ERROR" "$T1NAME failed wake and server is not responding."
   exit 1
 fi
 fi
 
-echo "`eval date +%m/%d/%y"-"%H:%M` Executing remote PlexComskip script" >> $LOGF
+log "INFO" "Executing remote PlexComskip script"
 
 ssh $T1INFO "sudo /opt/galaxymediatools/dvrprocess/PlexComskip.py \"$1\"" &
 
 wait
 
 if [ $SLEPT -eq 1 ]; then
-echo "`eval date +%m/%d/%y"-"%H:%M` $T1NAME was originally sleeping, putting back to sleep" >> $LOGF
+log "INFO" "$T1NAME was originally sleeping, putting back to sleep"
 ssh $T1INFO "sudo pm-suspend" & 
 fi
 #curl http://[PMS_IP_ADDRESS]:32400/library/sections/5/refresh?X-Plex-Token=$PLEXTOKEN
-echo "`eval date +%m/%d/%y"-"%H:%M` <--- Completed Recorded TV post process" >> $LOGF
+log "INFO" "<--- Completed Recorded TV post process"

@@ -8,10 +8,10 @@ if mountpoint -q /video
 then
 RUNCHECK1=`ps uxa | grep "galaxy_maintenance" | wc -l`
 
- ST=`date +%m/%d/%y" "%l:%M%P`
- echo "`eval date +%m/%d/%y"-"%H:%M` ---> Starting Galaxy maintenance script" >> $LOGF
- if [[ $RUNCHECK1 < 4 ]]; then
- 
+ STTIME=`date +%m/%d/%y" "%l:%M%P`
+ log "INFO" "---> Starting Galaxy maintenance script"
+
+ if [[ $RUNCHECK1 < 4 ]]; then 
   PTIME=$(date +%s)  
   echo "`eval date +%m/%d/%y"-"%H:%M` Starting file cleanup..." >> $LOGF
   /opt/galaxymediatools/filecleanup >> $LOGF
