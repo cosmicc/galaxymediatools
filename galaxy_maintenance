@@ -1,8 +1,8 @@
 #!/bin/bash
 
-source "/opt/galaxymediatools/functions/prechecknl"
-
 LOGF="/video/Incoming/logs/maintenance.log"
+
+source "/opt/galaxymediatools/functions/prechecknl"
 
 if mountpoint -q /video
 then
@@ -13,56 +13,56 @@ RUNCHECK1=`ps uxa | grep "galaxy_maintenance" | wc -l`
 
  if [[ $RUNCHECK1 < 4 ]]; then 
   PTIME=$(date +%s)  
-  echo "`eval date +%m/%d/%y"-"%H:%M` Starting file cleanup..." >> $LOGF
+  log "INFO" "Starting file cleanup..."
   /opt/galaxymediatools/filecleanup >> $LOGF
   OTIME=$(date +%s)
   RTIME=$(gettime "$PTIME" "$OTIME")
-  echo "`eval date +%m/%d/%y"-"%H:%M` Completed file cleanup. Elapsed: $RTIME" >> $LOGF
+  log "INFO" "Completed file cleanup. Elapsed: $RTIME"
  
   PTIME=$(date +%s)
-  echo "`eval date +%m/%d/%y"-"%H:%M` Starting file permission reset..." >> $LOGF
+  log "INFO" "Starting file permission reset..."
   /opt/galaxymediatools/filepermissions >> $LOGF
   OTIME=$(date +%s)
   RTIME=$(gettime "$PTIME" "$OTIME")
-  echo "`eval date +%m/%d/%y"-"%H:%M` Completed file permission reset. Elapsed: $RTIME" >> $LOGF
+  log "INFO" "Completed file permission reset. Elapsed: $RTIME"
 
   PTIME=$(date +%s)
-  echo "`eval date +%m/%d/%y"-"%H:%M` Starting expired episode check..." >> $LOGF
+  log "INFO" "Starting expired episode check..."
   /opt/galaxymediatools/expiredtv >> $LOGF
   OTIME=$(date +%s)
   RTIME=$(gettime "$PTIME" "$OTIME")
-  echo "`eval date +%m/%d/%y"-"%H:%M` Completed expired episode check. Elapsed: $RTIME" >> $LOGF
+  log "INFO" "Completed expired episode check. Elapsed: $RTIME"
 
   PTIME=$(date +%s)
-  echo "`eval date +%m/%d/%y"-"%H:%M` Starting file security scan..." >> $LOGF
+  log "INFO" "Starting file security scan..."
   /opt/galaxymediatools/filescan >> $LOGF
   OTIME=$(date +%s)
   RTIME=$(gettime "$PTIME" "$OTIME")
-  echo "`eval date +%m/%d/%y"-"%H:%M` Completed file security scan. Elapsed: $RTIME" >> $LOGF
+  log "INFO" "Completed file security scan. Elapsed: $RTIME"
 
   PTIME=$(date +%s)
-  echo "`eval date +%m/%d/%y"-"%H:%M` Executing Mass Movie Renamer..." >> $LOGF
+  log "INFO" "Executing Mass Movie Renamer..."
   /opt/galaxymediatools/massmovierenamer -i &> /dev/null
   OTIME=$(date +%s)
   RTIME=$(gettime "$PTIME" "$OTIME")
-  echo "`eval date +%m/%d/%y"-"%H:%M` Mass Movie renamer complete. Elapsed: $RTIME" >> $LOGF
+  log "INFO" "Mass Movie renamer complete. Elapsed: $RTIME"
 
   PTIME=$(date +%s)
-  echo "`eval date +%m/%d/%y"-"%H:%M` Executing Mass TV Transcoder..." >> $LOGF
+  log "INFO" "Executing Mass TV Transcoder..."
   /opt/galaxymediatools/masstvtrans &> /dev/null
   OTIME=$(date +%s)
   RTIME=$(gettime "$PTIME" "$OTIME")
-  echo "`eval date +%m/%d/%y"-"%H:%M` Mass TV Transcoder complete. Elapsed: $RTIME" >> $LOGF
+  log "INFO" "Mass TV Transcoder complete. Elapsed: $RTIME"
 
   PTIME=$(date +%s)
-  echo "`eval date +%m/%d/%y"-"%H:%M` Executing master backup script..." >> $LOGF
+  log "INFO" "Executing master backup script..."
   /opt/galaxymediatools/backupstart &> /dev/null
   OTIME=$(date +%s)
   RTIME=$(gettime "$PTIME" "$OTIME")
-  echo "`eval date +%m/%d/%y"-"%H:%M` Master backup script complete. Elapsed: $RTIME *This process branchs off" >> $LOGF
+  log "INFO" "Master backup script complete. Elapsed: $RTIME *This process branchs off"
 
   else
-   echo "`eval date +%m/%d/%y"-"%H:%M` Maintenance script already running.  Not executing another session." >> $LOGF
+   log "WARN" "Maintenance script already running.  Not executing another session."
    exit 1
  fi
 
@@ -70,9 +70,9 @@ TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
  ET=`date +%m/%d/%y" "%l:%M%P`
 
-echo "`eval date +%m/%d/%y"-"%H:%M` <--- Completed galaxy maintenance script. Elapsed: $ETIME --------" >> $LOGF
+log "INFO" "<--- Completed galaxy maintenance script. Elapsed: $ETIME"
  
 else
- echo "`eval date +%m/%d/%y"-"%H:%M` Video NFS Share NOT MOUNTED!! Exiting." >> $LOGF
+ log "ERROR" "Video NFS Share NOT MOUNTED!! Exiting."
  exit 1
 fi
