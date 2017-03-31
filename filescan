@@ -11,7 +11,7 @@ else
  exit 1
 fi
 
-LOGF="/video/Incoming/logs/security/$CTS-NASscan.txt"
+LOGF="/video/Incoming/logs/securityscan-nasscan.log"
 THREAT="No threats found."
 
 ST=`date +%m/%d/%y" "%l:%M%P`
@@ -21,7 +21,7 @@ echo " " >> $LOGF
 
 function scanfiles {
 echo "*Scanning $1" >> $LOGF
-savscan -ss -archive -suspicious -move=/video/Other/infected $1 >> $LOGF
+/opt/sophos-av/bin/savscan -ss -archive -suspicious -move=/video/Other/infected $1 >> $LOGF
   if [ $? -eq 1 ]; then
     THREAT="Scan Interrupted"
   else
