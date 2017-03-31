@@ -27,6 +27,18 @@ echo -e "$MIN Minutes"
 fi
 }
 
+gitupdate () {  # $1 service name, $2 path
+ log "INFO" "Checking for $1 uppdates..."
+ cd "$2"
+ PPAPP=`git pull | grep "Already up-to-date" | wc -l`
+ if [ $PAPP -eq 0 ]; then
+  log "INFO" "$1 updates detected and applied.  Restarting service..."
+  service restart $1 &>> $LOGF
+ else
+  log "INFO" "No $1 updates found."
+ fi
+}
+
 yellow='\e[1;33m'
 dyellow='\e[0;33m'
 red='\e[0;31m'

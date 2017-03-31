@@ -26,14 +26,14 @@ find "$TV2" -mtime +1 -exec rm -rf {} \; &>> $LOGF
 log "INFO" "Removed $EPS expired TV episodes."
 log "INFO" "Updating plex libraries"
 
-curl "http://172.25.1.26:32400/library/sections/$PLEXCAT/refresh?X-Plex-Token=$PLEXTOKEN"
+/usr/bin/curl "http://172.25.1.26:32400/library/sections/$PLEXCAT/refresh?X-Plex-Token=$PLEXTOKEN"
 sleep 10
-curl "http://172.25.1.26:32400/library/sections/$PLEXRCAT/refresh?X-Plex-Token=$PLEXTOKEN"
+/usr/bin/curl "http://172.25.1.26:32400/library/sections/$PLEXRCAT/refresh?X-Plex-Token=$PLEXTOKEN"
 
 TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
 
-/opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "TV episode experation complete. $EPS Episodes removed. Elapsed: $ETIME" &> /dev/null
+pushover "transcoder" "TV episode experation complete. $EPS Episodes removed. Elapsed: $ETIME" &> /dev/null
 
 log "INFO" "<--- Complete TV episode experation check. Elapsed: $ETIME --------"
 

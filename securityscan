@@ -17,6 +17,16 @@ apt-get update &> /dev/null
 apt-get upgrade -y --allow-downgrades --allow-remove-essential --allow-change-held-packages &>> $LOGF
 apt-get autoremove -y &>> $LOGF
 
+if [ "$HOSTNAME" == "$MSNAME" ]; then
+gitupdate "plexpy" "/opt/plexpy"
+gitupdate "headphones" "/usr/local/headphones"
+gitupdate "sickrage" "/opt/sickrage"
+fi
+
+if [ "$HOSTNAME" == "$PLEXNAME" ]; then
+gitupdate "plexupdate" "/opt/plexupdate"
+fi
+
 log "INFO" "Running Chkrootkit..."
 /usr/sbin/chkrootkit -n | grep 'INFECTED|Vulnerable'
     if [ $? -eq 0 ]; then

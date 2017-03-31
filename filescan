@@ -1,5 +1,7 @@
 #!/bin/bash
 
+LOGF="/video/Incoming/logs/securityscan-nasscan.log"
+
 source "/opt/galaxymediatools/functions/prechecknl"
 
 if mountpoint -q /video
@@ -7,14 +9,13 @@ then
  echo " "
 else
  echo "/video NOT MOUNTED!! Exiting."
- /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "NASscan Error: /video not mounted, cannot continue." &> /dev/null
+ pushover "security" "NASscan Error: /video not mounted, cannot continue."
  exit 1
 fi
 
-LOGF="/video/Incoming/logs/securityscan-nasscan.log"
 THREAT="No threats found."
 
-ST=`date +%m/%d/%y" "%l:%M%P`
+STIME=`date +%m/%d/%y" "%l:%M%P`
 echo "-------- SECURITY FILE SCAN STARTING at $ST --------" >> $LOGF
 
 echo " " >> $LOGF
@@ -51,7 +52,6 @@ scanfiles /files
 
 TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
- ET=`date +%m/%d/%y" "%l:%M%P`
 
 /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Security file scan complete. $THREAT Elapsed: $ETIME" &> /dev/null
 
