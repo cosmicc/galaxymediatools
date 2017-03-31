@@ -4,7 +4,7 @@
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
-LOGF="/video/Incoming/logs/mediabackup/backup_tv.log"
+LOGF="/video/Incoming/logs/backup_tv.log"
 LOGM="/video/Incoming/logs/backupmaster.log"
 LIBRARY="TV Show"
 MOUNT=/mnt/backup2

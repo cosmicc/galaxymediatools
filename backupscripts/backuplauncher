@@ -1,7 +1,7 @@
 #!/bin/bash
 
 LOGF="/video/Incoming/logs/backupmaster.log"
-DUUID1="F42E2DF82E2DB510"
+DUUID1="296A04BB7E0FD7B8"
 DUUID2="01D2A5E1CE162C70"
 MOUNT1=/mnt/backup1
 MOUNT2=/mnt/backup2
