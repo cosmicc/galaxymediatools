@@ -20,8 +20,11 @@ ntfsfix /dev/disk/by-uuid/$DUUID1 >> $LOGF
 
 /opt/galaxymediatools/backupscripts/backupcomedy.exec 
 /opt/galaxymediatools/backupscripts/backupmovies.exec
+/opt/galaxymediatools/backupscripts/backupufc.exec
 
 ntfsfix /dev/disk/by-uuid/$DUUID2 >> $LOGF
 
 /opt/galaxymediatools/backupscripts/backuptvshows.exec
+/opt/galaxymediatools/backupscripts/backuprecordedtv.exec
 
+pm-suspend
