@@ -27,6 +27,13 @@ RUNCHECK1=`ps uxa | grep "galaxy_maintenance" | wc -l`
   echo "`eval date +%m/%d/%y"-"%H:%M` Completed file permission reset. Elapsed: $RTIME" >> $LOGF
 
   PTIME=$(date +%s)
+  echo "`eval date +%m/%d/%y"-"%H:%M` Starting expired episode check..." >> $LOGF
+  /opt/galaxymediatools/expiredtv >> $LOGF
+  OTIME=$(date +%s)
+  RTIME=$(gettime "$PTIME" "$OTIME")
+  echo "`eval date +%m/%d/%y"-"%H:%M` Completed expired episode check. Elapsed: $RTIME" >> $LOGF
+
+  PTIME=$(date +%s)
   echo "`eval date +%m/%d/%y"-"%H:%M` Starting file security scan..." >> $LOGF
   /opt/galaxymediatools/filescan >> $LOGF
   OTIME=$(date +%s)
