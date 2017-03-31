@@ -3,6 +3,10 @@
 if mount|grep "/video" > /dev/null; then
 echo "File cleanup running..."
 MDIR="/video/Movies/"
+
+rm -fr /video/Incoming/process/tv/*
+rm -fr /video/Incoming/process/movies/*
+
 #find $MDIR -mindepth 2 -type f -print -exec mv {} . \;
 find $MDIR -type d -empty -exec rmdir {} \;
 rm $MDIR*.nfo >> /dev/null 2>&1

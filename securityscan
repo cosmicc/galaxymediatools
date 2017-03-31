@@ -9,13 +9,13 @@ else
 LOGF="/var/log/SECURITYSCAN.log"
 fi
 
-ST=`date +%m/%d/%y" "%l:%M%P`
+STIME=`date +%m/%d/%y" "%l:%M%P`
 echo "`eval date +%m/%d/%y"-"%H:%M` ---> security scan starting on \"$HOSTNAME\"" >> $LOGF
 
 echo "`eval date +%m/%d/%y"-"%H:%M` Running system updates..." >> $LOGF
 apt-get update &> /dev/null
-apt-get upgrade -y --force-yes &>> $LOGF
-apt-get autoremove &>>$LOGF
+apt-get upgrade -y --allow-downgrades --allow-remove-essential --allow-change-held-packages &>> $LOGF
+apt-get autoremove -y &>>$LOGF
 
 echo "`eval date +%m/%d/%y"-"%H:%M` Running Chkrootkit..." >> $LOGF
 /usr/sbin/chkrootkit -n | grep 'INFECTED|Vulnerable'

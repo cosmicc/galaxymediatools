@@ -84,7 +84,7 @@ do
 done < $LOGDIR/$INDXFIL
 printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Starting transcode process on ${#file[@]} files on $THISSERVER \n" >> $LOGF
 echo "Starting transcode process on ${#file[@]} files"
-if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "TV Transcoder Starting in $TMODE on $THISSERVER - ${#file[@]} Files to proccess" &> /dev/null; fi
+if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "TV Transcoder Starting in $TMODE on $THISSERVER - ${#file[@]} Files to process" &> /dev/null; fi
 j=1
 for f in "${file[@]}"; do
  fil=${f##*/}
