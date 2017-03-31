@@ -22,7 +22,7 @@ if [ $? -ne 0 ]; then
 fi
 fi
 
-ssh $T1INFO "sudo /opt/galaxymediatools/dvrprocess/PlexComskip.py \"$1\"" &
+ssh $T1INFO "sudo /opt/galaxymediatools/dvrprocess/PlexComskip.py \'$1\'" &
 
 echo "`eval date +%m/%d/%y"-"%H:%M` Executing remote PlexComskip script" >> $LOGF
 
