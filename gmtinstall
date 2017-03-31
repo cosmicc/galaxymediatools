@@ -32,6 +32,10 @@ fi
 #chmod ug+wrx /opt/galaxymediatools/remotecmd
 #chmod ug+wrx /opt/galaxymediatools/checkserver
 #chmod ug+wrx /opt/galaxymediatools/statusservers
+if [ "$HOSTNAME" == "$PLEXNAME" ]; then
+cd /opt
+git clone https://github.com/mrworf/plexupdate.git
+fi
 if [ -f "/etc/imdb-mf.conf" ]; then
  rm -f /etc/imdb-mf.conf
 fi
