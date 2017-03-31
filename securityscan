@@ -47,6 +47,10 @@ echo " " >> $LOGF
 
 echo "`eval date +%m/%d/%y"-"%H:%M` Running Antivirs/Malware scan..." >> $LOGF
 /usr/local/bin/savscan -s -narchive -suspicious --stay-on-machine --skip-special / >> $LOGF
+if [ "$HOSTNAME" == "saturn" ]; then
+/usr/local/bin/savscan -s -archive -suspicious --skip-special /video/Incoming >> $LOGF
+fi
+
 
 if [ $? -eq 0 ]; then
   SAVCODE="Success"
