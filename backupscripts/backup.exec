@@ -9,7 +9,7 @@ if /bin/mountpoint -q $MOUNT
 if [[ $FILECOUNT < $MINFILES ]]; then
  log "ERROR" "$LIBRARY library file count too low!! Only $FILECOUNT files found. Exiting."
  log "ERROR" "$LIBRARY library file count too low!! Only $FILECOUNT files found. Exiting." "$LOGM"
- /usr/bin/curl -s --form-string "token=aUsZyfBbjKGwUJUMdGfTqm63YydCBS" --form-string "user=ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" --form-string "message=$LIBRARY Library Backup ERROR! File Count Too LOW!" http://api.pushover.net/1/messages.json
+ pushover "backup" "$LIBRARY Library Backup ERROR! File Count Too LOW!"
  exit 1
 else
  log "INFO" "Found $FILECOUNT files in library to backup."
@@ -33,7 +33,7 @@ fi
    else
     log "INFO" "Backup Drive $MOUNT not mounted. Exiting"
     log "INFO" "Backup Drive $MOUNT not mounted. Exiting $LIBRARY library backup." "$LOGM"
-/usr/bin/curl -s --form-string "token=aUsZyfBbjKGwUJUMdGfTqm63YydCBS" --form-string "user=ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" --form-string "message=$LIBRRY Library Backup ERROR! $MOUNT Not Mounted!" http://api.pushover.net/1/messages.json
+pushover "backup" "$LIBRRY Library Backup ERROR! $MOUNT Not Mounted!"
  log "INFO" "Ended $LIBRARY Library backup"
  log "INFO" "Ended $LIBRARY Library backup" "$LOGM"
    exit 1
@@ -45,4 +45,5 @@ TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
  log "INFO" "Ended $LIBRARY Library backup Elapsed: $ETIME"
  log "INFO" "Ended $LIBRARY Library backup Elapsed: $ETIME" "$LOGM"
- /usr/bin/curl -s --form-string "token=aUsZyfBbjKGwUJUMdGfTqm63YydCBS" --form-string "user=ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" --form-string "message=$LIBRARY Library Backup Finished, $FILECOUNT Files Elapsed: $ETIME" http://api.pushover.net/1/messages.json
+ pushover "backup" "$LIBRARY Library Backup Finished, $FILECOUNT Files Elapsed: $ETIME"
+
