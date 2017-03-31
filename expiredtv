@@ -1,17 +1,16 @@
 #!/bin/bash
 
-source "/opt/galaxymediatools/functions/prechecknl"
-
 LOGF="/video/Incoming/logs/expiredtv.log"
+
+source "/opt/galaxymediatools/functions/prechecknl"
 
 TV1="/video/TV Series/Vice News Tonight/Season 01"
 TV2="/video/Recorded TV/Local 4 News Today at 6AM (2013)/Season 2017"
 
 STIME=`date +%m/%d/%y" "%l:%M%P`
-echo "`eval date +%m/%d/%y"-"%H:%M` ---> Starting TV episode experation check script" >> $LOGF
+log "INFO" "---> Starting TV episode experation check script"
 
-echo "`eval date +%m/%d/%y"-"%H:%M` Checking for expired episodes..." >> $LOGF
-
+log "INFO" "Checking for expired episodes..."
 
 #find "$TV1" -type f -printf "%-.22T+ %M %n %-8u %-8g %8s %Tx %.8TX %p\n" | sort | cut -f 2- -d ' ' 
 
@@ -19,13 +18,13 @@ EPS1=`find "$TV1" -mtime +14 | wc -l`
 EPS2=`find "$TV2" -mtime +1 | wc -l`
 EPS=$((EPS1+EPS2))
 
-echo "`eval date +%m/%d/%y"-"%H:%M` Found $EPS expired TV episodes." >> $LOGF
+log "INFO" "Found $EPS expired TV episodes."
 
-echo "`eval date +%m/%d/%y"-"%H:%M` Removing $EPS expired TV episodes." >> $LOGF
+log "INFO" "Removing $EPS expired TV episodes."
 find "$TV1" -mtime +14 -exec rm -rf {} \; &>> $LOGF
 find "$TV2" -mtime +1 -exec rm -rf {} \; &>> $LOGF
-echo "`eval date +%m/%d/%y"-"%H:%M` Removed $EPS expired TV episodes." >> $LOGF
-echo "`eval date +%m/%d/%y"-"%H:%M` Updating plex libraries" >> $LOGF
+log "INFO" "Removed $EPS expired TV episodes."
+log "INFO" "Updating plex libraries"
 
 curl "http://172.25.1.26:32400/library/sections/$PLEXCAT/refresh?X-Plex-Token=$PLEXTOKEN"
 sleep 10
@@ -33,10 +32,9 @@ curl "http://172.25.1.26:32400/library/sections/$PLEXRCAT/refresh?X-Plex-Token=$
 
 TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
- ET=`date +%m/%d/%y" "%l:%M%P`
 
 /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "TV episode experation complete. $EPS Episodes removed. Elapsed: $ETIME" &> /dev/null
 
-echo "`eval date +%m/%d/%y"-"%H:%M` <--- Complete TV episode experation check. Elapsed: $ETIME --------" >> $LOGF
+log "INFO" "<--- Complete TV episode experation check. Elapsed: $ETIME --------"
 
 exit 0

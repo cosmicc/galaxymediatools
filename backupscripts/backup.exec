@@ -1,24 +1,20 @@
 #!/bin/bash
 
 STIME=`date +%m/%d/%y" "%l:%M%P`
-echo "`eval date +%m/%d/%y"-"%H:%M` Starting $LIBRARY Library backup" 
-echo "`eval date +%m/%d/%y"-"%H:%M` Starting $LIBRARY Library backup" >> $LOGF
-echo "`eval date +%m/%d/%y"-"%H:%M` Starting $LIBRARY Library backup" >> $LOGM
+log "INFO" "---> Starting $LIBRARY Library backup"
+log "INFO" "---> Starting $LIBRARY Library backup" "$LOGM"
 if /bin/mountpoint -q $MOUNT
  then
   FILECOUNT=`ls -1qR "$SDIR" | wc -l`
 if [[ $FILECOUNT < $MINFILES ]]; then
- echo "`eval date +%m/%d/%y"-"%H:%M` $LIBRARY library file count too low!! Only $FILECOUNT files found. Exiting."
- echo "`eval date +%m/%d/%y"-"%H:%M` $LIBRARY library file count too low!! Only $FILECOUNT files found. Exiting." >> $LOGF
- echo "`eval date +%m/%d/%y"-"%H:%M` $LIBRARY library file count too low!! Only $FILECOUNT files found. Exiting." >> $LOGM
+ log "ERROR" "$LIBRARY library file count too low!! Only $FILECOUNT files found. Exiting."
+ log "ERROR" "$LIBRARY library file count too low!! Only $FILECOUNT files found. Exiting." "$LOGM"
  /usr/bin/curl -s --form-string "token=aUsZyfBbjKGwUJUMdGfTqm63YydCBS" --form-string "user=ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" --form-string "message=$LIBRARY Library Backup ERROR! File Count Too LOW!" http://api.pushover.net/1/messages.json
  exit 1
 else
- echo "`eval date +%m/%d/%y"-"%H:%M` Found $FILECOUNT files in library to backup."
- echo "`eval date +%m/%d/%y"-"%H:%M` Found $FILECOUNT files in library to backup." >> $LOGF
+ log "INFO" "Found $FILECOUNT files in library to backup."
 fi
-  echo "`eval date +%m/%d/%y"-"%H:%M` Executing rsync..."
-  echo "`eval date +%m/%d/%y"-"%H:%M` Executing rsync..." >> $LOGF
+  log "INFO" "Executing rsync..."
   /usr/bin/rsync -arhv --stats --delete "$SDIR" "$DDIR" 2>&1 | tee -a $LOGF
  else
   /bin/mount UUID=$DUUID $MOUNT
@@ -26,25 +22,20 @@ fi
    then
   FILECOUNT=`ls -1qR "$SDIR" | wc -l`
 if [[ $FILECOUNT < $MINFILES ]]; then
- echo "`eval date +%m/%d/%y"-"%H:%M` $LIBRARY library file count too low!! Only $FILECOUNT files found. Exiting."
- echo "`eval date +%m/%d/%y"-"%H:%M` $LIBRARY library file count too low!! Only $FILECOUNT files found. Exiting." >> $LOGF
- echo "`eval date +%m/%d/%y"-"%H:%M` $LIBRARY library file count too low!! Only $FILECOUNT files found. Exiting." >> $LOGM
+ log "ERROR" "$LIBRARY library file count too low!! Only $FILECOUNT files found. Exiting."
+ log "ERROR" "$LIBRARY library file count too low!! Only $FILECOUNT files found. Exiting." "$LOGM"
  exit 1
 else
- echo "`eval date +%m/%d/%y"-"%H:%M` Found $FILECOUNT files in library to backup."
- echo "`eval date +%m/%d/%y"-"%H:%M` Found $FILECOUNT files in library to backup." >> $LOGF
+ log "INFO" "Found $FILECOUNT files in library to backup."
 fi
-    echo "`eval date +%m/%d/%y"-"%H:%M` Executing rsync..."
-    echo "`eval date +%m/%d/%y"-"%H:%M` Executing rsync..." >> $LOGF
+    log "INFO" "Executing rsync..."
     /usr/bin/rsync -arhv --stats --delete "$SDIR" "$DDIR" 2>&1 | tee -a $LOGF
    else
-    echo "`eval date +%m/%d/%y"-"%H:%M` Backup Drive $MOUNT not mounted. Exiting"
-    echo "`eval date +%m/%d/%y"-"%H:%M` Backup Drive $MOUNT not mounted. Exiting" >> $LOGF
-    echo "`eval date +%m/%d/%y"-"%H:%M` Backup Drive $MOUNT not mounted. Exiting $LIBRARY library backup." >> $LOGM 
+    log "INFO" "Backup Drive $MOUNT not mounted. Exiting"
+    log "INFO" "Backup Drive $MOUNT not mounted. Exiting $LIBRARY library backup." "$LOGM"
 /usr/bin/curl -s --form-string "token=aUsZyfBbjKGwUJUMdGfTqm63YydCBS" --form-string "user=ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" --form-string "message=$LIBRRY Library Backup ERROR! $MOUNT Not Mounted!" http://api.pushover.net/1/messages.json
- echo "`eval date +%m/%d/%y"-"%H:%M` Ended $LIBRARY Library backup"
- echo "`eval date +%m/%d/%y"-"%H:%M` Ended $LIBRARY Library backup" >> $LOGF
- echo "`eval date +%m/%d/%y"-"%H:%M` Ended $LIBRARY Library backup" >> $LOGM
+ log "INFO" "Ended $LIBRARY Library backup"
+ log "INFO" "Ended $LIBRARY Library backup" "$LOGM"
    exit 1
    fi
 fi
@@ -52,7 +43,6 @@ fi
 /bin/umount $MOUNT
 TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
- echo "`eval date +%m/%d/%y"-"%H:%M` Ended $LIBRARY Library backup Elapsed: $ETIME"
- echo "`eval date +%m/%d/%y"-"%H:%M` Ended $LIBRARY Library backup Elapsed: $ETIME" >> $LOGF
- echo "`eval date +%m/%d/%y"-"%H:%M` Ended $LIBRARY Library backup Elapsed: $ETIME" >> $LOGM
+ log "INFO" "Ended $LIBRARY Library backup Elapsed: $ETIME"
+ log "INFO" "Ended $LIBRARY Library backup Elapsed: $ETIME" "$LOGM"
  /usr/bin/curl -s --form-string "token=aUsZyfBbjKGwUJUMdGfTqm63YydCBS" --form-string "user=ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" --form-string "message=$LIBRARY Library Backup Finished, $FILECOUNT Files Elapsed: $ETIME" http://api.pushover.net/1/messages.json

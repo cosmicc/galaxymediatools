@@ -27,7 +27,12 @@ fi
 LOGDT="eval date '+%y/%m/%d %H:%M:%S'"
 
 log () {
-echo "`$LOGDT` - $1 :: $2" >> $LOGF
+if [ $3 == "" ]; then
+LOGFILE=$LOGF
+else
+LOGFILE=$3
+fi
+echo "`$LOGDT` - $1 :: $2" >> $LOGFILE
 }
 
 

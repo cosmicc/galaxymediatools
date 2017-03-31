@@ -2,10 +2,11 @@
 
 # Find UUID: ls -l /dev/disk/by-uuid 
 
-source "/opt/galaxymediatools/functions/prechecknl"
-
 LOGF="/video/Incoming/logs/backup_movies.log"
 LOGM="/video/Incoming/logs/backupmaster.log"
+
+source "/opt/galaxymediatools/functions/prechecknl"
+
 LIBRARY="Movie"
 MOUNT=/mnt/backup1
 DUUID="296A04BB7E0FD7B8"

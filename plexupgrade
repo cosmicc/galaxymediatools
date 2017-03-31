@@ -1,14 +1,12 @@
 #!/bin/bash
 
-source "/opt/galaxymediatools/functions/prechecknl"
-
 LOGF="/video/Incoming/logs/plexupgrades.log"
 
-echo "`eval date +%m/%d/%y"-"%H:%M` ---> Starting Plex Media Server upgrade" >> $LOGF
+source "/opt/galaxymediatools/functions/prechecknl"
 
+log "INFO" "---> Starting Plex Media Server upgrade"
 
 /opt/plexupdate/plexupdate.sh -d --notify-success --config /etc/plexupdate.conf -u &>> $LOGF
 
-
-echo "`eval date +%m/%d/%y"-"%H:%M` ---> Completed Plex Media Server uggrade" >> $LOGF
+log "INFO" "---> Completed Plex Media Server uggrade"
 
