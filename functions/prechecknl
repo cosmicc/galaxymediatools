@@ -1,4 +1,7 @@
 #!/bin/bash
+
+source "/opt/galaxymediatools/functions/logalerts"
+
 control_c()
 {
   echo -en "\n*** Ouch! Exiting ***\n"
@@ -23,18 +26,6 @@ else
 echo -e "$MIN Minutes"
 fi
 }
-
-LOGDT="eval date '+%y/%m/%d %H:%M:%S'"
-
-log () {
-if [ $3 == "" ]; then
-LOGFILE=$LOGF
-else
-LOGFILE=$3
-fi
-echo "`$LOGDT` - $1 :: $2" >> $LOGFILE
-}
-
 
 yellow='\e[1;33m'
 dyellow='\e[0;33m'

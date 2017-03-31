@@ -1,0 +1,38 @@
+#!/bin/bash
+
+LOGDT="eval date '+%y/%m/%d %H:%M:%S'"
+
+log () {
+if [[ $3 == "" ]]; then
+LOGFILE=$LOGF
+else
+LOGFILE=$3
+fi
+echo "`$LOGDT` - $1 :: $2" >> $LOGFILE
+}
+
+
+pushover () {
+case $1 in
+  security)
+        APPTOKEN="am4StBRZHw1AFGEkPGdLbh8WHjvf3K" ;;
+  backup)
+        APPTOKEN="aUsZyfBbjKGwUJUMdGfTqm63YydCBS" ;;
+  transcoder)
+        APPTOKEN="aniX9vyMfpnaGCvhbETngNtUFerfD9" ;;
+  connection)
+        APPTOKEN="a2DmJYt1AgDxLWX6JQSDDPmAvbrtnY" ;;
+  plex)
+        APPTOKEN="aBv16CXUX3t5KPvkSpvCPmY9PY1rwf" ;;
+  *)
+	log "ERROR" "No Pushover Application specified!"
+	exit 1 ;;
+esac
+/usr/bin/curl -s --form-string "token=$APPTOKEN" --form-string "user=ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" --form-string "message=$2" https://api.pushover.net/1/messages.json &> /dev/null 
+if [ "$?" == "0" ]; then
+log "INFO" "Pushover notification sent as applicatoin \"$1\""
+else
+log "ERROR" "Pushover notification FAILED!"
+fi
+}
+

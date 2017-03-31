@@ -1,0 +1,11 @@
+#!/bin/bash
+
+LOGF="/video/Incoming/logs/tester.log"
+
+source "/opt/galaxymediatools/functions/prechecknl"
+
+log "INFO" "---> security scan starting"
+
+pushover "Test Message!"
+
+exit 0
