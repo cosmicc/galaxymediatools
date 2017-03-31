@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source "/opt/galaxymediatools/functions/prechecknl"
-
 if mountpoint -q /video
 then
 LOGF="/video/Incoming/logs/securityscan-$HOSTNAME.log"
@@ -9,15 +7,17 @@ else
 LOGF="/var/log/SECURITYSCAN.log"
 fi
 
-STIME=`date +%m/%d/%y" "%l:%M%P`
-echo "`eval date +%m/%d/%y"-"%H:%M` ---> security scan starting on \"$HOSTNAME\"" >> $LOGF
+source "/opt/galaxymediatools/functions/prechecknl"
 
-echo "`eval date +%m/%d/%y"-"%H:%M` Running system updates..." >> $LOGF
+STIME=`date +%m/%d/%y" "%l:%M%P`
+log "INFO" "---> security scan starting on \"$HOSTNAME\""
+
+log "INFO" "Running system updates..."
 apt-get update &> /dev/null
 apt-get upgrade -y --allow-downgrades --allow-remove-essential --allow-change-held-packages &>> $LOGF
-apt-get autoremove -y &>>$LOGF
+apt-get autoremove -y &>> $LOGF
 
-echo "`eval date +%m/%d/%y"-"%H:%M` Running Chkrootkit..." >> $LOGF
+log "INFO" "Running Chkrootkit..."
 /usr/sbin/chkrootkit -n | grep 'INFECTED|Vulnerable'
     if [ $? -eq 0 ]; then
       /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Security threat from chkrootkit found on $HOSTNAME" &> /dev/null
@@ -26,7 +26,7 @@ echo "`eval date +%m/%d/%y"-"%H:%M` Running Chkrootkit..." >> $LOGF
     CHKEXIT="No Threats Found."
     fi
 
-echo "`eval date +%m/%d/%y"-"%H:%M` Running Lynis..." >> $LOGF
+log "INFO" "Running Lynis..."
 /usr/sbin/lynis audit system --cronjob --quiet &>> $LOGF
     if [ $? -ne 0 ]; then
       /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Lynis Execution error on $HOSTNAME. Check $LOGF" &> /dev/null
@@ -35,8 +35,7 @@ echo "`eval date +%m/%d/%y"-"%H:%M` Running Lynis..." >> $LOGF
     LYNEXIT="Success"
     fi
 
-echo "`eval date +%m/%d/%y"-"%H:%M` Running Antivirs/Malware definition update..." >> $LOGF
-echo " " >> $LOGF
+log "INFO" "Running Antivirs/Malware definition update..."
 /opt/sophos-av/bin/savupdate &>> $LOGF
     if [ $? -ne 0 ]; then
       /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Sophos definition update error on $HOSTNAME. Check $LOGF" &> /dev/null
@@ -45,12 +44,8 @@ echo " " >> $LOGF
     SUEXIT="Success"
     fi
 
-echo "`eval date +%m/%d/%y"-"%H:%M` Running Antivirs/Malware scan..." >> $LOGF
+log "INFO" "Running Antivirs/Malware scan..."
 /usr/local/bin/savscan -s -narchive -suspicious --stay-on-machine --skip-special / >> $LOGF
-if [ "$HOSTNAME" == "saturn" ]; then
-/usr/local/bin/savscan -s -archive -suspicious --skip-special /video/Incoming >> $LOGF
-fi
-
 
 if [ $? -eq 0 ]; then
   SAVCODE="Success"
@@ -71,12 +66,11 @@ else
 fi
 TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
- ET=`date +%m/%d/%y" "%l:%M%P`
 echo "* Chkrootkit result: $CHKEXIT" >> $LOGF
 echo "* Lynis result: $LYNEXIT" >> $LOGF
 echo "* Sophos definition update result: $SUEXIT" >> $LOGF
 echo "* Sophos scan result: $SAVCODE" >> $LOGF
-echo "`eval date +%m/%d/%y"-"%H:%M` <--- Security scan completed on \"$HOSTNAME\" Elapsed: $ETIME --------" >> $LOGF
+log "INFO" "<--- Security scan completed on \"$HOSTNAME\" Elapsed: $ETIME --------"
 
 if [[ $HOSTNAME == "astroid2" ]]; then
 /opt/galaxymediatools/galaxy_maintenance
