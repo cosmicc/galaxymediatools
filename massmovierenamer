@@ -36,10 +36,10 @@ else
  echo "Script starting up in normal ($EFED) mode"
 fi
 touch $LOGF 
-printf "`eval date +%m/%d/%y"-"%H:%M` - *** Script Start \n" >> $LOGF
-echo "Resetting transcode directory $TRANSDIR"
+log "INFO" "---> Movierenamer script start"
+log "INFO" "Resetting transcode directory $TRANSDIR"
 if [ "$TRANSDIR" == "" ];then
-echo -e "${errorcolor}ERROR! TRANSDIR is null. Exiting."
+log "ERROR" "ERROR! TRANSDIR is null. Exiting."
 exit 1
 fi
 if [ -d $TRANSDIR ]; then
@@ -47,13 +47,13 @@ if [ -d $TRANSDIR ]; then
 else
  mkdir $TRANSDIR
 fi
-echo "Cleaning out non-movie files..."
+log "INFO" "Cleaning out non-movie files..."
 find "$MOVIEDIR" -type f -name *.idx -delete
 find "$MOVIEDIR" -type f -name *.sub -delete
 find "$MOVIEDIR" -type f -name *.nfo -delete
 find "$MOVIEDIR" -type f -name *.txt -delete
 find "$MOVIEDIR" -type f -name *. -delete
-printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process \n" >> $LOGF
+log "INFO" "Building index of files to process..."
 echo "Building file index..."
 sleep 5
 if [ -f "$LOGDIR/$INDXFIL" ]; then
@@ -68,10 +68,10 @@ do
         i=$(($i+1))
     fi
 done < $LOGDIR/$INDXFIL
-printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover script start-up notification\n" >> $LOGF
-echo "Sending pushover notification"
+#printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover script start-up notification\n" >> $LOGF
+#echo "Sending pushover notification"
 #if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass Movie Renamer Starting on $THISSERVER - ${#file[@]} Files to proccess" &> /dev/null; fi
-if [[ -z $VERB ]]; then echo "Processing Movie Files..."; fi
+if [[ -z $VERB ]]; then log "INFO" "Processing Movie Files..."; fi
 j=0
 for f in "${file[@]}"; do
  fil=${f##*/}
@@ -79,16 +79,16 @@ for f in "${file[@]}"; do
  EXT=${EXT,,}
  OSIZE=$(wc -c "$f" | cut -f 1 -d ' ')
  if [ "$EXT" == "m4v" ] && [ "$NOTRANS" != "yes" ] ; then
-  echo "M4V or 3Gig+ Movie found, transcoding movie to mp4..."
+  log "INFO" "M4V or 3Gig+ Movie found, transcoding movie to mp4..."
   rm -rf /var/lock/gtrans.lock &> /dev/null
   eval $APPDIR/transmovie \"$f\"
   mkdir /var/lock/gtrans.lock &> /dev/null
-  echo "M4V Transcode complete."
+  log "INFO" "M4V Transcode complete."
  else
   isinteg "$f"
   if [ "$ISINTEG" == "1" ]; then
    if [[ $VERB ]]; then echo "$fil passed integrity check."; fi
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 03 File passed integrity check - $fil \n" >> $LOGF
+   log "DEBUG" "File passed integrity check - $fil"
    VRESCHK=`echo "$f" | awk -F'[][]' '{print $2}'`
    SCHK=`echo "$f" | sed 's/.*\]\([^]]*\)\[.*/\1/g'`
    #if [ "$SCHK" != "" ] && [ "$VRESCHK" != "1080p" ] && [ "$VRESCHK" != "720p" ] && [ "$VRESCHK" != "480p" ] && [ "$VRESCHK" != "SD" ] || [[ $FORCE ]] ; then
@@ -101,7 +101,6 @@ for f in "${file[@]}"; do
    if [[ -z $SIM ]]; then
 
     if [ "$f" != "$renamedmoviewp" ]; then
-     echo " * Movie Renamed - $fil -> $renamedmovienp"
 
      if [[ $PROMPT ]]; then
       read -p "Would you like to rename movie [y/N]? " -n 1 -r
@@ -112,19 +111,19 @@ for f in "${file[@]}"; do
      else
       mv "$f" "$renamedmoviewp"
      fi
-     printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Movie Renamed - $fil -> $renamedmovienp \n" >> $LOGF
+     log "INFO" "Movie Renamed - $fil -> $renamedmovienp"
 
     else
     if [[ $VERB ]]; then echo "File already has correct name $fil"; fi
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 02 File already has correct name - $fil \n" >> $LOGF
+    log "DEBUG" "File already has correct name - $fil"
    fi
    else
    if [ "$f" != "$renamedmoviewp" ]; then
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 01 SIM MODE Movie NOT Renamed - $fil -> $renamedmovienp \n" >> $LOGF
+    log "WARN" "SIM MODE Movie NOT Renamed - $fil -> $renamedmovienp"
     echo " * SIM MODE Movie NOT Renamed - $fil -> $renamedmovienp"
    else
     if [[ $VERB ]]; then echo "File already has correct name $fil"; fi
-    printf "`eval date +%m/%d/%y"-"%H:%M` - 02 File already has correct name - $fil \n" >> $LOGF
+    log "DEBUG" "File already has correct name - $fil"
    fi
   fi
 #  else
@@ -134,12 +133,12 @@ for f in "${file[@]}"; do
  else
   echo "File FAILED integrity test!! Purging file and marking for re-download"
   if [[ -z $SIM ]]; then 
-   $APPDIR/pushover.sh -T $POAK -U $POUK "Movie FAILED integrity test!! Purging file and marking for re-download - $fil"
+   pushover "transcoder" "Movie FAILED integrity test!! Purging file and marking for re-download - $fil"
   fi
-  printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test - $fil \n" >> $LOGF
-  printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download - $fil \n" >> $LOGF
+  log "WARN" "File failed integrity test - $fil"
+  log "WARN" "Purging file and marking for re-download - $fil"
   printf "$f \n" >> "$LOGDIR/re-downloads.txt"
-  ###############################if [[ -z $SIM ]]; then mv -f "$f" "$TRASHDIR" ; fi
+  if [[ -z $SIM ]]; then mv -f "$f" "$TRASHDIR" ; fi
  fi
 fi
 done
@@ -147,15 +146,13 @@ done
 TTIME=$(date +%s)
    ETIME=$(gettime "$STIME" "$TTIME")
 rm -r $TRANSDIR/* &> /dev/null
-printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Sending Pushover completion notification\n" >> $LOGF
-if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Mass Movie Renamer Complete. ${#file[@]} total files processed, $IMREN file renamed, $IMFAIL IMDB not found, $MISSYR Missing Year. Elapsed: $ETIME"
+log "INFO" "Sending Pushover completion notification"
+if [[ -z $SIM ]]; then pushover "transcoder" "Mass Movie Renamer Complete. ${#file[@]} total files processed, $IMREN file renamed, $IMFAIL IMDB not found, $MISSYR Missing Year. Elapsed: $ETIME"
 fi
-printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server movie section update  \n" >> $LOGF
+log "INFO" "Running Plex server movie section update"
 echo "Script ended."
 if [[ -z $SIM ]]; then curl "http://172.25.1.26:32400/library/sections/$PLEXMCAT/refresh?X-Plex-Token=$PLEXTOKEN"
    fi
-printf "`eval date +%m/%d/%y"-"%H:%M` - ***Script End - Elapsed Time: $ETIME\n" >> $LOGF
-sleep 10
-#if [[ -z $SUSP ]]; then pm-suspend
+log "INFO" "<--- Completed Massmovierenamer script - Elapsed Time: $ETIME"
 
 #sed 's/\]\ \[/\]\[/g' removes space between brackets

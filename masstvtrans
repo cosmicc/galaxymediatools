@@ -36,12 +36,12 @@ elif [[ $CURD ]]; then TMODE="Single Directory Mode"
 else TMODE="Normal mode"
 fi
 echo "TV Show Transcoder Starting in $TMODE..."
-printf "`eval date +%m/%d/%y"-"%H:%M` - *** TV Show Transcoder in $TMODE Starting on $THISSERVER \n" >> $LOGF
+log "INFO" "---> TV Show Transcoder in $TMODE Starting on $THISSERVER"
 touch $LOGF
 echo "Resetting transcode directory $TRANSDIR..."
-printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Resetting Transcode directory on $THISSERVER \n" >> $LOGF
+log "INFO" "Resetting Transcode directory on $THISSERVER"
 if [ "$TRANSDIR" == "" ];then
-echo -e "${errorcolor}ERROR! TRANSDIR is null. Exiting."
+log "ERROR" "ERROR! TRANSDIR is null. Exiting."
 exit 1
 fi
 if [ -d $TRANSDIR ]; then
@@ -49,7 +49,7 @@ if [ -d $TRANSDIR ]; then
 else
  mkdir $TRANSDIR
 fi
-printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Building index of files to process on $THISSERVER \n" >> $LOGF
+log "INFO" "Building index of files to process on $THISSERVER"
 echo "Building index of files to process..."
 if [ -f "$LOGDIR/$INDXFIL" ]; then rm -f $LOGDIR/$INDXFIL; fi
 
@@ -82,9 +82,9 @@ do
         i=$(($i+1))
     fi
 done < $LOGDIR/$INDXFIL
-printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Starting transcode process on ${#file[@]} files on $THISSERVER \n" >> $LOGF
+log "INFO" "Starting transcode process on ${#file[@]} files on $THISSERVER"
 echo "Starting transcode process on ${#file[@]} files"
-if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "TV Transcoder Starting in $TMODE on $THISSERVER - ${#file[@]} Files to process" &> /dev/null; fi
+if [[ -z $SIM ]]; then pushover "transcoder" "TV Transcoder Starting in $TMODE on $THISSERVER - ${#file[@]} Files to process"; fi
 j=1
 for f in "${file[@]}"; do
  fil=${f##*/}
@@ -96,7 +96,7 @@ for f in "${file[@]}"; do
  fng="${fne##*/}"
  fleft=$((${#file[@]}-$j))
  if [ -f "$fne.trans.mp4" ]; then
-  printf "`eval date +%m/%d/%y"-"%H:%M` - 70 File already has transcoded version existing on $THISSERVER - removing $fne.trans.mp4 \n" >> $LOGF
+  log "WARN" "File already has transcoded version existing on $THISSERVER - removing $fne.trans.mp4"
   echo "File already has transcoded version existing - removing $fne.trans.mp4"
   if [[ -z $SIM ]]; then rm -f "$fne.trans.mp4"; fi
  fi
@@ -104,9 +104,9 @@ for f in "${file[@]}"; do
  isinteg "$f"
  if [ "$ISINTEG" == "1" ]; then
   echo -e "File passed video integrity test - $fne"
-  printf "`eval date +%m/%d/%y"-"%H:%M` - 06 File passed video integrity test on $THISSERVER - $fne\n" >> $LOGF 
+  log "INFO" "File passed video integrity test on $THISSERVER - $fne" 
 echo "Copying file to local drive for transcoding on $fne..."
- printf "`eval date +%m/%d/%y"-"%H:%M` - 04 Copying file to local drive for transcoding on $THISSERVER $fne\n" >> $LOGF
+  log "INFO" "Copying file to local drive for transcoding on $THISSERVER $fne"
  if [[ -z $SIM ]]; then cp -f "$f" "$TRANSDIR"; fi
   FRAMES=`/usr/local/bin/ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
   HEIGHT=`/usr/local/bin/ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep coded_height | sed -e 's/coded_height=//'`
@@ -116,7 +116,7 @@ echo "Copying file to local drive for transcoding on $fne..."
    ffmpegsw="-c:v libx264 -preset slow -sn -crf $TVQUAL -profile:v high -vf scale=720:400 -codec:a aac -ac 2 -ar 44100 -b:a 128k"
    asd="(Resized)"
   else
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 05 Processing video file (Not-Resized) Frames: $FRAMES on $THISSERVER - $fil\n" >> $LOGF
+   log "INFO" "Processing video file (Not-Resized) Frames: $FRAMES on $THISSERVER - $fil" 
    echo "*Processing video file (Not-Resized) Frames: $FRAMES - $fil..."
    ffmpegsw="-c:v libx264 -preset slow -sn -crf $TVQUAL -profile:v high -codec:a aac -ac 2 -ar 44100 -b:a 128k"
    asd="(Not Resized)"
@@ -130,27 +130,27 @@ echo "Copying file to local drive for transcoding on $fne..."
   NSIZE=$(wc -c "$TRANSDIR/$fng.trans.mp4" | cut -f 1 -d ' ')
   SNSIZE=$((NSIZE/1000000))
   echo "Transcoding finished on $THISSERVER, $asd ($SOSIZE->$SNSIZE) elapsed time: $GTIME - $fleft left."
-  printf "`eval date +%m/%d/%y"-"%H:%M` - 02 Transcoding Finished on $THISSERVER. ($SOSIZE->$SNSIZE) $fleft Left, Elapsed time: $GTIME - $fil \n" >> $LOGF
+  log "INFO" "Transcoding Finished on $THISSERVER. ($SOSIZE->$SNSIZE) $fleft Left, Elapsed time: $GTIME - $fil"
   
   if [ ! -f "$TRANSDIR/$fng.trans.mp4" ]; then
    echo "PROBLEM!! No transcoded file found, something went wrong. Exiting."
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 99 PROBLEM!! No transcoded file found, something went wrong on $THISSERVER. Exiting. $fil\n" >> $LOGF
-   if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "PROBLEM!! No transcoded file found, something went wrong on $THISSERVER. Exiting. $fil" &> /dev/null; fi
+   log "ERROR" "PROBLEM!! No transcoded file found, something went wrong on $THISSERVER. Exiting. $fil"
+   if [[ -z $SIM ]]; then pushover "transcoder" "PROBLEM!! No transcoded file found, something went wrong on $THISSERVER. Exiting. $fil"; fi
    exit 1
   fi
   
   if [ "$NSIZE" -lt "25000000" ];then
    rm -r "$TRANSDIR/$fne.trans.mp4"
    rm -r "$TRANSDIR/$fil"
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 98 PROBLEM!! Transcoded file under 25 Meg, something went wrong on $THISSERVER, Exiting. $fil\n" >> $LOGF
+   log "ERROR" "PROBLEM!! Transcoded file under 25 Meg, something went wrong on $THISSERVER, Exiting. $fil"
    echo "PROBLEM!! Transcoded file under 25 Meg, something went wrong, Exiting."
-   if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "PROBLEM!! Transcoded file under 25 Meg, something went wrong on $THISSERVER. Exiting. $fil" &> /dev/null; fi
+   if [[ -z $SIM ]]; then pushover "transcoder" "PROBLEM!! Transcoded file under 25 Meg, something went wrong on $THISSERVER. Exiting. $fil"; fi
    exit 1
   fi
   
   if [ "$OSIZE" -gt "$NSIZE" ] && [ "$NSIZE" -gt "10000000" ]; then
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 09 Transcoded file is smaller as intended on $THISSERVER- Deleting original $fil\n" >> $LOGF
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 03 Copying transcoded file back to filer on $THISSERVER - $fng.trans.mp4\n" >> $LOGF
+   log "INFO" "Transcoded file is smaller as intended on $THISSERVER- Deleting original $fil"
+   log "INFO" "Copying transcoded file back to filer on $THISSERVER - $fng.trans.mp4"
    echo "Transcoded file is smaller as intended, Deleting Original and copying transcoded file back $fng.trans.mp4"
    if [[ -z $SIM ]]; then 
     ((NRESIZE++))
@@ -162,8 +162,8 @@ echo "Copying file to local drive for transcoding on $fne..."
    fi 
   else
    if [[ -z $SIM ]]; then rm -f "$TRANSDIR/$fng.trans.mp4"; fi
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 80 Transcoded file is BIGGER then intended on $THISSERVER - Deleting transcode $fne.trans.mp4\n" >> $LOGF
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 80 Marking original file non transcodable on $THISSERVER - $fne.ntrans.$EXT\n" >> $LOGF
+   log "WARN" "Transcoded file is BIGGER then intended on $THISSERVER - Deleting transcode $fne.trans.mp4"
+   log "WARN" "Marking original file non transcodable on $THISSERVER - $fne.ntrans.$EXT" 
    echo "Transcoded file is BIGGER then intended on $THISSERVER - Keeping Original and Deleting transcode $fne.trans.mp4"
    if [[ -z $SIM ]]; then
    ((RESIZE++))
@@ -178,9 +178,9 @@ echo "Copying file to local drive for transcoding on $fne..."
   fi
  else
   echo "File FAILED integrity test!! Purging file and marking for re-download"
-  if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "File FAILED integrity test! on $THISSERVER $fil - Marking for redownload"; fi
-  printf "`eval date +%m/%d/%y"-"%H:%M` - 67 File failed integrity test on $THISSERVER - $fil \n" >> $LOGF
-  printf "`eval date +%m/%d/%y"-"%H:%M` - 68 Purging file and marking for re-download on $THISSERVER - $fil \n" >> $LOGF
+  if [[ -z $SIM ]]; then pushover "transcoder" "File FAILED integrity test! on $THISSERVER $fil - Marking for redownload"; fi
+  log "WARN" "File failed integrity test on $THISSERVER - $fil"
+  log "WARN" "Purging file and marking for re-download on $THISSERVER - $fil"
   if [[ -z $SIM ]]; then 
    printf "`eval date +%m/%d/%y"-"%H:%M` - $f \n" >> "$LOGDIR/re-downloads.txt"
    #mv -f "$f" "$TRASHDIR"
@@ -194,12 +194,12 @@ TTIME=$(date +%s)
 ETIME=$(gettime "$STIME" "$TTIME")
 rm -r $TRANSDIR/* &> /dev/null
 echo "Starting Plex server TV section full video analyze..."
-printf "`eval date +%m/%d/%y"-"%H:%M` - 00 Plex server full video analyze on $THISSERVER \n" >> $LOGF
+log "INFO" "Plex server full video analyze on $THISSERVER"
 
 if [[ -z $SIM ]] && [[ $PUPD ]]; then curl "http://172.25.1.26:32400/library/sections/$PLEXCAT/refresh?X-Plex-Token=$PLEXTOKEN" 
 fi
-if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "TV Transcoder Complete. ${#file[@]} episodes processed. $RESIZE Resized, $NRESIZE Not-Resized. Elapsed: $ETIME"; fi
-printf "`eval date +%m/%d/%y"-"%H:%M` - *** TV Transcoder Complete on $THISSERVER- Elapsed Time: $ETIME\n" >> $LOGF
+if [[ -z $SIM ]]; then pushover "transcoder" "TV Transcoder Complete. ${#file[@]} episodes processed. $RESIZE Resized, $NRESIZE Not-Resized. Elapsed: $ETIME"; fi
+log "INFO" "<--- TV Transcoder Complete on $THISSERVER- Elapsed Time: $ETIME"
 echo "Auto TV Transcode Script Complete."
 FTIME=$((TTIME-STIME))
 #if [[ ! $SIM ]] && [ $FTIME -gt 10 ]; then 
