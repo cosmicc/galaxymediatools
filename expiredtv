@@ -7,7 +7,7 @@ source "/opt/galaxymediatools/functions/prechecknl"
 TV1="/video/TV Series/Vice News Tonight/Season 01"
 TV2="/video/Recorded TV/Local 4 News Today at 6AM (2013)/Season 2017"
 
-STIME=`date +%m/%d/%y" "%l:%M%P`
+starttimer
 log "INFO" "---> Starting TV episode experation check script"
 
 log "INFO" "Checking for expired episodes..."
@@ -30,11 +30,9 @@ log "INFO" "Updating plex libraries"
 sleep 10
 /usr/bin/curl "http://172.25.1.26:32400/library/sections/$PLEXRCAT/refresh?X-Plex-Token=$PLEXTOKEN"
 
-TTIME=$(date +%s)
-   ETIME=$(gettime "$STIME" "$TTIME")
+ELAPSED=$(elapsed)
+pushover "transcoder" "TV episode experation complete. $EPS Episodes removed. Elapsed: $ELAPSED" &> /dev/null
 
-pushover "transcoder" "TV episode experation complete. $EPS Episodes removed. Elapsed: $ETIME" &> /dev/null
-
-log "INFO" "<--- Complete TV episode experation check. Elapsed: $ETIME --------"
+log "INFO" "<--- Complete TV episode experation check. Elapsed: $ELAPSED"
 
 exit 0

@@ -9,24 +9,40 @@ fi
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
-STIME=`date +%m/%d/%y" "%l:%M%P`
+starttimer
 log "INFO" "---> security scan starting on \"$HOSTNAME\""
 
 log "INFO" "Running system updates..."
+starttimer2
 apt-get update &> /dev/null
 apt-get upgrade -y --allow-downgrades --allow-remove-essential --allow-change-held-packages &>> $LOGF
 apt-get autoremove -y &>> $LOGF
+log "INFO" "Updates Complete. Elapsed: $ELAPSED2"
 
 if [ "$HOSTNAME" == "$MSNAME" ]; then
+starttimer2
+log "INFO" "PlexPy Updating.."
 gitupdate "plexpy" "/opt/plexpy"
+ELAPSED2=$(elapsed2)
+log "INFO" "PlexPy Updates Complete. Elapsed: $ELAPSED2"
+starttimer2
 gitupdate "headphones" "/usr/local/headphones"
+ELAPSED2=$(elapsed2)
+log "INFO" "Headphones Updates Complete. Elapsed: $ELAPSED2"
+starttimer2
 gitupdate "sickrage" "/opt/sickrage"
+ELAPSED2=$(elapsed2)
+log "INFO" "Sickrage Updates Complete. Elapsed: $ELAPSED2"
 fi
 
 if [ "$HOSTNAME" == "$PLEXNAME" ]; then
+starttimer2
 gitupdate "plexupdate" "/opt/plexupdate"
+ELAPSED2=$(elapsed2)
+log "INFO" "Plexupdate Updates Complete. Elapsed: $ELAPSED2"
 fi
 
+starttimer2
 log "INFO" "Running Chkrootkit..."
 /usr/sbin/chkrootkit -n | grep 'INFECTED|Vulnerable'
     if [ $? -eq 0 ]; then
@@ -35,7 +51,10 @@ log "INFO" "Running Chkrootkit..."
     else
     CHKEXIT="No Threats Found."
     fi
+ELAPSED2=$(elapsed2)
+log "INFO" "Chkrootkit Updates Complete. Elapsed: $ELAPSED2"
 
+starttimer2
 log "INFO" "Running Lynis..."
 /usr/sbin/lynis audit system --cronjob --quiet &>> $LOGF
     if [ $? -ne 0 ]; then
@@ -44,7 +63,10 @@ log "INFO" "Running Lynis..."
     else
     LYNEXIT="Success"
     fi
+ELAPSED2=$(elapsed2)
+log "INFO" "Lynis Complete. Elapsed: $ELAPSED2"
 
+starttimer2
 log "INFO" "Running Antivirs/Malware definition update..."
 /opt/sophos-av/bin/savupdate &>> $LOGF
     if [ $? -ne 0 ]; then
@@ -53,8 +75,11 @@ log "INFO" "Running Antivirs/Malware definition update..."
     else
     SUEXIT="Success"
     fi
+ELAPSED2=$(elapsed2)
+log "INFO" "Sophos Definition Updates Complete. Elapsed: $ELAPSED2"
 
-log "INFO" "Running Antivirs/Malware scan..."
+starttimer2
+log "INFO" "Running Antivirus/Malware scan..."
 /usr/local/bin/savscan -s -narchive -suspicious --stay-on-machine --skip-special / >> $LOGF
 
 if [ $? -eq 0 ]; then
@@ -74,13 +99,14 @@ else
     fi
   fi
 fi
-TTIME=$(date +%s)
-   ETIME=$(gettime "$STIME" "$TTIME")
+ELAPSED2=$(elapsed2)
+log "INFO" "Antivirus/Malware scan complete. Elapsed: $ELAPSED2"
+ELAPSED=$(elapsed)
 echo "* Chkrootkit result: $CHKEXIT" >> $LOGF
 echo "* Lynis result: $LYNEXIT" >> $LOGF
 echo "* Sophos definition update result: $SUEXIT" >> $LOGF
 echo "* Sophos scan result: $SAVCODE" >> $LOGF
-log "INFO" "<--- Security scan completed on \"$HOSTNAME\" Elapsed: $ETIME --------"
+log "INFO" "<--- Security scan completed on \"$HOSTNAME\" Elapsed: $ELAPSED"
 
 if [[ $HOSTNAME == "astroid2" ]]; then
 /opt/galaxymediatools/galaxy_maintenance

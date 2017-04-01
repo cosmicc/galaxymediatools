@@ -5,7 +5,7 @@ LOGF="/video/Incoming/logs/dvrpostprocess.log"
 source "/opt/galaxymediatools/functions/prechecknl"
 
 SLEPT=0
-STIME=`date +%m/%d/%y" "%l:%M%P`
+starttimer
 FNO=${1##*/}
 log "INFO" "---> Starting Recorded TV post process"
 log "INFO" "Running on recording: $FNO"
@@ -24,17 +24,22 @@ if [ $? -ne 0 ]; then
 fi
 fi
 
+starttimer2
 log "INFO" "Executing remote PlexComskip script"
 
 ssh $T1INFO "sudo /opt/galaxymediatools/dvrprocess/PlexComskip.py \"$1\"" &
 
 wait
 
-TTIME=$(date +%s)
-   ETIME=$(gettime "$STIME" "$TTIME")
-log "INFO" "<--- Completed Recorded TV post process. Elapsed: $TTIME"
+ELAPSED2=$(elapsed2)
+log "INFO" "PlexComskip script complete. Elapsed: $ELAPSED2"
+
 if [ $SLEPT -eq 1 ]; then
 log "INFO" "$T1NAME was originally sleeping, putting back to sleep"
 ssh $T1INFO "sudo pm-suspend" & 
 fi
+
+ELAPSED=$(elapsed)
+log "INFO" "<--- Completed Recorded TV post process. Elapsed: $ELAPSED"
+
 #curl http://[PMS_IP_ADDRESS]:32400/library/sections/5/refresh?X-Plex-Token=$PLEXTOKEN

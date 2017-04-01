@@ -35,6 +35,7 @@ elif [[ $SPN ]]; then TMODE="Span Forward mode"
 elif [[ $CURD ]]; then TMODE="Single Directory Mode"
 else TMODE="Normal mode"
 fi
+starttimer
 echo "TV Show Transcoder Starting in $TMODE..."
 log "INFO" "---> TV Show Transcoder in $TMODE Starting on $THISSERVER"
 touch $LOGF
@@ -190,8 +191,7 @@ echo "Copying file to local drive for transcoding on $fne..."
 fi
 j=$(($j+1))
 done
-TTIME=$(date +%s)
-ETIME=$(gettime "$STIME" "$TTIME")
+
 rm -r $TRANSDIR/* &> /dev/null
 echo "Starting Plex server TV section full video analyze..."
 log "INFO" "Plex server full video analyze on $THISSERVER"
@@ -199,15 +199,7 @@ log "INFO" "Plex server full video analyze on $THISSERVER"
 if [[ -z $SIM ]] && [[ $PUPD ]]; then curl "http://172.25.1.26:32400/library/sections/$PLEXCAT/refresh?X-Plex-Token=$PLEXTOKEN" 
 fi
 if [[ -z $SIM ]]; then pushover "transcoder" "TV Transcoder Complete. ${#file[@]} episodes processed. $RESIZE Resized, $NRESIZE Not-Resized. Elapsed: $ETIME"; fi
-log "INFO" "<--- TV Transcoder Complete on $THISSERVER- Elapsed Time: $ETIME"
+ELAPSED=$(elapsed)
+log "INFO" "<--- TV Transcoder Complete on $THISSERVER- Elapsed Time: $ELAPSED"
 echo "Auto TV Transcode Script Complete."
-FTIME=$((TTIME-STIME))
-#if [[ ! $SIM ]] && [ $FTIME -gt 10 ]; then 
-#if [[ -z $SIM ]]; then  pm-suspend
- exit 0
-#else
-# echo "Problem!! Script terminated to quickly. NOT suspending server"
-# printf "`eval date +%m/%d/%y"-"%H:%M` - Problem!! Script terminated to quickly. NOT suspending server $THISSERVER\n" >> $LOGF
-# if [[ -z $SIM ]]; then $APPDIR/pushover.sh -T $POAK -U $POUK "Problem!! Script terminated to quickly. NOT suspending server $THISSERVER"; fi
-# exit 1
-#fi
+exit 0

@@ -1,8 +1,7 @@
 #!/bin/bash
 
-STIME=`date +%m/%d/%y" "%l:%M%P`
+starttimer3
 log "INFO" "---> Starting $LIBRARY Library backup"
-log "INFO" "---> Starting $LIBRARY Library backup" "$LOGM"
 if /bin/mountpoint -q $MOUNT
  then
   FILECOUNT=`ls -1qR "$SDIR" | wc -l`
@@ -35,15 +34,12 @@ fi
     log "INFO" "Backup Drive $MOUNT not mounted. Exiting $LIBRARY library backup." "$LOGM"
 pushover "backup" "$LIBRRY Library Backup ERROR! $MOUNT Not Mounted!"
  log "INFO" "Ended $LIBRARY Library backup"
- log "INFO" "Ended $LIBRARY Library backup" "$LOGM"
    exit 1
    fi
 fi
 /bin/sync
 /bin/umount $MOUNT
-TTIME=$(date +%s)
-   ETIME=$(gettime "$STIME" "$TTIME")
- log "INFO" "Ended $LIBRARY Library backup Elapsed: $ETIME"
- log "INFO" "Ended $LIBRARY Library backup Elapsed: $ETIME" "$LOGM"
- pushover "backup" "$LIBRARY Library Backup Finished, $FILECOUNT Files Elapsed: $ETIME"
+ ELAPSED3=$(elapsed3)
+ log "INFO" "Ended $LIBRARY Library backup. Elapsed: $ELAPSED3"
+ pushover "backup" "$LIBRARY Library Backup Finished, $FILECOUNT Files. Elapsed: $ELAPSED3"
 

@@ -4,6 +4,8 @@ LOGF="/video/Incoming/logs/securityscan-nasscan.log"
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
+starttimer
+
 if mountpoint -q /video
 then
  echo " "
@@ -15,13 +17,11 @@ fi
 
 THREAT="No threats found."
 
-STIME=`date +%m/%d/%y" "%l:%M%P`
-echo "-------- SECURITY FILE SCAN STARTING at $ST --------" >> $LOGF
+log "INFO" "---> Security file scan starting."
 
-echo " " >> $LOGF
-
-function scanfiles {
-echo "*Scanning $1" >> $LOGF
+scanfiles() {
+starttimer2
+log "INFO" "*Scanning $1"
 /opt/sophos-av/bin/savscan -ss -archive -suspicious -move=/video/Other/infected $1 >> $LOGF
   if [ $? -eq 1 ]; then
     THREAT="Scan Interrupted"
@@ -36,6 +36,8 @@ echo "*Scanning $1" >> $LOGF
     fi
   fi
 fi
+ELAPSED2=$(elapsed2)
+log "INFO" "Scan of $1 complete. Elapsed: $ELAPSED2"
 }
 
 /opt/sophos-av/bin/savupdate &>> $LOGF
@@ -50,11 +52,8 @@ scanfiles /video/Incoming
 scanfiles /pictures
 scanfiles /files
 
-TTIME=$(date +%s)
-   ETIME=$(gettime "$STIME" "$TTIME")
+ELAPSED=$(elapsed)
+pushover "security" -T "Security file scan complete. $THREAT Elapsed: $ELAPSED" &> /dev/null
 
-/opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Security file scan complete. $THREAT Elapsed: $ETIME" &> /dev/null
-
-echo " " >> $LOGF
-echo "-------- SECURITY FILE SCAN COMPLETED at $ET Elapsed: $ETIME --------" >> $LOGF
+log "INFO" "<--- Security file scan completed. Elapsed: $ELAPSED"
 exit 0

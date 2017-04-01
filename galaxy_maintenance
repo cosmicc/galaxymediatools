@@ -4,73 +4,64 @@ LOGF="/video/Incoming/logs/maintenance.log"
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
+starttimer
 if mountpoint -q /video
 then
 RUNCHECK1=`ps uxa | grep "galaxy_maintenance" | wc -l`
 
- STTIME=`date +%m/%d/%y" "%l:%M%P`
  log "INFO" "---> Starting Galaxy maintenance script"
 
  if [[ $RUNCHECK1 < 4 ]]; then 
-  PTIME=$(date +%s)  
+  starttimer2  
   log "INFO" "Starting file cleanup..."
   /opt/galaxymediatools/filecleanup >> $LOGF
-  OTIME=$(date +%s)
-  RTIME=$(gettime "$PTIME" "$OTIME")
-  log "INFO" "Completed file cleanup. Elapsed: $RTIME"
+  ELAPSED2=$(elapsed2)
+  log "INFO" "Completed file cleanup. Elapsed: $ELAPSED2"
  
-  PTIME=$(date +%s)
+  starttimer2
   log "INFO" "Starting file permission reset..."
   /opt/galaxymediatools/filepermissions >> $LOGF
-  OTIME=$(date +%s)
-  RTIME=$(gettime "$PTIME" "$OTIME")
-  log "INFO" "Completed file permission reset. Elapsed: $RTIME"
+  ELAPSED2=$(elapsed2)
+  log "INFO" "Completed file permission reset. Elapsed: $ELAPSED2"
 
-  PTIME=$(date +%s)
+  starttimer2
   log "INFO" "Starting expired episode check..."
   /opt/galaxymediatools/expiredtv >> $LOGF
-  OTIME=$(date +%s)
-  RTIME=$(gettime "$PTIME" "$OTIME")
-  log "INFO" "Completed expired episode check. Elapsed: $RTIME"
+  ELAPSED2=$(elapsed2)
+  log "INFO" "Completed expired episode check. Elapsed: $ELAPSED2"
 
-  PTIME=$(date +%s)
+  starttimer2
   log "INFO" "Starting file security scan..."
   /opt/galaxymediatools/filescan >> $LOGF
-  OTIME=$(date +%s)
-  RTIME=$(gettime "$PTIME" "$OTIME")
-  log "INFO" "Completed file security scan. Elapsed: $RTIME"
+  ELAPSED2=$(elapsed2)
+  log "INFO" "Completed file security scan. Elapsed: $ELAPSED2"
 
-  PTIME=$(date +%s)
+  starttimer2
   log "INFO" "Executing Mass Movie Renamer..."
   /opt/galaxymediatools/massmovierenamer -i &> /dev/null
-  OTIME=$(date +%s)
-  RTIME=$(gettime "$PTIME" "$OTIME")
-  log "INFO" "Mass Movie renamer complete. Elapsed: $RTIME"
+  ELAPSED2=$(elapsed2)
+  log "INFO" "Mass Movie renamer complete. Elapsed: $ELAPSED2"
 
-  PTIME=$(date +%s)
+  starttimer2
   log "INFO" "Executing Mass TV Transcoder..."
   /opt/galaxymediatools/masstvtrans &> /dev/null
-  OTIME=$(date +%s)
-  RTIME=$(gettime "$PTIME" "$OTIME")
-  log "INFO" "Mass TV Transcoder complete. Elapsed: $RTIME"
+  ELAPSED2=$(elapsed2)
+  log "INFO" "Mass TV Transcoder complete. Elapsed: $ELAPSED2"
 
-  PTIME=$(date +%s)
+  starttimer2
   log "INFO" "Executing master backup script..."
   /opt/galaxymediatools/backupstart &> /dev/null
-  OTIME=$(date +%s)
-  RTIME=$(gettime "$PTIME" "$OTIME")
-  log "INFO" "Master backup script complete. Elapsed: $RTIME *This process branchs off"
+  ELAPSED2=$(elapsed2)
+  log "INFO" "Master backup script complete. Elapsed: $ELAPSED2 *This process branchs off"
 
   else
    log "WARN" "Maintenance script already running.  Not executing another session."
    exit 1
  fi
 
-TTIME=$(date +%s)
-   ETIME=$(gettime "$STIME" "$TTIME")
- ET=`date +%m/%d/%y" "%l:%M%P`
+ELPSED=$(elapsed)
 
-log "INFO" "<--- Completed galaxy maintenance script. Elapsed: $ETIME"
+log "INFO" "<--- Completed galaxy maintenance script. Elapsed: $ELAPSED"
  
 else
  log "ERROR" "Video NFS Share NOT MOUNTED!! Exiting."

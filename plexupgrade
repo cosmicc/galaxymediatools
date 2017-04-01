@@ -4,9 +4,9 @@ LOGF="/video/Incoming/logs/plexupgrades.log"
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
+starttimer
 log "INFO" "---> Starting Plex Media Server upgrade"
-
 /opt/plexupdate/plexupdate.sh -d --notify-success --config /etc/plexupdate.conf -u &>> $LOGF
-
-log "INFO" "---> Completed Plex Media Server uggrade"
+ELAPSED=$(elapsed)
+log "INFO" "---> Completed Plex Media Server uggrade. Elapsed: $ELAPSED"
 

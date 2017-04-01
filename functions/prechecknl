@@ -15,23 +15,71 @@ appexit()
   exit $?
 }
 
-function gettime {
-TTIME=$(($2 - $1))
+starttimer() {
+STIME=$(date +%s)
+}
+
+starttimer2() {
+STIME2=$(date +%s)
+}
+
+starttimer3() {
+STIME3=$(date +%s)
+}
+
+elapsed() {
+PTIME=$(date +%s)
+TTIME=$(($PTIME - $STIME))
 MIN=$((TTIME / 60))
 HRS=$((MIN / 60))
 MINR=$((MIN % 60))
-if [ $TTIME < 60 ]; then
-echo -e "$TTIME Seconds"
+if [ $TTIME -lt 60 ]; then
+echo "$TTIME Seconds"
 else
 if [ "$HRS" != "0" ]; then
-echo -e "$HRS Hours and $MINR Minutes"
+echo "$HRS Hours and $MINR Minutes"
 else
-echo -e "$MIN Minutes"
+echo "$MIN Minutes"
 fi
 fi
 }
 
-gitupdate () {  # $1 service name, $2 path
+elapsed2() {
+PTIME2=$(date +%s)
+TTIME2=$(($PTIME2 - $STIME2))
+MIN2=$((TTIME2 / 60))
+HRS2=$((MIN2 / 60))
+MINR2=$((MIN2 % 60))
+if [ $TTIME2 -lt 60 ]; then
+echo "$TTIME2 Seconds"
+else
+if [ "$HRS2" != "0" ]; then
+echo "$HRS2 Hours and $MINR2 Minutes"
+else
+echo "$MIN2 Minutes"
+fi
+fi
+}
+
+elapsed3() {
+PTIME3=$(date +%s)
+TTIME3=$(($PTIME3 - $STIME3))
+MIN3=$((TTIME3 / 60))
+HRS3=$((MIN3 / 60))
+MINR3=$((MIN3 % 60))
+if [ $TTIME3 -lt 60 ]; then
+echo "$TTIME3 Seconds"
+else
+if [ "$HRS3" != "0" ]; then
+echo "$HRS3 Hours and $MINR3 Minutes"
+else
+echo "$MIN3 Minutes"
+fi
+fi
+}
+
+
+gitupdate() {  # $1 service name, $2 path
  log "INFO" "Checking for $1 uppdates..."
  cd "$2"
  PPAPP=`git pull | grep "Already up-to-date" | wc -l`
