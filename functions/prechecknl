@@ -20,10 +20,14 @@ TTIME=$(($2 - $1))
 MIN=$((TTIME / 60))
 HRS=$((MIN / 60))
 MINR=$((MIN % 60))
+if [ $TTIME < 60 ]; then
+echo -e "$TTIME Seconds"
+else
 if [ "$HRS" != "0" ]; then
 echo -e "$HRS Hours and $MINR Minutes"
 else
 echo -e "$MIN Minutes"
+fi
 fi
 }
 

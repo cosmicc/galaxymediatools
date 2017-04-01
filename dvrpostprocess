@@ -5,9 +5,9 @@ LOGF="/video/Incoming/logs/dvrpostprocess.log"
 source "/opt/galaxymediatools/functions/prechecknl"
 
 SLEPT=0
-
+STIME=`date +%m/%d/%y" "%l:%M%P`
 log "INFO" "---> Starting Recorded TV post process"
-log "INFO" " Running on recording: $1"
+log "INFO" "Running on recording: $1"
 log "INFO" "Checking transcode server state..."
 fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
 if [ $? -ne 0 ]; then
@@ -29,9 +29,11 @@ ssh $T1INFO "sudo /opt/galaxymediatools/dvrprocess/PlexComskip.py \"$1\"" &
 
 wait
 
+TTIME=$(date +%s)
+   ETIME=$(gettime "$STIME" "$TTIME")
+log "INFO" "<--- Completed Recorded TV post process. Elapsed: $TTIME"
 if [ $SLEPT -eq 1 ]; then
 log "INFO" "$T1NAME was originally sleeping, putting back to sleep"
 ssh $T1INFO "sudo pm-suspend" & 
 fi
 #curl http://[PMS_IP_ADDRESS]:32400/library/sections/5/refresh?X-Plex-Token=$PLEXTOKEN
-log "INFO" "<--- Completed Recorded TV post process"
