@@ -6,8 +6,9 @@ source "/opt/galaxymediatools/functions/prechecknl"
 
 SLEPT=0
 STIME=`date +%m/%d/%y" "%l:%M%P`
+FNO=${1##*/}
 log "INFO" "---> Starting Recorded TV post process"
-log "INFO" "Running on recording: $1"
+log "INFO" "Running on recording: $FNO"
 log "INFO" "Checking transcode server state..."
 fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
 if [ $? -ne 0 ]; then
