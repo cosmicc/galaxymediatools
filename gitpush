@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source "/opt/galaxymediatools/functions/prechecknl"
-
+WASSLEEPING1=0
 cp /root/.ssh/id_rsa /root/.ssh/github_id_rsa -f
 echo -e "${cmd1color}Pushing files to git repository..."
 printf "${syscolor}"
@@ -12,7 +12,7 @@ printf "${nocolor}"
 echo -e "Conecting to remote Server ${servercolor}$T1NAME${cmd1color}..."
  fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
   if [ "$?" != "0" ]; then
-   WASSLEEPING1="1"
+   WASSLEEPING1=1
    echo -e "${cmd2color}Waking transcode server ${servercolor}$T1NAME"
   printf "${soutcolor}"
    wakeonlan $T1MAC
