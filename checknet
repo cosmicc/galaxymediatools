@@ -2,6 +2,9 @@
 
 LOCKDIR=/run/lock/checknet
 APPDIR=/opt/galaxymediatools
+LOGF="/video/Incoming/logs/connection.log"
+
+source="/opt/galaxymediatools/functions/prechcknl"
 
 function cleanup {
     if rmdir $LOCKDIR; then
@@ -15,36 +18,34 @@ function cleanup {
 if mkdir $LOCKDIR; then
  trap "cleanup" EXIT
  STIME=$(date +%s)
+ if [ ! -f "$LOGF" ]; then
+ /usr/bin/touch "$LOGF"
+ fi
+ 
  fping -c1 -t3000 8.8.8.8 2>/dev/null 1>/dev/null
  if [ "$?" == "0" ]; then
   exit
  else
   RES=0
   PCOUNT=0
-  DTIME=$(date +%s)
+  starttimer
+  sleep 7
  while [ $RES -eq 0 ]; do
   ((PCOUNT++))
   fping -c1 -t3000 8.8.8.8 2>/dev/null 1>/dev/null
-  if [ "$?" == "0" ]; then
+  if [ $? -eq 0 ]; then
    RES=1
    else
-   sleep 10
+   if [ $PCOUNT -eq 1 ]; then
+   log "WARN" "Network Outage Detected."
+   fi
+   sleep 7
   fi
  done
-echo $PCOUNT
- if [ $PCOUNT -gt 5 ] && [ $PCOUNT -lt 11 ]; then
-  $APPDIR/pushover.sh -T "a2DmJYt1AgDxLWX6JQSDDPmAvbrtnY" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Network Outage: Heavy Dropped Packets Detected" &> /dev/null
-  elif [ $PCOUNT -gt 10 ]; then
-  ETIME=$(date +%s)
-  TTIME=$(($2 - $1))
-  MIN=$((TTIME / 60))
-  HRS=$((MIN / 60))
-  MINR=$((MIN % 60))
-  if [ "$HRS" != "0" ]; then
-   $APPDIR/pushover.sh -T "a2DmJYt1AgDxLWX6JQSDDPmAvbrtnY" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Network Outage: $HRS Hours and $MINR Minutes" &> /dev/null
-   else
-   $APPDIR/pushover.sh -T "a2DmJYt1AgDxLWX6JQSDDPmAvbrtnY" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Network Outage: $MIN Minutes" &> /dev/null
-   fi
+  if [ $PCOUNT -gt 3 ]; then
+  ELAPSED=$(elapsed)
+  log "WARN" "Network Outage Returned. Elapsed: $ELAPSED"
+  pushover "connection" "Network Outage Loagged: $ELAPSED"
   fi
  fi 
 else
