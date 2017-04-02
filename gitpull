@@ -12,6 +12,10 @@ echo -e "No config information found in config file. Exiting."
 exit 1
 fi
 
+if [ ! -f /home/ip/.bashrc ]; then
+cp /opt/galaxymediatools/.bashrc /home/ip
+fi
+
 cd "$APPDIR"
 git pull origin $GITREPO
 exit 0
