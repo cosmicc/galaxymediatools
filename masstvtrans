@@ -52,6 +52,7 @@ else
 fi
 log "INFO" "Building index of files to process on $THISSERVER"
 echo "Building index of files to process..."
+starttimer2
 if [ -f "$LOGDIR/$INDXFIL" ]; then rm -f $LOGDIR/$INDXFIL; fi
 
 if [[ $CURD ]]; then
@@ -83,10 +84,13 @@ do
         i=$(($i+1))
     fi
 done < $LOGDIR/$INDXFIL
+ELAPSED2=$(elapsed2)
+log "INFO" "File index build complete. Elapsed: $ELAPSED2"
 log "INFO" "Starting transcode process on ${#file[@]} files on $THISSERVER"
 echo "Starting transcode process on ${#file[@]} files"
 if [[ -z $SIM ]]; then pushover "transcoder" "TV Transcoder Starting in $TMODE on $THISSERVER - ${#file[@]} Files to process"; fi
 j=1
+starttimer2
 for f in "${file[@]}"; do
  fil=${f##*/}
  EXT=${f: -3}
@@ -101,37 +105,41 @@ for f in "${file[@]}"; do
   echo "File already has transcoded version existing - removing $fne.trans.mp4"
   if [[ -z $SIM ]]; then rm -f "$fne.trans.mp4"; fi
  fi
+ starttimer3
  echo "Checking video file integrity of $fne..."
  isinteg "$f"
  if [ "$ISINTEG" == "1" ]; then
   echo -e "File passed video integrity test - $fne"
-  log "INFO" "File passed video integrity test on $THISSERVER - $fne" 
+  ELAPSED3=$(elapsed3)
+  log "INFO" "File passed video integrity test on $THISSERVER. Elapsed: $ELAPSED3 - $fne" 
 echo "Copying file to local drive for transcoding on $fne..."
   log "INFO" "Copying file to local drive for transcoding on $THISSERVER $fne"
+ starttimer3
  if [[ -z $SIM ]]; then cp -f "$f" "$TRANSDIR"; fi
-  FRAMES=`/usr/local/bin/ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
+ ELAPSED3=$(elapsed3)
+ log "INFO" "Copy file to local drive for transcoding complete. Elapsed: $ELAPSED3"
+ starttimer3
+  #FRAMES=`/usr/local/bin/ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep nb_frames | sed -e 's/nb_frames=//'`
   HEIGHT=`/usr/local/bin/ffprobe -select_streams v -show_streams "$TRANSDIR/$fil" 2>/dev/null | grep coded_height | sed -e 's/coded_height=//'`
   if [ $HEIGHT -gt 406 ]; then
-   printf "`eval date +%m/%d/%y"-"%H:%M` - 01 Processing video file (Resized) Frames: $FRAMES on $THISSERVER - $fil\n" >> $LOGF
-   echo "*Processing video file (Resized) Frames: $FRAMES - $fil..."
+   log "INFO" "Processing video file (Resized) on $THISSERVER - $fil"
+   echo "*Processing video file (Resized) - $fil..."
    ffmpegsw="-c:v libx264 -preset slow -sn -crf $TVQUAL -profile:v high -vf scale=720:400 -codec:a aac -ac 2 -ar 44100 -b:a 128k"
    asd="(Resized)"
   else
-   log "INFO" "Processing video file (Not-Resized) Frames: $FRAMES on $THISSERVER - $fil" 
-   echo "*Processing video file (Not-Resized) Frames: $FRAMES - $fil..."
+   log "INFO" "Processing video file (Not-Resized) on $THISSERVER - $fil" 
+   echo "*Processing video file (Not-Resized) - $fil..."
    ffmpegsw="-c:v libx264 -preset slow -sn -crf $TVQUAL -profile:v high -codec:a aac -ac 2 -ar 44100 -b:a 128k"
    asd="(Not Resized)"
   fi
-  TSTIME=$(date +%s)
   if [[ -z $SIM ]]; then nice -n -10 /usr/local/bin/ffmpeg -i "$TRANSDIR/$fil" $ffmpegsw "$TRANSDIR/$fng.trans.mp4" < /dev/null &> /dev/null; 
   fi
-  TETIME=$(date +%s)
-  GTIME=$(gettime "$TSTIME" "$TETIME")
+  ELAPSED3=$(elapsed3)
   SOSIZE=$((OSIZE/1000000))
   NSIZE=$(wc -c "$TRANSDIR/$fng.trans.mp4" | cut -f 1 -d ' ')
   SNSIZE=$((NSIZE/1000000))
-  echo "Transcoding finished on $THISSERVER, $asd ($SOSIZE->$SNSIZE) elapsed time: $GTIME - $fleft left."
-  log "INFO" "Transcoding Finished on $THISSERVER. ($SOSIZE->$SNSIZE) $fleft Left, Elapsed time: $GTIME - $fil"
+  echo "Transcoding finished on $THISSERVER, $asd ($SOSIZE->$SNSIZE) elapsed time: $ELAPSED3 - $fleft left."
+  log "INFO" "Transcoding Finished on $THISSERVER. ($SOSIZE->$SNSIZE) $fleft Left, Elapsed time: $ELAPSED3 - $fil"
   
   if [ ! -f "$TRANSDIR/$fng.trans.mp4" ]; then
    echo "PROBLEM!! No transcoded file found, something went wrong. Exiting."
