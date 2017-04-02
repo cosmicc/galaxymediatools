@@ -21,7 +21,7 @@ echo -e "Conecting to remote Server ${servercolor}$T1NAME${cmd1color}..."
    SERVERUP=0
 until [ $SERVERUP -eq 1 ]; do
   fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
-  if [ "$?" != "0" ]; then
+  if [ $? -eq 0 ]; then
   sleep 1
   SERVERUP=1
   fi
@@ -31,7 +31,7 @@ done
  printf "${soutcolor}"
  ssh $T1INFO "sudo $APPDIR/gitpull"
  printf "${nocolor}"
- if [ "$WASSLEEPING1" == "1" ]; then
+ if [ $WASSLEEPING1 -eq 1 ]; then
   echo -e "${cmd2color}Transcoder server ${servercolor}$T1NAME ${cmd2color}was sleeping, putting back to sleep."
   ssh $T1INFO 'sudo pm-suspend' &
  fi
