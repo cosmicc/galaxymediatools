@@ -8,8 +8,8 @@ LOGM="/video/Incoming/logs/backupmaster.log"
 source "/opt/galaxymediatools/functions/prechecknl"
 
 LIBRARY="UFC Events"
-MOUNT=/mnt/backup1
-DUUID="296A04BB7E0FD7B8"
+MOUNT=$MOUNT1
+DUUID=$DUUID1
 SDIR="/video/UFC Events/"
 DDIR="$MOUNT/UFC Events"
 MINFILES=10

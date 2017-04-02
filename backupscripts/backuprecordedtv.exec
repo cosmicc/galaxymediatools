@@ -8,8 +8,8 @@ LOGM="/video/Incoming/logs/backupmaster.log"
 source "/opt/galaxymediatools/functions/prechecknl"
 
 LIBRARY="Recorded TV"
-MOUNT=/mnt/backup2
-DUUID="01D2A5E1CE162C70"
+MOUNT=$MOUNT2
+DUUID=$DUUID2
 SDIR="/video/Recorded TV/"
 DDIR="$MOUNT/Recorded TV"
 MINFILES=1

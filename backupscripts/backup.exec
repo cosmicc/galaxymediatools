@@ -38,8 +38,7 @@ pushover "backup" "$LIBRRY Library Backup ERROR! $MOUNT Not Mounted!"
    fi
 fi
 /bin/sync
-/bin/umount $MOUNT
  ELAPSED3=$(elapsed3)
  log "INFO" "Ended $LIBRARY Library backup. Elapsed: $ELAPSED3"
- pushover "backup" "$LIBRARY Library Backup Finished, $FILECOUNT Files. Elapsed: $ELAPSED3"
-
+ #pushover "backup" "$LIBRARY Library Backup Finished, $FILECOUNT Files. Elapsed: $ELAPSED3"
+exit 0

@@ -8,8 +8,8 @@ LOGM="/video/Incoming/logs/backupmaster.log"
 source "/opt/galaxymediatools/functions/prechecknl"
 
 LIBRARY="TV Show"
-MOUNT=/mnt/backup2
-DUUID="01D2A5E1CE162C70"
+MOUNT=$MOUNT2
+DUUID=$DUUID2
 SDIR="/video/TV Series/"
 DDIR="$MOUNT/TV Shows"
 MINFILES=18000

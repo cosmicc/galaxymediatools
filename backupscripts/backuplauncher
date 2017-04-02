@@ -3,20 +3,17 @@
 source="/opt/galaxymediatools/functions/prechecknl"
 
 LOGF="/video/Incoming/logs/backupmaster.log"
-DUUID1="296A04BB7E0FD7B8"
-DUUID2="01D2A5E1CE162C70"
-MOUNT1=/mnt/backup1
-MOUNT2=/mnt/backup2
 
 backupcomplete() {
 ELAPSED2=$(elapsed2)
 if [ $? -eq 0 ]; then
 log "INFO" "$1 Library backup completed successfully. Elapsed: $ELAPSED2"
+echo "0"
 else
-log "INFO" "$1 Library backup failed. Elapsed: $ELAPSED2"
+log "ERROR" "$1 Library backup failed. Elapsed: $ELAPSED2"
+echo "1"
 fi
 }
-
 
 starttimer
 log "INFO" "Screened Master Backup script starting..."
@@ -37,20 +34,27 @@ ntfsfix /dev/disk/by-uuid/$DUUID1 >> $LOGF
 ELAPSED3=$(elapsed3)
 log "INFO" "NTFS Fix complete on $MOUNT1 Elapsed: $ELAPSED3"
 
+starttimer3
 starttimer2
 log "INFO" "Stand-Up Comedy Library backup starting..."
 /opt/galaxymediatools/backupscripts/backupcomedy.exec 
-backupcomplete "Stand-Up Comedy"
+CRESULT=backupcomplete "Stand-Up Comedy"
 
 starttimer2
 log "INFO" "Movie Library backup starting..."
 /opt/galaxymediatools/backupscripts/backupmovies.exec
-backupcomplete "Movie"
+MRESULT=backupcomplete "Movie"
 
 starttimer2
 log "INFO" "UFC Event Library backup starting..."
 /opt/galaxymediatools/backupscripts/backupufc.exec
-backupcomplete "UFC Events"
+URESULT=backupcomplete "UFC Events"
+ELAPSED3=$(elapsed3)
+log "INFO" "Backups on $MOUNT1 complete.  Elapsed: $ELAPSED3"
+#######################
+log "INFO" "Un-Mounting $MOUNT1"
+/bin/sync
+/bin/umount $MOUNT1
 
 starttimer3
 log "INFO" "Running NTFS Fix on $MOUNT2"
@@ -58,15 +62,23 @@ ntfsfix /dev/disk/by-uuid/$DUUID2 >> $LOGF
 ELAPSED3=$(elapsed3)
 log "INFO" "NTFS Fix complete on $MOUNT1 Elapsed: $ELAPSED3"
 
+starttimer3
 starttimer2
 log "INFO" "TV Show Library backup starting..."
 /opt/galaxymediatools/backupscripts/backuptvshows.exec
-backupcomplete "TV Show"
+TRESULT=backupcomplete "TV Show"
 
 starttimer2
 log "INFO" "Recorded TV Library backup starting..."
 /opt/galaxymediatools/backupscripts/backuprecordedtv.exec
-backupcomplete "Recorded TV"
+RRESULT=backupcomplete "Recorded TV"
+
+ELAPSED3=$(elapsed3)
+log "INFO" "Backups on $MOUNT2 complete.  Elapsed: $ELAPSED3"
+
+log "INFO" "Un-Mounting $MOUNT2"
+/bin/sync
+/bin/umount $MOUNT2
 
 if [ -f /var/run/reboot-required ]; then
   log "WARN" "Reboot required. Rebooting..."
@@ -77,6 +89,18 @@ SUS=1
 fi
 
 ELAPSED=$(elapsed)
+if [ $CRESULT -eq 0 && $MRESULT -eq 0 && $URESULT -eq 0 && $TRESULT -eq 0 && $URESULT -eq 0 ]; then
+log "INFO" "All Library backups completed successfully!"
+pushover "backup" "Library backups completed successfully. Elapsed: $ELAPSED"
+else
+if [ $CRESULT -ne 0 ]; then
+ERRORED=$(($CRESULT+$MRESULT+$URESULT+$TRESULT+$URESULT))
+log "INFO" "Library backups completed with errors. $ERRORED Libraries failed. Elapsed: $ELAPSED"
+pushover "backup" "Library backups completed with errors. $ERRORED Libraries failed. Elapsed: $ELAPSED"
+fi
+
+fi
+
 log "INFO" "<--- Master Backup script completed. Elapsed: $ELAPSED"
 sleep 3
 if [ $SUS -eq 1 ]; then
