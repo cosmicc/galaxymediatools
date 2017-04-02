@@ -1,13 +1,25 @@
 #!/bin/bash
 
+source="/opt/galaxymediatools/functions/prechecknl"
+
 LOGF="/video/Incoming/logs/backupmaster.log"
 DUUID1="296A04BB7E0FD7B8"
 DUUID2="01D2A5E1CE162C70"
 MOUNT1=/mnt/backup1
 MOUNT2=/mnt/backup2
 
+backupcomplete() {
+ELAPSED2=$(elapsed2)
+if [ $? -eq 0 ]; then
+log "INFO" "$1 Library backup completed successfully. Elapsed: $ELAPSED2"
+else
+log "INFO" "$1 Library backup failed. Elapsed: $ELAPSED2"
+fi
+}
+
+
 starttimer
-log "INFO" "---> Master Backup script starting"
+log "INFO" "Screened Master Backup script starting..."
 
 if mountpoint -q $MOUNT1
 then
@@ -19,16 +31,11 @@ then
 umount $MOUNT2
 fi
 
+starttimer3
+log "INFO" "Running NTFS Fix on $MOUNT1"
 ntfsfix /dev/disk/by-uuid/$DUUID1 >> $LOGF 
-
-backupcomplete() {
-ELAPSED2=$(elapsed2)
-if [ $? -eq 0 ]; then
-log "INFO" "$1 Library backup completed successfully. Elapsed: $ELAPSED2"
-else
-log "INFO" "$1 Library backup failed. Elapsed: $ELAPSED2"
-fi
-}
+ELAPSED3=$(elapsed3)
+log "INFO" "NTFS Fix complete on $MOUNT1 Elapsed: $ELAPSED3"
 
 starttimer2
 log "INFO" "Stand-Up Comedy Library backup starting..."
@@ -45,7 +52,11 @@ log "INFO" "UFC Event Library backup starting..."
 /opt/galaxymediatools/backupscripts/backupufc.exec
 backupcomplete "UFC Events"
 
+starttimer3
+log "INFO" "Running NTFS Fix on $MOUNT2"
 ntfsfix /dev/disk/by-uuid/$DUUID2 >> $LOGF
+ELAPSED3=$(elapsed3)
+log "INFO" "NTFS Fix complete on $MOUNT1 Elapsed: $ELAPSED3"
 
 starttimer2
 log "INFO" "TV Show Library backup starting..."
