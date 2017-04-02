@@ -1,0 +1,4 @@
+#!/bin/bash
+
+/usr/bin/screen -dm bash -c "/opt/galaxymediatools/functions/plexidlereboot" &>> /dev/null
+

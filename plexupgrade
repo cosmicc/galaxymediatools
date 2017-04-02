@@ -6,7 +6,26 @@ source "/opt/galaxymediatools/functions/prechecknl"
 
 starttimer
 log "INFO" "---> Starting Plex Media Server upgrade"
+
+starttimer2
+log "INFO" "Starting Plexupdate updates..."
+gitupdate "plexupdate" "/opt/plexupdate"
+ELAPSED2=$(elapsed2)
+log "INFO" "Plexupdate Updates Complete. Elapsed: $ELAPSED2"
+
+starttimer2
+log "INFO" "Starting Plexupdate..."
 /opt/plexupdate/plexupdate.sh -d --notify-success --config /etc/plexupdate.conf -u &>> $LOGF
+ELAPSED2=$(elapsed2)
+log "INFO" "Plexupdate complete. Elapsed: $ELAPSED2"
+
+if [ -f /var/run/reboot-required ]; then
+ log "WARN" "Reboot required. Running Plex idle reboot script..."
+ /opt/galaxymediatools/plexreboot
+else
+ log "INFO" "No reboots pending."
+fi
+
 ELAPSED=$(elapsed)
-log "INFO" "---> Completed Plex Media Server uggrade. Elapsed: $ELAPSED"
+log "INFO" "<--- Completed Plex Media Server uggrade. Elapsed: $ELAPSED"
 

@@ -35,13 +35,6 @@ ELAPSED2=$(elapsed2)
 log "INFO" "Sickrage Updates Complete. Elapsed: $ELAPSED2"
 fi
 
-if [ "$HOSTNAME" == "$PLEXNAME" ]; then
-starttimer2
-gitupdate "plexupdate" "/opt/plexupdate"
-ELAPSED2=$(elapsed2)
-log "INFO" "Plexupdate Updates Complete. Elapsed: $ELAPSED2"
-fi
-
 starttimer2
 log "INFO" "Running Chkrootkit..."
 /usr/sbin/chkrootkit -n | grep 'INFECTED|Vulnerable'
@@ -106,10 +99,24 @@ echo "* Chkrootkit result: $CHKEXIT" >> $LOGF
 echo "* Lynis result: $LYNEXIT" >> $LOGF
 echo "* Sophos definition update result: $SUEXIT" >> $LOGF
 echo "* Sophos scan result: $SAVCODE" >> $LOGF
+
+REBOO=0
+
+if [ "$HOSTNAME" != "$PLEXNAME" && "$HOSTNAME" != "astroid2" ]; then
+if [ -f /var/run/reboot-required ]; then
+ log "WARN" "Reboot required. Rebooting"
+ REBOO=1
+fi
+fi
+
 log "INFO" "<--- Security scan completed on \"$HOSTNAME\" Elapsed: $ELAPSED"
 
 if [[ $HOSTNAME == "astroid2" ]]; then
 /opt/galaxymediatools/galaxy_maintenance
+fi
+
+if [ $REBOO -eq 1 ]; then
+/sbin/reboot
 fi
 
 exit 0

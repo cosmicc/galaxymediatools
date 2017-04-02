@@ -21,7 +21,7 @@ PCHECK=$(checkplex)
 if [ $PCHECK -eq 0 ]; then
  log "INFO" "Plex is idle and needs reboot, rebooting."
  LOOPCOUNT=99
- #reboot
+ /sbin/reboot
  exit 0
 fi
 
