@@ -33,13 +33,19 @@ TTIME=$(($PTIME - $STIME))
 MIN=$((TTIME / 60))
 HRS=$((MIN / 60))
 MINR=$((MIN % 60))
+MINP=$((MIN * 60))
+SREM=$((TTIME - MINP))
 if [ $TTIME -lt 60 ]; then
 echo "$TTIME Seconds"
 else
 if [ "$HRS" != "0" ]; then
-echo "$HRS Hours and $MINR Minutes"
+echo "$HRS Hours, $MINR Minutes"
 else
+if [ $SREM -eq 0 ]; then
 echo "$MIN Minutes"
+else
+echo "$MIN Minutes, $SREM Seconds" 
+fi
 fi
 fi
 }

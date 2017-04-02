@@ -12,7 +12,6 @@ TV1DAY[0]="/video/Recorded TV/Local 4 News Today at 6AM (2013)/Season 2017"
 TV1DAY[1]="/video/Recorded TV/Local 4 News Today at 6PM (2013)/Season 2017"
 TV1DAY[2]="/video/Recorded TV/Local 4 News Today at 11pM (2013)/Season 2017"
 
-
 # begin script
 starttimer
 log "INFO" "---> Starting TV episode experation check script"

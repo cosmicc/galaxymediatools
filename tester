@@ -1,30 +1,11 @@
 #!/bin/bash
 
 source "/opt/galaxymediatools/functions/prechecknl"
-LOGF= "/video/Incoming/logs/plexupgrades.log"
-LOOPCOUNT=0
 
-checkplex() {
-PLEXBUSY=`curl -k "https://172.25.1.26:32400/status/sessions?X-Plex-Token=$PLEXTOKEN" | grep 'MediaContainer size="1"' | wc -l`
-if [ $PLEXBUSY -ne 0 ]; then
- if [ $LOOPCOUNT -eq 0 ]; then
-  log "WARN" "Plex server is busy, postponing reboot..."
- fi
-sleep 600
-fi
-((LOOPCOUNT++))
-echo $PLEXBUSY
-}
+starttimer
 
-until [ $LOOPCOUNT -eq 12 ]; do
-PCHECK=$(checkplex)
-if [ $PCHECK -eq 0 ]; then
- log "INFO" "Plex is idle and needs reboot, rebooting."
- LOOPCOUNT=99
- #reboot
- exit 0
-fi
+sleep 62
 
-done
+ELAPSED=$(elapsed)
 
-
+echo "Elapsed: $ELAPSED"
