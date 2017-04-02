@@ -24,13 +24,23 @@ PCHECK=$(checkplex)
 if [ $PCHECK -eq 0 ]; then
  ELAPSED=$((elapsed))
  log "INFO" "Plex is idle and needs reboot, rebooting. Elapsed: $ELAPSED"
+ if [ $LOOPOUNT -gt 1 ]; then
+
+ starttimer2
+ log "INFO" "Starting Plexupdate..."
+ /opt/plexupdate/plexupdate.sh -d --notify-success --config /etc/plexupdate.conf -u &>> $LOGF
+ ELAPSED2=$(elapsed2)
+ log "INFO" "Plexupdate complete. Elapsed: $ELAPSED2"
+
+ fi
  LOOPCOUNT=99
  /sbin/reboot
  exit 0
 fi
 done
 ELAPSED=$((elapsed))
-if [ $LOOPCOUNT -gt 11 ]; then
+NEWST=$(HOURLOOP-1)
+if [ $LOOPCOUNT -gt $NEWST ]; then
 log "WARN" "Plex still busy after $WAITHOURS Hours. Skipping reboot. Elapsed: $ELAPSED"
 fi
 
