@@ -6,54 +6,60 @@ source "/opt/galaxymediatools/functions/prechecknl"
 
 starttimer
 
+log "INFO" "---> Security file scan starting."
+
 if mountpoint -q /video
 then
  echo " "
 else
- echo "/video NOT MOUNTED!! Exiting."
+ log "ERROR" "/video not mounted. Exiting."
  pushover "security" "NASscan Error: /video not mounted, cannot continue."
  exit 1
 fi
 
 THREAT="No threats found."
 
-log "INFO" "---> Security file scan starting."
-
 scanfiles() {
 starttimer2
 log "INFO" "*Scanning $1"
 /opt/sophos-av/bin/savscan -ss -archive -suspicious -move=/video/Other/infected $1 >> $LOGF
   if [ $? -eq 1 ]; then
-    THREAT="Scan Interrupted"
+    THREAT="Skipped files or interrupted"
   else
     if [ $? -eq 2 ]; then
-     # /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Sophos Execution error on NASscan. Check $LOGF" &> /dev/null
+     pushover "security" "Sophos Execution error on NAS file scan. Check $LOGF" 
     THREAT="Execution Error"
    else
     if [ $? -eq 3 ]; then
       THREAT="THREAT FOUND!!"
-    #  /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Security Threat Found on NASscan. Check $LOGF" &> /dev/null
+      pushover "security" -T "Security Threat Found on NAS file scan. Check $LOGF"
     fi
   fi
 fi
 ELAPSED2=$(elapsed2)
-log "INFO" "Scan of $1 complete. Elapsed: $ELAPSED2"
+log "INFO" "Scan of $1 complete. Result: $THREAT. Elapsed: $ELAPSED2"
 }
 
+starttimer3
+log "INFO" "Starting Sophos definition update..."
 /opt/sophos-av/bin/savupdate &>> $LOGF
+ELAPSED3=$(elapsed3)
     if [ $? -ne 0 ]; then
-      /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Sophos definition update error on NASscan. Check logs." &> /dev/null
+      pushover "security" "Sophos definition update error on NASscan. Check logs."
+      log "ERROR" "Sophos definition update error. Elapsed: $ELAPSED3"
     SUEXIT="Update Error!!"
     else
+     log "INFO" "Sophos definition update completed successfully.i Elapsed: $ELAPSED3"
     SUEXIT="Success"
     fi
+
 
 scanfiles /video/Incoming
 scanfiles /pictures
 scanfiles /files
 
 ELAPSED=$(elapsed)
-pushover "security" -T "Security file scan complete. $THREAT Elapsed: $ELAPSED" &> /dev/null
+#pushover "security" -T "Security file scan complete. $THREAT Elapsed: $ELAPSED" &> /dev/null
 
 log "INFO" "<--- Security file scan completed. Elapsed: $ELAPSED"
 exit 0
