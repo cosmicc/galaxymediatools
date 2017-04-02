@@ -113,5 +113,7 @@ if ! shopt -oq posix; then
   fi
 fi
 cd /opt/galaxymediatools/
+who -ur
+uptime
 ls
 sudo su
