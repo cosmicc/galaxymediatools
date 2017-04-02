@@ -14,6 +14,7 @@ fi
 
 if [ ! -f /home/ip/.bashrc ]; then
 cp /opt/galaxymediatools/bashrc /home/ip/.bashrc
+echo "**Installed missing .basrc file"
 fi
 
 cd "$APPDIR"
