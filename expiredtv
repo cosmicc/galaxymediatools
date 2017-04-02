@@ -4,26 +4,51 @@ LOGF="/video/Incoming/logs/expiredtv.log"
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
-TV1="/video/TV Series/Vice News Tonight/Season 01"
-TV2="/video/Recorded TV/Local 4 News Today at 6AM (2013)/Season 2017"
+# Keep 14 days worth
+TV14DAY[0]="/video/TV Series/Vice News Tonight/Season 01"
 
+# keep 1 day worth
+TV1DAY[0]="/video/Recorded TV/Local 4 News Today at 6AM (2013)/Season 2017"
+TV1DAY[1]="/video/Recorded TV/Local 4 News Today at 6PM (2013)/Season 2017"
+TV1DAY[2]="/video/Recorded TV/Local 4 News Today at 11pM (2013)/Season 2017"
+
+
+# begin script
 starttimer
 log "INFO" "---> Starting TV episode experation check script"
 
 log "INFO" "Checking for expired episodes..."
 
 #find "$TV1" -type f -printf "%-.22T+ %M %n %-8u %-8g %8s %Tx %.8TX %p\n" | sort | cut -f 2- -d ' ' 
+starttimer2
+for TV in "${TV14DAY[@]}"
+do
+EPS1=`find "$TV" -mtime +14 | wc -l`
+EPS=$((EPS+EPS1))
+done
 
-EPS1=`find "$TV1" -mtime +14 | wc -l`
-EPS2=`find "$TV2" -mtime +1 | wc -l`
-EPS=$((EPS1+EPS2))
+for TV in "${TV1DAY[@]}"
+do
+EPS1=`find "$TV" -mtime +1 | wc -l`
+EPS=$((EPS+EPS1))
+done
 
-log "INFO" "Found $EPS expired TV episodes."
+ELAPSED2=$(elapsed2)
+log "INFO" "Found $EPS expired TV episodes. Elapsed: $ELAPSED2"
 
-log "INFO" "Removing $EPS expired TV episodes."
-find "$TV1" -mtime +14 -exec rm -rf {} \; &>> $LOGF
-find "$TV2" -mtime +1 -exec rm -rf {} \; &>> $LOGF
-log "INFO" "Removed $EPS expired TV episodes."
+log "INFO" "Removing $EPS expired TV episodes..."
+starttimer2
+for TV in "${TV14DAY[@]}"
+do
+find "$TV" -mtime +14 -exec rm -rf {} \; &>> $LOGF
+done
+
+for TV in "${TV1DAY[@]}"
+do
+find "$TV" -mtime +1 -exec rm -rf {} \; &>> $LOGF
+done
+ELAPSED2=$(elapsed2)
+log "INFO" "Removed $EPS expired TV episodes. Elapsed: $ELAPSED2"
 log "INFO" "Updating plex libraries"
 
 /usr/bin/curl "http://172.25.1.26:32400/library/sections/$PLEXCAT/refresh?X-Plex-Token=$PLEXTOKEN"
