@@ -113,5 +113,5 @@ if ! shopt -oq posix; then
   fi
 fi
 cd /opt/galaxymediatools/
-sudo su
 ls
+sudo su
