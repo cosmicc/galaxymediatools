@@ -1,0 +1,42 @@
+#!/bin/bash
+
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        echo " "
+        echo "Galaxy Media Tools - Remote Sleep Transcode Server"
+        echo " "
+	echo " Usage: <servername> or all for for all servers"
+	echo " "
+        echo "-h or --help : Help"
+        echo " "
+        exit 0
+fi
+
+if [ "$1" == "" ]; then
+	echo "Argument missing. Specify which transcode server to start-up or all for all"
+	exit 1
+fi
+
+source "/opt/galaxymediatools/functions/prechecknl"
+
+if [ "$1" == "$T1NAME" ] || [ "$1" == "all" ]; then
+ fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
+ if [ "$?" == "0" ]; then
+  echo "$T1NAME server is up. Putting to sleep..."
+  ssh $T1INFO "sudo pm-suspend" 
+ else
+  echo "$T1NAME server is already sleeping."
+  exit 1
+ fi
+fi
+
+if [ "$1" == "$T2NAME" ] || [ "$1" == "all" ]; then
+ fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
+ if [ "$?" == "0" ]; then
+  echo "$T2NAME server is up. Putting to sleep..."
+  ssh $T2INFO "sudo pm-suspend"
+ else
+  echo "$T2NAME server is already sleeping."
+  exit 1
+ fi
+fi
+
