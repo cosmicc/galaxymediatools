@@ -1,5 +1,4 @@
 #!/bin/bash
-THISSERVER=`hostname`
 APPDIR="/opt/galaxymediatools"
 if [ ! -f "/etc/galaxymediatools.conf" ]; then
  echo -e "No config file found. Exiting."
@@ -11,10 +10,8 @@ if [ "$LOGDIR" == "" ] || [ "$TVDIR" == "" ] || [ "$TRANSDIR" == "" ] || [ "$POU
 echo -e "No config information found in config file. Exiting."
 exit 1
 fi
-
-cp /opt/galaxymediatools/bashrc /home/ip/.bashrc
-
 cd "$APPDIR"
 git pull origin $GITREPO
+cp /opt/galaxymediatools/bashrc /home/ip/.bashrc
 exit 0
 
