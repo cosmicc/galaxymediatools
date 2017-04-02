@@ -67,7 +67,7 @@ fi
 
 ELAPSED=$(elapsed)
 log "INFO" "<--- Master Backup script completed. Elapsed: $ELAPSED"
-
+sleep 3
 if [ $SUS -eq 1 ]; then
 /usr/sbin/pm-suspend
 else
