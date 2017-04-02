@@ -10,19 +10,26 @@ FNO=${1##*/}
 log "INFO" "---> Starting Recorded TV post process"
 log "INFO" "Running on recording: $FNO"
 log "INFO" "Checking transcode server state..."
-fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
-if [ $? -ne 0 ]; then
-  SLEPT=1
-  log "INFO" "Attempting to wake server $T1NAME..."
-  wakeonlan $T1MAC 2>/dev/null 1>/dev/null
-  wakeonlan $T1MAC 2>/dev/null 1>/dev/null
-  sleep 60
+
+echo -e "Conecting to remote Server ${servercolor}$T1NAME${cmd1color}..."
+ fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
+  if [ "$?" != "0" ]; then
+   WASSLEEPING1=1
+   echo -e "${cmd2color}Waking transcode server ${servercolor}$T1NAME"
+  printf "${soutcolor}"
+   wakeonlan $T1MAC
+   wakeonlan $T1MAC
+   printf "${nocolor}"
+   SERVERUP=0
+until [ $SERVERUP -eq 1 ]; do
   fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
-if [ $? -ne 0 ]; then
-  log "ERROR" "$T1NAME failed wake and server is not responding."
-  exit 1
-fi
-fi
+  if [ $? -eq 0 ]; then
+  sleep 1
+  SERVERUP=1
+  fi
+done
+   echo -e "${cmd1color}Transcode server ${servercolor}$T1NAME ${cmd1color}started"
+  fi
 
 starttimer2
 log "INFO" "Executing remote PlexComskip script"
@@ -34,7 +41,7 @@ wait
 ELAPSED2=$(elapsed2)
 log "INFO" "PlexComskip script complete. Elapsed: $ELAPSED2"
 
-if [ $SLEPT -eq 1 ]; then
+if [ $WASSLEEPING -eq 1 ]; then
 log "INFO" "$T1NAME was originally sleeping, putting back to sleep"
 ssh $T1INFO "sudo pm-suspend" & 
 fi
