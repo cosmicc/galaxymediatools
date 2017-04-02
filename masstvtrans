@@ -29,6 +29,8 @@ source "/opt/galaxymediatools/functions/precheck"
 source "/opt/galaxymediatools/functions/isinteg"
 LOGF="$LOGDIR/tvtranscoder.log"
 INDXFIL="tvtranscoder.idx"
+RESIZE=0
+NRESIZE=0
 if [[ $SIM ]]; then TMODE="Simulation mode"
 elif [[ $REV ]]; then TMODE="Span Reverse mode"
 elif [[ $SPN ]]; then TMODE="Span Forward mode"
@@ -86,9 +88,11 @@ do
 done < $LOGDIR/$INDXFIL
 ELAPSED2=$(elapsed2)
 log "INFO" "File index build complete. Elapsed: $ELAPSED2"
-log "INFO" "Starting transcode process on ${#file[@]} files on $THISSERVER"
+log "INFO" "Starting transcode process on ${#file[@]} files on $HOSTNAME"
 echo "Starting transcode process on ${#file[@]} files"
-if [[ -z $SIM ]]; then pushover "transcoder" "TV Transcoder Starting in $TMODE on $THISSERVER - ${#file[@]} Files to process"; fi
+if [ ${#file[@]} -gt 3 ]; then
+if [[ -z $SIM ]]; then pushover "transcoder" "TV Transcoder Starting in $TMODE on $HOSTNAME - ${#file[@]} Files to process"; fi
+fi
 j=1
 starttimer2
 for f in "${file[@]}"; do
@@ -101,7 +105,7 @@ for f in "${file[@]}"; do
  fng="${fne##*/}"
  fleft=$((${#file[@]}-$j))
  if [ -f "$fne.trans.mp4" ]; then
-  log "WARN" "File already has transcoded version existing on $THISSERVER - removing $fne.trans.mp4"
+  log "WARN" "File already has transcoded version existing on $HOSTNAME - removing $fne.trans.mp4"
   echo "File already has transcoded version existing - removing $fne.trans.mp4"
   if [[ -z $SIM ]]; then rm -f "$fne.trans.mp4"; fi
  fi
@@ -206,8 +210,12 @@ log "INFO" "Plex server full video analyze on $THISSERVER"
 
 if [[ -z $SIM ]] && [[ $PUPD ]]; then curl "http://172.25.1.26:32400/library/sections/$PLEXCAT/refresh?X-Plex-Token=$PLEXTOKEN" 
 fi
-if [[ -z $SIM ]]; then pushover "transcoder" "TV Transcoder Complete. ${#file[@]} episodes processed. $RESIZE Resized, $NRESIZE Not-Resized. Elapsed: $ETIME"; fi
 ELAPSED=$(elapsed)
-log "INFO" "<--- TV Transcoder Complete on $THISSERVER- Elapsed Time: $ELAPSED"
+if [ ${#file[@]} -eq 0 ]; then
+if [[ -z $SIM ]]; then pushover "transcoder" "TV Transcoder Complete. No episodes to process. Elapsed: $ELAPSED"; fi
+else
+if [[ -z $SIM ]]; then pushover "transcoder" "TV Transcoder Complete. ${#file[@]} episodes processed. $RESIZE Resized, $NRESIZE Not-Resized. Elapsed: $ELAPSED"; fi
+fi
+log "INFO" "<--- TV Transcoder Complete on $HOSTNAME. Elapsed Time: $ELAPSED"
 echo "Auto TV Transcode Script Complete."
 exit 0
