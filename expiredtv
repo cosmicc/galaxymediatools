@@ -5,7 +5,7 @@ LOGF="/video/Incoming/logs/expiredtv.log"
 source "/opt/galaxymediatools/functions/prechecknl"
 
 # Keep 14 days worth
-TV14DAY[0]="/video/TV Series/Vice News Tonight/Season 01"
+TV7DAY[0]="/video/TV Series/Vice News Tonight/Season 01"
 
 # keep 1 day worth
 TV1DAY[0]="/video/Recorded TV/Local 4 News Today at 6AM (2013)/Season 2017"
@@ -14,13 +14,13 @@ TV1DAY[2]="/video/Recorded TV/Local 4 News at 11 (2006)/Season 2017"
 
 # begin script
 starttimer
-log "INFO" "---> Starting TV episode experation check script"
+log "INFO" "---> Starting TV episode expire check script"
 
 log "INFO" "Checking for expired episodes..."
 
 #find "$TV1" -type f -printf "%-.22T+ %M %n %-8u %-8g %8s %Tx %.8TX %p\n" | sort | cut -f 2- -d ' ' 
 starttimer2
-for TV in "${TV14DAY[@]}"
+for TV in "${TV7DAY[@]}"
 do
 EPS1=`find "$TV" -mtime +14 | wc -l`
 EPS=$((EPS+EPS1))
@@ -38,14 +38,14 @@ log "INFO" "Found $EPS expired TV episodes. Elapsed: $ELAPSED2"
 if [ $EPS -ne 0 ]; then
 log "INFO" "Removing $EPS expired TV episodes..."
 starttimer2
-for TV in "${TV14DAY[@]}"
+for TV in "${TV7DAY[@]}"
 do
-find "$TV" -mtime +14 -exec rm -rf {} \; &>> $LOGF
+find "$TV" -mtime +14 -exec rm -rf {} \ &>> $LOGF
 done
 
 for TV in "${TV1DAY[@]}"
 do
-find "$TV" -mtime +1 -exec rm -rf {} \; &>> $LOGF
+find "$TV" -mtime +1 -exec rm -rf {} \ &>> $LOGF
 done
 ELAPSED2=$(elapsed2)
 log "INFO" "Removed $EPS expired TV episodes. Elapsed: $ELAPSED2"
@@ -56,11 +56,11 @@ sleep 10
 /usr/bin/curl "http://172.25.1.26:32400/library/sections/$PLEXRCAT/refresh?X-Plex-Token=$PLEXTOKEN"
 else
 ELAPSED2=$(elapsed2)
-log "INFO" "No expired TV episodes to remove. $ELAPSED2"
+log "INFO" "No expired TV episodes to remove. Elapsed: $ELAPSED2"
 fi
 
 ELAPSED=$(elapsed)
-pushover "transcoder" "TV episode experation complete. $EPS Episodes removed. Elapsed: $ELAPSED" &> /dev/null
+pushover "transcoder" "TV episode expire check complete. $EPS Episodes removed. Elapsed: $ELAPSED" &> /dev/null
 
 log "INFO" "<--- Complete TV episode experation check. Elapsed: $ELAPSED"
 

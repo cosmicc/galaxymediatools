@@ -30,7 +30,7 @@ case $1 in
 esac
 /usr/bin/curl -s --form-string "token=$APPTOKEN" --form-string "user=ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" --form-string "message=$2" https://api.pushover.net/1/messages.json &> /dev/null 
 if [ "$?" == "0" ]; then
-log "INFO" "Pushover notification sent as applicatoin \"$1\""
+log "INFO" "Pushover notification sent as application \"$1\""
 else
 log "ERROR" "Pushover notification FAILED!"
 fi
