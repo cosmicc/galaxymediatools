@@ -88,7 +88,7 @@ fi
 gitupdate() {  # $1 service name, $2 path
  log "INFO" "Checking for $1 uppdates..."
  cd "$2"
- PPAPP=`git pull | grep "Already up-to-date" | wc -l`
+ PAPP=`git pull | grep "Already up-to-date" | wc -l`
  if [ $PAPP -eq 0 ]; then
   log "INFO" "$1 updates detected and applied.  Restarting service..."
   service restart $1 &>> $LOGF
