@@ -3,9 +3,10 @@
 source "/opt/galaxymediatools/functions/prechecknl"
 LOGF= "/video/Incoming/logs/plexupgrades.log"
 LOOPCOUNT=0
+WAITHOURS=2  # Hours to wait for plex to be idle before bailing
 
 checkplex() {
-PLEXBUSY=`curl -k "https://172.25.1.26:32400/status/sessions?X-Plex-Token=$PLEXTOKEN" | grep 'MediaContainer size="1"' | wc -l`
+PLEXBUSY=`curl -k "https://127.0.0.1:32400/status/sessions?X-Plex-Token=$PLEXTOKEN" | grep 'MediaContainer size="1"' | wc -l`
 if [ $PLEXBUSY -ne 0 ]; then
  if [ $LOOPCOUNT -eq 0 ]; then
   log "WARN" "Plex server is busy, postponing reboot..."
@@ -16,15 +17,21 @@ fi
 echo $PLEXBUSY
 }
 
-until [ $LOOPCOUNT -eq 12 ]; do
+starttimer
+HOURLOOP=$((WAITHOURS * 6))
+until [ $LOOPCOUNT -eq $HOURLOOP ]; do
 PCHECK=$(checkplex)
 if [ $PCHECK -eq 0 ]; then
- log "INFO" "Plex is idle and needs reboot, rebooting."
+ ELAPSED=$((elapsed))
+ log "INFO" "Plex is idle and needs reboot, rebooting. Elapsed: $ELAPSED"
  LOOPCOUNT=99
- /sbin/reboot
+ /sbin/reboot -v &>> $LOGF
  exit 0
 fi
-
 done
+ELAPSED=$((elapsed))
+if [ $LOOPCOUNT -gt 11 ]; then
+log "WARN" "Plex still busy after $WAITHOURS Hours. Skipping reboot. Elapsed: $ELAPSED"
+fi
 
 
