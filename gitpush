@@ -32,7 +32,7 @@ done
  ssh $T1INFO "sudo $APPDIR/gitpull"
  printf "${nocolor}"
  if [ $WASSLEEPING1 -eq 1 ]; then
-  echo -e "${cmd2color}Transcoder server ${servercolor}$T1NAME ${cmd2color}was sleeping, putting back to sleep."
+  echo -e "${cmd2color}Transcoder server ${servercolor}$T1NAME ${cmd2color}was sleeping, putting back to sleep.${nocolor}"
   ssh $T1INFO 'sudo pm-suspend' &
  fi
 
