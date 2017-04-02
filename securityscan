@@ -41,7 +41,7 @@ if [ $LOOPCOUNT -gt $NEWST ]; then
 log "ERROR" "Plex still busy after $WAITHOURS Hours. Skipping securityscan. Elapsed: $ELAPSED3"
 exit 1
 fi
-
+log "INFO" "Plex is idle. Continuing script. Elapsed: $ELAPSED3"
 fi
 
 log "INFO" "Running system updates..."
@@ -49,6 +49,7 @@ starttimer2
 apt-get update &> /dev/null
 apt-get upgrade -y --allow-downgrades --allow-remove-essential --allow-change-held-packages &>> $LOGF
 apt-get autoremove -y &>> $LOGF
+ELAPSED2=$(elapsed2)
 log "INFO" "Updates Complete. Elapsed: $ELAPSED2"
 
 if [ "$HOSTNAME" == "$MSNAME" ]; then

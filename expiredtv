@@ -9,8 +9,8 @@ TV14DAY[0]="/video/TV Series/Vice News Tonight/Season 01"
 
 # keep 1 day worth
 TV1DAY[0]="/video/Recorded TV/Local 4 News Today at 6AM (2013)/Season 2017"
-TV1DAY[1]="/video/Recorded TV/Local 4 News Today at 6PM (2013)/Season 2017"
-TV1DAY[2]="/video/Recorded TV/Local 4 News Today at 11pM (2013)/Season 2017"
+TV1DAY[1]="/video/Recorded TV/Local 4 News at 6 (2005)/Season 2017"
+TV1DAY[2]="/video/Recorded TV/Local 4 News at 11 (2006)/Season 2017"
 
 # begin script
 starttimer
@@ -35,6 +35,7 @@ done
 ELAPSED2=$(elapsed2)
 log "INFO" "Found $EPS expired TV episodes. Elapsed: $ELAPSED2"
 
+if [ $EPS -ne 0 ]; then
 log "INFO" "Removing $EPS expired TV episodes..."
 starttimer2
 for TV in "${TV14DAY[@]}"
@@ -53,6 +54,10 @@ log "INFO" "Updating plex libraries"
 /usr/bin/curl "http://172.25.1.26:32400/library/sections/$PLEXCAT/refresh?X-Plex-Token=$PLEXTOKEN"
 sleep 10
 /usr/bin/curl "http://172.25.1.26:32400/library/sections/$PLEXRCAT/refresh?X-Plex-Token=$PLEXTOKEN"
+else
+ELAPSED2=$(elapsed2)
+log "INFO" "No expired TV episodes to remove. $ELAPSED2"
+fi
 
 ELAPSED=$(elapsed)
 pushover "transcoder" "TV episode experation complete. $EPS Episodes removed. Elapsed: $ELAPSED" &> /dev/null
