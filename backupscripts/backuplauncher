@@ -54,6 +54,10 @@ log "INFO" "Backups on $MOUNT1 complete.  Elapsed: $ELAPSED3"
 #######################
 log "INFO" "Un-Mounting $MOUNT1"
 /bin/sync
+D1=`df -h | grep "$MOUNT1"`
+IFS=' ' read -r -a D1INFO <<< $D1
+D1PERC=${D1INFO[4]}
+D1FREE=${D1INFO[3]}
 /bin/umount $MOUNT1
 
 starttimer3
@@ -78,6 +82,10 @@ log "INFO" "Backups on $MOUNT2 complete.  Elapsed: $ELAPSED3"
 
 log "INFO" "Un-Mounting $MOUNT2"
 /bin/sync
+D2=`df -h | grep "$MOUNT2"`
+IFS=' ' read -r -a D2INFO <<< $D2
+D2PERC=${D2INFO[4]}
+D2FREE=${D2INFO[3]}
 /bin/umount $MOUNT2
 
 if [ -f /var/run/reboot-required ]; then
@@ -88,15 +96,18 @@ else
 SUS=1
 fi
 
+log "INFO" "USB drive $MOUNT1 - $D1FREE Free, $D1PERC Used."
+log "INFO" "USB drive $MOUNT2 - $D2FREE Free, $D2PERC Used."
+
 ELAPSED=$(elapsed)
 if [ $CRESULT -eq 0 && $MRESULT -eq 0 && $URESULT -eq 0 && $TRESULT -eq 0 && $URESULT -eq 0 ]; then
 log "INFO" "All Library backups completed successfully!"
-pushover "backup" "Library backups completed successfully. Elapsed: $ELAPSED"
+pushover "backup" "Library backups completed successfully. Backup1 $D1PERC Used $D1FREE Free, Backup2 $D2PERC Used $D2FREE Free. Elapsed: $ELAPSED"
 else
 if [ $CRESULT -ne 0 ]; then
 ERRORED=$(($CRESULT+$MRESULT+$URESULT+$TRESULT+$URESULT))
 log "INFO" "Library backups completed with errors. $ERRORED Libraries failed. Elapsed: $ELAPSED"
-pushover "backup" "Library backups completed with errors. $ERRORED Libraries failed. Elapsed: $ELAPSED"
+pushover "backup" "Library backups completed with errors. $ERRORED Libraries failed. Backup1 $D1PERC Used $D1FREE Free, Backup2 $D2PERC Used $D2FREE Free. Elapsed: $ELAPSED"
 fi
 
 fi

@@ -121,7 +121,7 @@ soutcolor=${dyellow} # Server output color
 errorcolor=${rred} # error color
 syscolor=${blue} # System color
 
-THISSERVER=`hostname`
+THISSERVER=$HOSTNAME
 APPDIR="/opt/galaxymediatools"
 STIME=$(date +%s)
 CTS=`eval date +%Y%m%d`
@@ -129,7 +129,7 @@ if [ ! -f "/etc/galaxymediatools.conf" ]; then
  echo -e "No config file found. Exiting."
  exit 1
 else
- source /etc/galaxymediatools.conf
+ source "/etc/galaxymediatools.conf"
 fi
 if [ "$THISSERVER" == "$T1NAME" ]; then
 POAK=$T1KEY

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source="/opt/galaxymediatools/functions/prechecknl"
+source "/opt/galaxymediatools/functions/prechecknl"
 
 if [[ "$1" == "-u" ]]; then
 echo "UN-Mounting USB backup drives..."
@@ -10,9 +10,14 @@ echo "USB drives unmounted"
 exit 0
 else
 echo "Mouting USB drives..."
+echo "UUID: $DUUID1 Mountpoint: $MOUNT1"
+ntfsfix /dev/disk/by-uuid/$DUUID1
 mount UUID="$DUUID1" "$MOUNT1"
+echo "UUID: $DUUID2 Mountpoint: $MOUNT2"
+ntfsfix /dev/disk/by-uuid/$DUUID2
 mount UUID="$DUUID2" "$MOUNT2"
 echo "USB drives mounted"
+cd /mnt
 exit 0
 fi
 
