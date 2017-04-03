@@ -16,7 +16,7 @@ fi
 }
 
 starttimer
-log "INFO" "Screened Master Backup script starting..."
+log "INFO" "Screened BackupLauncher script starting..."
 
 if mountpoint -q $MOUNT1
 then
@@ -48,8 +48,7 @@ ntfsfix /dev/disk/by-uuid/$DUUID1 >> $LOGF
 ELAPSED3=$(elapsed3)
 log "INFO" "NTFS Fix complete on $MOUNT1 Elapsed: $ELAPSED3"
 
-if /bin/mountpoint -q $MOUNT1
- then
+if /bin/mount UUID=$DUUID1 "$MOUNT1"; then
 starttimer3
 starttimer2
 log "INFO" "Stand-Up Comedy Library backup starting..."
@@ -93,9 +92,7 @@ fi
 #ELAPSED3=$(elapsed3)
 #log "INFO" "Resetting USB device $MOUNT2 complete Elapsed: $ELAPSED3"
 
-if /bin/mountpoint -q $MOUNT2
- then
-
+if /bin/mount UUID=$DUUID2 "$MOUNT2"; then
 starttimer3
 log "INFO" "Running NTFS Fix on $MOUNT2"
 ntfsfix /dev/disk/by-uuid/$DUUID2 >> $LOGF
