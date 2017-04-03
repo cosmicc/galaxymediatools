@@ -29,6 +29,12 @@ umount $MOUNT2
 fi
 
 starttimer3
+log "INFO" "SMART drive check starting on $MOUNT1"
+smartctl -T permissive -a -d sat,auto /dev/disk/by-uuid/$DUUID1
+ELAPSED3=$(elapsed3)
+log "INFO" "SMART drive check complete on $MOUNT1 Elapsed: $ELAPSED3"
+
+starttimer3
 log "INFO" "Running NTFS Fix on $MOUNT1"
 ntfsfix /dev/disk/by-uuid/$DUUID1 >> $LOGF 
 ELAPSED3=$(elapsed3)
@@ -51,7 +57,7 @@ log "INFO" "UFC Event Library backup starting..."
 URESULT=backupcomplete "UFC Events"
 ELAPSED3=$(elapsed3)
 log "INFO" "Backups on $MOUNT1 complete.  Elapsed: $ELAPSED3"
-#######################
+
 log "INFO" "Un-Mounting $MOUNT1"
 /bin/sync
 D1=`df -h | grep "$MOUNT1"`

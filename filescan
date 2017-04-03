@@ -40,6 +40,17 @@ ELAPSED2=$(elapsed2)
 log "INFO" "Scan of $1 complete. Result: $THREAT. Elapsed: $ELAPSED2"
 }
 
+V1=`df -h | grep "/video"`
+IFS=' ' read -r -a VDINFO <<< $V1
+VDPERC=${VDINFO[4]}
+VDFREE=${VDINFO[3]}
+VDUSED=${VDPERC::-1}
+if [ $VDUSED -gt 97 ];then
+ log "WARN" "Low space detected on /video!! $VDFREE Free, $VDPERC Used."
+ pushover "security" "Low space detected on /video!! $VDFREE Free, $VDPERC Used."
+fi
+######################################
+
 starttimer3
 log "INFO" "Starting Sophos definition update..."
 /opt/sophos-av/bin/savupdate &>> $LOGF
