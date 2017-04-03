@@ -20,11 +20,13 @@ log "INFO" "Screened Master Backup script starting..."
 
 if mountpoint -q $MOUNT1
 then
+log "WARN" "Backup1 was mounted already, unmouting for health checks"
 umount $MOUNT1
 fi
 
 if mountpoint -q $MOUNT2
 then
+log "WARN" "Backup2 was mounted already, unmouting for health checks"
 umount $MOUNT2
 fi
 
@@ -46,6 +48,8 @@ ntfsfix /dev/disk/by-uuid/$DUUID1 >> $LOGF
 ELAPSED3=$(elapsed3)
 log "INFO" "NTFS Fix complete on $MOUNT1 Elapsed: $ELAPSED3"
 
+if /bin/mountpoint -q $MOUNT1
+ then
 starttimer3
 starttimer2
 log "INFO" "Stand-Up Comedy Library backup starting..."
@@ -71,6 +75,10 @@ IFS=' ' read -r -a D1INFO <<< $D1
 D1PERC=${D1INFO[4]}
 D1FREE=${D1INFO[3]}
 /bin/umount $MOUNT1
+else
+ log "ERROR" "Backup Error, Backup1 not mounting!"
+ pushover "backup" "Backup Error, Backup1 not mounting!"
+fi
 
 #starttimer3
 #log "INFO" "Putting USB device $MOUNT1 to sleep"
@@ -84,6 +92,9 @@ D1FREE=${D1INFO[3]}
 #/opt/galaxymediatools/usbreset /dev/bus/usb/004/002
 #ELAPSED3=$(elapsed3)
 #log "INFO" "Resetting USB device $MOUNT2 complete Elapsed: $ELAPSED3"
+
+if /bin/mountpoint -q $MOUNT2
+ then
 
 starttimer3
 log "INFO" "Running NTFS Fix on $MOUNT2"
@@ -112,6 +123,11 @@ IFS=' ' read -r -a D2INFO <<< $D2
 D2PERC=${D2INFO[4]}
 D2FREE=${D2INFO[3]}
 /bin/umount $MOUNT2
+else
+ log "ERROR" "Backup Error, Backup2 not mounting!"
+ pushover "backup" "Backup Error, Backup2 not mounting!"
+fi
+
 
 #starttimer3
 #log "INFO" "Putting USB device $MOUNT2 to sleep"

@@ -32,7 +32,7 @@ fi
    else
     log "INFO" "Backup Drive $MOUNT not mounted. Exiting"
     log "INFO" "Backup Drive $MOUNT not mounted. Exiting $LIBRARY library backup." "$LOGM"
-pushover "backup" "$LIBRRY Library Backup ERROR! $MOUNT Not Mounted!"
+    #pushover "backup" "$LIBRRY Library Backup ERROR! $MOUNT Not Mounted!"
  log "INFO" "Ended $LIBRARY Library backup"
    exit 1
    fi
