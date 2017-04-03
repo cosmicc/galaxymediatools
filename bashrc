@@ -113,8 +113,8 @@ if ! shopt -oq posix; then
   fi
 fi
 cd /opt/galaxymediatools/
-PATH=$PATH:/opt/galaxymediatools
 who -ur
 uptime
 ls
 sudo su
+PATH=$PATH:/opt/galaxymediatools
