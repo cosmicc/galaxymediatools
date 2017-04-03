@@ -6,16 +6,16 @@ if [[ "$1" == "-u" ]]; then
 echo "UN-Mounting USB backup drives..."
 umount "$MOUNT1"
 umount "$MOUNT2"
-echo "Putting USB drives to sleep..."
-hd-idle -t sdc
-hd-idle -t sdb
+#echo "Putting USB drives to sleep..."
+#hd-idle -t sdc
+#hd-idle -t sdb
 echo "USB drives unmounted"
 exit 0
 else
 
-echo "Waking up USB drives..."
-/opt/galaxymediatools/usbreset /dev/bus/usb/004/003
-/opt/galaxymediatools/usbreset /dev/bus/usb/004/002
+#echo "Waking up USB drives..."
+#/opt/galaxymediatools/usbreset /dev/bus/usb/004/003
+#/opt/galaxymediatools/usbreset /dev/bus/usb/004/002
 
 echo "Mouting USB drives..."
 echo "UUID: $DUUID1 Mountpoint: $MOUNT1"

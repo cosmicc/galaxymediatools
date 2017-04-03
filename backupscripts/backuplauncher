@@ -28,11 +28,11 @@ then
 umount $MOUNT2
 fi
 
-starttimer3
-log "INFO" "Resetting USB device $MOUNT1"
-/opt/galaxymediatools/usbreset /dev/bus/usb/004/003
-ELAPSED3=$(elapsed3)
-log "INFO" "Resetting USB device $MOUNT1 complete Elapsed: $ELAPSED3"
+#starttimer3
+#log "INFO" "Resetting USB device $MOUNT1"
+#/opt/galaxymediatools/usbreset /dev/bus/usb/004/003
+#ELAPSED3=$(elapsed3)
+#log "INFO" "Resetting USB device $MOUNT1 complete Elapsed: $ELAPSED3"
 
 starttimer3
 log "INFO" "SMART drive check starting on $MOUNT1"
@@ -72,18 +72,18 @@ D1PERC=${D1INFO[4]}
 D1FREE=${D1INFO[3]}
 /bin/umount $MOUNT1
 
-starttimer3
-log "INFO" "Putting USB device $MOUNT1 to sleep"
-udisksctl power-off -b /dev/disk/by-uuid/$DUUID1
-ELAPSED3=$(elapsed3)
-log "INFO" "USB device $MOUNT1 sleep complete Elapsed: $ELAPSED3"
+#starttimer3
+#log "INFO" "Putting USB device $MOUNT1 to sleep"
+#udisksctl power-off -b /dev/disk/by-uuid/$DUUID1
+#ELAPSED3=$(elapsed3)
+#log "INFO" "USB device $MOUNT1 sleep complete Elapsed: $ELAPSED3"
 
 
-starttimer3
-log "INFO" "Resetting USB device $MOUNT2"
-/opt/galaxymediatools/usbreset /dev/bus/usb/004/002
-ELAPSED3=$(elapsed3)
-log "INFO" "Resetting USB device $MOUNT2 complete Elapsed: $ELAPSED3"
+#starttimer3
+#log "INFO" "Resetting USB device $MOUNT2"
+#/opt/galaxymediatools/usbreset /dev/bus/usb/004/002
+#ELAPSED3=$(elapsed3)
+#log "INFO" "Resetting USB device $MOUNT2 complete Elapsed: $ELAPSED3"
 
 starttimer3
 log "INFO" "Running NTFS Fix on $MOUNT2"
@@ -113,11 +113,11 @@ D2PERC=${D2INFO[4]}
 D2FREE=${D2INFO[3]}
 /bin/umount $MOUNT2
 
-starttimer3
-log "INFO" "Putting USB device $MOUNT2 to sleep"
-udisksctl power-off -b /dev/disk/by-uuid/$DUUID2
-ELAPSED3=$(elapsed3)
-log "INFO" "USB device $MOUNT2 sleep complete Elapsed: $ELAPSED3"
+#starttimer3
+#log "INFO" "Putting USB device $MOUNT2 to sleep"
+#udisksctl power-off -b /dev/disk/by-uuid/$DUUID2
+#ELAPSED3=$(elapsed3)
+#log "INFO" "USB device $MOUNT2 sleep complete Elapsed: $ELAPSED3"
 
 if [ -f /var/run/reboot-required ]; then
   log "WARN" "Reboot required. Rebooting..."
@@ -131,16 +131,13 @@ log "INFO" "USB drive $MOUNT1 - $D1FREE Free, $D1PERC Used."
 log "INFO" "USB drive $MOUNT2 - $D2FREE Free, $D2PERC Used."
 
 ELAPSED=$(elapsed)
-if [ $CRESULT -eq 0 && $MRESULT -eq 0 && $URESULT -eq 0 && $TRESULT -eq 0 && $URESULT -eq 0 ]; then
+if [ $CRESULT -eq 0 && $MRESULT -eq 0 && $URESULT -eq 0 && $TRESULT -eq 0 && $RRESULT -eq 0 ]; then
 log "INFO" "All Library backups completed successfully!"
 pushover "backup" "Library backups completed successfully. Backup1 $D1PERC Used $D1FREE Free, Backup2 $D2PERC Used $D2FREE Free. Elapsed: $ELAPSED"
 else
-if [ $CRESULT -ne 0 ]; then
 ERRORED=$(($CRESULT+$MRESULT+$URESULT+$TRESULT+$URESULT))
 log "INFO" "Library backups completed with errors. $ERRORED Libraries failed. Elapsed: $ELAPSED"
 pushover "backup" "Library backups completed with errors. $ERRORED Libraries failed. Backup1 $D1PERC Used $D1FREE Free, Backup2 $D2PERC Used $D2FREE Free. Elapsed: $ELAPSED"
-fi
-
 fi
 
 log "INFO" "<--- Master Backup script completed. Elapsed: $ELAPSED"
