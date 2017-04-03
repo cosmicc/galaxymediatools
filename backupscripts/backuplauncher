@@ -53,17 +53,17 @@ starttimer3
 starttimer2
 log "INFO" "Stand-Up Comedy Library backup starting..."
 /opt/galaxymediatools/backupscripts/backupcomedy.exec 
-CRESULT=backupcomplete "Stand-Up Comedy"
+CRESULT=$(backupcomplete "Stand-Up Comedy")
 
 starttimer2
 log "INFO" "Movie Library backup starting..."
 /opt/galaxymediatools/backupscripts/backupmovies.exec
-MRESULT=backupcomplete "Movie"
+MRESULT=$(backupcomplete "Movie")
 
 starttimer2
 log "INFO" "UFC Event Library backup starting..."
 /opt/galaxymediatools/backupscripts/backupufc.exec
-URESULT=backupcomplete "UFC Events"
+URESULT=$(backupcomplete "UFC Events")
 ELAPSED3=$(elapsed3)
 log "INFO" "Backups on $MOUNT1 complete.  Elapsed: $ELAPSED3"
 
@@ -103,12 +103,12 @@ starttimer3
 starttimer2
 log "INFO" "TV Show Library backup starting..."
 /opt/galaxymediatools/backupscripts/backuptvshows.exec
-TRESULT=backupcomplete "TV Show"
+TRESULT=$(backupcomplete "TV Show")
 
 starttimer2
 log "INFO" "Recorded TV Library backup starting..."
 /opt/galaxymediatools/backupscripts/backuprecordedtv.exec
-RRESULT=backupcomplete "Recorded TV"
+RRESULT=$(backupcomplete "Recorded TV")
 
 ELAPSED3=$(elapsed3)
 log "INFO" "Backups on $MOUNT2 complete.  Elapsed: $ELAPSED3"
