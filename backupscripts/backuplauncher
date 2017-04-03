@@ -154,7 +154,7 @@ log "INFO" "USB drive $MOUNT2 - $D2FREE Free, $D2PERC Used."
 ELAPSED=$(elapsed)
 log "DEBUG" "CRESULT=$CRESULT, MRESULT=$MRESULT, URESULT=$URESULT, TRESULT=$TRESULT, RRESULT=$RRESULT"
 
-if ([ $CRESULT -eq 0 ] && [ $MRESULT -eq 0 ] && [ $URESULT -eq 0 ] && [ $TRESULT -eq 0 ] && [ $RRESULT -eq 0 ]); then
+if (( $CRESULT == 0 && $MRESULT == 0 && $URESULT == 0 && $TRESULT == 0 && $RRESULT == 0 )); then
 log "INFO" "All Library backups completed successfully!"
 pushover "backup" "Library backups completed successfully. Backup1 $D1PERC Used $D1FREE Free, Backup2 $D2PERC Used $D2FREE Free. Elapsed: $ELAPSED"
 else
