@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source="/opt/galaxymediatools/functions/prechecknl"
+source "/opt/galaxymediatools/functions/prechecknl"
 
 LOGF="/video/Incoming/logs/backupmaster.log"
 
