@@ -74,7 +74,7 @@ D1FREE=${D1INFO[3]}
 
 starttimer3
 log "INFO" "Putting USB device $MOUNT1 to sleep"
-hd-idle -t sdc
+udisksctl power-off -b /dev/disk/by-uuid/$DUUID1
 ELAPSED3=$(elapsed3)
 log "INFO" "USB device $MOUNT1 sleep complete Elapsed: $ELAPSED3"
 
@@ -115,7 +115,7 @@ D2FREE=${D2INFO[3]}
 
 starttimer3
 log "INFO" "Putting USB device $MOUNT2 to sleep"
-hd-idle -t sdb
+udisksctl power-off -b /dev/disk/by-uuid/$DUUID2
 ELAPSED3=$(elapsed3)
 log "INFO" "USB device $MOUNT2 sleep complete Elapsed: $ELAPSED3"
 
