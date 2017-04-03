@@ -44,7 +44,7 @@ log "INFO" "SMART drive check complete on $MOUNT1 Elapsed: $ELAPSED3"
 
 starttimer3
 log "INFO" "Running NTFS Fix on $MOUNT1"
-ntfsfix /dev/disk/by-uuid/$DUUID1 >> $LOGF 
+ntfsfix /dev/disk/by-uuid/$DUUID1 &>> $LOGF 
 ELAPSED3=$(elapsed3)
 log "INFO" "NTFS Fix complete on $MOUNT1 Elapsed: $ELAPSED3"
 
@@ -95,9 +95,9 @@ fi
 if /bin/mount UUID=$DUUID2 "$MOUNT2"; then
 starttimer3
 log "INFO" "Running NTFS Fix on $MOUNT2"
-ntfsfix /dev/disk/by-uuid/$DUUID2 >> $LOGF
+ntfsfix /dev/disk/by-uuid/$DUUID2 &>> $LOGF
 ELAPSED3=$(elapsed3)
-log "INFO" "NTFS Fix complete on $MOUNT1 Elapsed: $ELAPSED3"
+log "INFO" "NTFS Fix complete on $MOUNT2 Elapsed: $ELAPSED3"
 
 starttimer3
 starttimer2
@@ -152,17 +152,20 @@ log "INFO" "USB drive $MOUNT1 - $D1FREE Free, $D1PERC Used."
 log "INFO" "USB drive $MOUNT2 - $D2FREE Free, $D2PERC Used."
 
 ELAPSED=$(elapsed)
+log "DEBUG" "CRESULT=$CRESULT, MRESULT=$MRESULT, URESULT=$URESULT, TRESULT=$TRESULT, RRESULT=$RRESULT"
+
 if [ $CRESULT -eq 0 ] && [ $MRESULT -eq 0 ] && [ $URESULT -eq 0 ] && [ $TRESULT -eq 0 ] && [ $RRESULT -eq 0 ]; then
 log "INFO" "All Library backups completed successfully!"
 pushover "backup" "Library backups completed successfully. Backup1 $D1PERC Used $D1FREE Free, Backup2 $D2PERC Used $D2FREE Free. Elapsed: $ELAPSED"
 else
 ERRORED=$(($CRESULT+$MRESULT+$URESULT+$TRESULT+$URESULT))
+log "DEBUG" "ERRORED=$ERRORED"
 log "INFO" "Library backups completed with errors. $ERRORED Libraries failed. Elapsed: $ELAPSED"
 pushover "backup" "Library backups completed with errors. $ERRORED Libraries failed. Backup1 $D1PERC Used $D1FREE Free, Backup2 $D2PERC Used $D2FREE Free. Elapsed: $ELAPSED"
 fi
 
 log "INFO" "<--- Master Backup script completed. Elapsed: $ELAPSED"
-sleep 3
+sleep 10
 if [ "$1" != "-ns" ]; then
 if [ $SUS -eq 1 ]; then
 /usr/sbin/pm-suspend
