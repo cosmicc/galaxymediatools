@@ -1,0 +1,9 @@
+#!/bin/bash
+
+smartctl -T permissive -a -d sat,auto "$1"
+
+val=$?; mask=1
+       for i in 0 1 2 3 4 5 6 7; do
+         echo "Bit $i: $(((val & mask) && 1))"
+         mask=$((mask << 1))
+       done

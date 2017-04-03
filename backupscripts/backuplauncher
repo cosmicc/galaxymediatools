@@ -29,6 +29,12 @@ umount $MOUNT2
 fi
 
 starttimer3
+log "INFO" "Resetting USB device $MOUNT1"
+/opt/galaxymediatools/usbreset /dev/bus/usb/004/003
+ELAPSED3=$(elapsed3)
+log "INFO" "Resetting USB device $MOUNT1 complete Elapsed: $ELAPSED3"
+
+starttimer3
 log "INFO" "SMART drive check starting on $MOUNT1"
 smartctl -T permissive -a -d sat,auto /dev/disk/by-uuid/$DUUID1
 ELAPSED3=$(elapsed3)
@@ -67,6 +73,19 @@ D1FREE=${D1INFO[3]}
 /bin/umount $MOUNT1
 
 starttimer3
+log "INFO" "Putting USB device $MOUNT1 to sleep"
+hd-idle -t sdc
+ELAPSED3=$(elapsed3)
+log "INFO" "USB device $MOUNT1 sleep complete Elapsed: $ELAPSED3"
+
+
+starttimer3
+log "INFO" "Resetting USB device $MOUNT2"
+/opt/galaxymediatools/usbreset /dev/bus/usb/004/002
+ELAPSED3=$(elapsed3)
+log "INFO" "Resetting USB device $MOUNT2 complete Elapsed: $ELAPSED3"
+
+starttimer3
 log "INFO" "Running NTFS Fix on $MOUNT2"
 ntfsfix /dev/disk/by-uuid/$DUUID2 >> $LOGF
 ELAPSED3=$(elapsed3)
@@ -93,6 +112,12 @@ IFS=' ' read -r -a D2INFO <<< $D2
 D2PERC=${D2INFO[4]}
 D2FREE=${D2INFO[3]}
 /bin/umount $MOUNT2
+
+starttimer3
+log "INFO" "Putting USB device $MOUNT2 to sleep"
+hd-idle -t sdb
+ELAPSED3=$(elapsed3)
+log "INFO" "USB device $MOUNT2 sleep complete Elapsed: $ELAPSED3"
 
 if [ -f /var/run/reboot-required ]; then
   log "WARN" "Reboot required. Rebooting..."
