@@ -40,12 +40,12 @@ log "INFO" "Removing $EPS expired TV episodes..."
 starttimer2
 for TV in "${TV7DAY[@]}"
 do
-find "$TV" -mtime +14 -exec rm -rf {} \ &>> $LOGF
+find "$TV" -mtime +7 -exec rm -rf {} \; &>> $LOGF
 done
 
 for TV in "${TV1DAY[@]}"
 do
-find "$TV" -mtime +1 -exec rm -rf {} \ &>> $LOGF
+find "$TV" -mtime +1 -exec rm -rf {} \; &>> $LOGF
 done
 ELAPSED2=$(elapsed2)
 log "INFO" "Removed $EPS expired TV episodes. Elapsed: $ELAPSED2"
