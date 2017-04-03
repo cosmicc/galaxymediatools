@@ -14,7 +14,7 @@ echo " "
 exit 0
 fi
 
-if [ "$1" != "-h" ] && [ "$1" != "--help" ] && [ "$1" != "-ns" ]; then
+if [ "$1" != "" ] && [ "$1" != "-h" ] && [ "$1" != "--help" ] && [ "$1" != "-ns" ]; then
 echo "backupstart: Invalid option specified.  See backupstart --help"
 exit 1
 fi
