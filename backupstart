@@ -26,7 +26,7 @@ log "INFO" "---> Backup script starting"
 
 RUNCHECK1=`ps uxa | grep "backuplauncher" | wc -l`
 
-if [ $RUNCHECK1 -gt 3 ]; then
+if [ $RUNCHECK1 -lt 2 ]; then
    /usr/bin/screen -dm bash -c "/opt/galaxymediatools/backupscripts/backuplauncher $1" &>> $LOGF
   else
    log "WARN" "Backup already running.  Not executing another session."
