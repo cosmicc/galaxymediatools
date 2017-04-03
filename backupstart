@@ -4,6 +4,21 @@ LOGF="/video/Incoming/logs/backupmaster.log"
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
+
+if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+echo "Galaxy Backup Startup script"
+echo " "
+echo "Options:"
+echo "	-ns	: No Sleep (do not sleep or reboot after completion)"
+echo " "
+exit 0
+fi
+
+if [ "$1" != "-h" ] && [ "$1" != "--help" ] && [ "$1" != "-ns" ]; then
+echo "backupstart: Invalid option specified.  See backupstart --help"
+exit 1
+fi
+
 if /bin/mountpoint -q /video
 then
 
@@ -11,8 +26,8 @@ log "INFO" "---> Backup script starting"
 
 RUNCHECK1=`ps uxa | grep "backuplauncher" | wc -l`
 
-if [[ $RUNCHECK1 < 3 ]]; then
-   /usr/bin/screen -dm bash -c "/opt/galaxymediatools/backupscripts/backuplauncher" &>> $LOGF
+if [ $RUNCHECK1 -gt 3 ]; then
+   /usr/bin/screen -dm bash -c "/opt/galaxymediatools/backupscripts/backuplauncher $1" &>> $LOGF
   else
    log "WARN" "Backup already running.  Not executing another session."
    exit 1

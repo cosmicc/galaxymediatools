@@ -133,10 +133,18 @@ fi
 #log "INFO" "USB device $MOUNT2 sleep complete Elapsed: $ELAPSED3"
 
 if [ -f /var/run/reboot-required ]; then
+  if [ "$1" != "-ns" ]; then
   log "WARN" "Reboot required. Rebooting..."
+  else
+  log "WARN" "Reboot required. But skipping due to NO SLEEP option"
+  fi
   SUS=2
 else
-  log "INFO" "No Reboot needed. Suspending machine."
+  if [ "$1" != "-ns" ]; then
+  log "WARN" "No Reboot needed. Suspending machine."
+  else
+  log "INFO" "No Reboot needed. But not Suspending machine due to NO SLEEP option"
+  fi
 SUS=1
 fi
 
@@ -144,7 +152,7 @@ log "INFO" "USB drive $MOUNT1 - $D1FREE Free, $D1PERC Used."
 log "INFO" "USB drive $MOUNT2 - $D2FREE Free, $D2PERC Used."
 
 ELAPSED=$(elapsed)
-if [ $CRESULT -eq 0 && $MRESULT -eq 0 && $URESULT -eq 0 && $TRESULT -eq 0 && $RRESULT -eq 0 ]; then
+if [ $CRESULT -eq 0 ] && [ $MRESULT -eq 0 ] && [ $URESULT -eq 0 ] && [ $TRESULT -eq 0 ] && [ $RRESULT -eq 0 ]; then
 log "INFO" "All Library backups completed successfully!"
 pushover "backup" "Library backups completed successfully. Backup1 $D1PERC Used $D1FREE Free, Backup2 $D2PERC Used $D2FREE Free. Elapsed: $ELAPSED"
 else
@@ -155,8 +163,10 @@ fi
 
 log "INFO" "<--- Master Backup script completed. Elapsed: $ELAPSED"
 sleep 3
+if [ "$1" != "-ns" ]; then
 if [ $SUS -eq 1 ]; then
 /usr/sbin/pm-suspend
 else
 /sbin/reboot
+fi
 fi
