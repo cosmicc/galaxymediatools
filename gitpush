@@ -9,6 +9,7 @@ git add *
 git commit -m "working"
 git push origin $GITREPO
 printf "${nocolor}"
+if [ "$HOSTNAME" != "$T1NAME" ]; then
 echo -e "Conecting to remote Server ${servercolor}$T1NAME${cmd1color}..."
  fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
   if [ "$?" != "0" ]; then
@@ -35,6 +36,7 @@ done
   echo -e "${cmd2color}Transcoder server ${servercolor}$T1NAME ${cmd2color}was sleeping, putting back to sleep.${nocolor}"
   ssh $T1INFO 'sudo pm-suspend' &
  fi
+fi
 
 #echo -e "${cmd1color}Connecting to remote Server ${servercolor}$T2NAME${cmd1color}..."
 # fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null

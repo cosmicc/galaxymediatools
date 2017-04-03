@@ -46,7 +46,7 @@ fi
 
 log "INFO" "Running system updates..."
 starttimer2
-apt-get update &> /dev/null
+apt-get -q update &>> $LOGF
 apt-get upgrade -y --allow-downgrades --allow-remove-essential --allow-change-held-packages &>> $LOGF
 apt-get autoremove -y &>> $LOGF
 ELAPSED2=$(elapsed2)
