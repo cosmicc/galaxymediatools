@@ -4,8 +4,39 @@ LOGF="/video/Incoming/logs/plexupgrades.log"
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
+LOOPCOUNT=0
+WAITHOURS=2
+
+checkplex() {
+PLEXBUSY=`curl -k "https://127.0.0.1:32400/status/sessions?X-Plex-Token=$PLEXTOKEN" | grep 'MediaContainer size="1"' | wc -l`
+if [ $PLEXBUSY -ne 0 ]; then
+ if [ $LOOPCOUNT -eq 0 ]; then
+  log "WARN" "Plex server is busy, postponing plex upgrade..."
+ fi
+sleep 600
+fi
+((LOOPCOUNT++))
+echo $PLEXBUSY
+}
+
 starttimer
 log "INFO" "---> Starting Plex Media Server upgrade"
+starttimer3
+HOURLOOP=$((WAITHOURS * 6))
+until [ $LOOPCOUNT -eq $HOURLOOP ]; do
+PCHECK=$(checkplex)
+if [ $PCHECK -eq 0 ]; then
+LOOPCOUNT=$HOURLOOP
+fi
+done
+ELAPSED3=$((elapsed3))
+NEWST=$(HOURLOOP-1)
+if [ $LOOPCOUNT -gt $NEWST ]; then
+log "ERROR" "Plex still busy after $WAITHOURS Hours. Skipping plex upgrade. Elapsed: $ELAPSED3"
+exit 1
+fi
+log "INFO" "Plex is idle. Continuing script. Elapsed: $ELAPSED3"
+
 
 starttimer2
 log "INFO" "Starting Plexupdate updates..."
