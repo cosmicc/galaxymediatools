@@ -7,6 +7,7 @@ source "/opt/galaxymediatools/functions/prechecknl"
 # Keep 14 days worth
 TV7DAY[0]="/video/TV Series/Vice News Tonight"
 TV7DAY[1]="/video/Recorded TV/Jimmy Kimmel Live (2003)"
+TV7DAY[2]="/video/Recorded TV/The Tonight Show Starring Jimmy Fallon (2014)"
 
 # keep 1 day worth
 TV1DAY[0]="/video/Recorded TV/Local 4 News Today at 6AM (2013)"
@@ -23,13 +24,13 @@ log "INFO" "Checking for expired episodes..."
 starttimer2
 for TV in "${TV7DAY[@]}"
 do
-EPS1=`find "$TV" -mtime +8 | wc -l`
+EPS1=`find "$TV" -type f -mtime +8 | wc -l`
 EPS=$((EPS+EPS1))
 done
 
 for TV in "${TV1DAY[@]}"
 do
-EPS1=`find "$TV" -mtime +0 | wc -l`
+EPS1=`find "$TV" -type f -mtime +0 | wc -l`
 EPS=$((EPS+EPS1))
 done
 
@@ -41,12 +42,12 @@ log "INFO" "Removing $EPS expired TV episodes..."
 starttimer2
 for TV in "${TV7DAY[@]}"
 do
-find "$TV" -mtime +8 -exec rm -rf {} \; &>> $LOGF
+find "$TV" -type f -mtime +8 -exec rm -rf {} \; &>> $LOGF
 done
 
 for TV in "${TV1DAY[@]}"
 do
-find "$TV" -mtime +0 -exec rm -rf {} \; &>> $LOGF
+find "$TV" -type f -mtime +0 -exec rm -rf {} \; &>> $LOGF
 done
 ELAPSED2=$(elapsed2)
 log "INFO" "Removed $EPS expired TV episodes. Elapsed: $ELAPSED2"

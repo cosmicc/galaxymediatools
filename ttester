@@ -1,9 +1,5 @@
 #!/bin/bash
 
-smartctl -T permissive -a -d sat,auto "$1"
+source "/opt/galaxymediatools/functions/prechecknl"
 
-val=$?; mask=1
-       for i in 0 1 2 3 4 5 6 7; do
-         echo "Bit $i: $(((val & mask) && 1))"
-         mask=$((mask << 1))
-       done
+pushover "backup" "test"
