@@ -1,4 +1,6 @@
 #!/bin/bash
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/opt/galaxymediatools"
+export PATH=$PATH
 
 LOGF="/video/Incoming/logs/plexupgrades.log"
 

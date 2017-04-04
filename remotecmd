@@ -1,50 +1,71 @@
 #!/bin/bash
 
-if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
-        echo " "
-        echo "Galaxy Media Tools - Remote Suspend Transcode Server"
-        echo " "
-        echo "-h or --help : Help"
-        echo "-u : Upgrade from git only"
-        echo " "
-        exit 0
-fi
-
-if [ "$1" == "" ]; then
-	echo "Argument missing. Specify which server to suspend"
-	exit 1
-fi
-
-if [ "$2" == "" ]; then
-        echo "Argument missing. Specify what command to send to server"
-        exit 1
-fi
-
-
 source "/opt/galaxymediatools/functions/prechecknl"
-
+WASSLEEPING1=0
 if [ "$1" == "$T1NAME" ]; then
+echo -e "Conecting to remote Server ${servercolor}$T1NAME${cmd1color}..."
  fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
   if [ "$?" != "0" ]; then
-  echo "$T1NAME server already suspended."
-  exit 1
- else
-  echo "Waking transcode server $T1NAME"
-  ssh $T1INFO "sudo $APPDIR/gitpull" &
-  echo -e "Transcode server $T1NAME suspended"
-  exit 0
- fi
-elif [ "$1" == "$T2NAME" ]; then
- fping -c1 -t300 $T2IP 2>/dev/null 1>/dev/null
-  if [ "$?" != "0" ]; then
-   echo "$T2NAME server already suspended."
-   exit 1
- else
-  echo "Waking transcode server $T2NAME"
-  ssh $T2INFO "sudo $2"
-  echo -e "Transcode server $T2NAME suspended"
-  exit 0
+   WASSLEEPING1=1
+   echo -e "${cmd2color}Waking transcode server ${servercolor}$T1NAME"
+  printf "${soutcolor}"
+   wakeonlan $T1MAC
+   wakeonlan $T1MAC
+   printf "${nocolor}"
+   SERVERUP=0
+until [ $SERVERUP -eq 1 ]; do
+  fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
+  if [ $? -eq 0 ]; then
+  sleep 1
+  SERVERUP=1
+  fi
+done   
+   echo -e "${cmd1color}Transcode server ${servercolor}$T1NAME ${cmd1color}started"
+  fi
+ printf "${soutcolor}"
+ ssh $T1INFO "sudo $2"
+ printf "${nocolor}"
+ if [ $WASSLEEPING1 -eq 1 ]; then
+  echo -e "${cmd2color}Transcoder server ${servercolor}$T1NAME ${cmd2color}was sleeping, putting back to sleep.${nocolor}"
+  ssh $T1INFO 'sudo pm-suspend' &
  fi
 fi
-echo "No server exists with that name"
-exit 1
+
+
+if [ "$1" == "$DSNAME" ]; then
+printf "${cmd1color}"
+echo -e "Connecting to remote Server ${servercolor}$DSNAME${cmd1color}..."
+ printf "${cmd1color}"
+echo -e "Executing command ${cmd2color}$2${nocolor}..."
+printf "${soutcolor}"
+ ssh $DSINFO "sudo $2"
+printf "${cmd1color}"
+echo -e "Command Complete."
+ printf "${nocolor}"
+fi
+
+if [ "$1" == "$MSNAME" ]; then
+printf "${cmd1color}"
+echo -e "Connecting to remote Server ${servercolor}$MSNAME${cmd1color}..."
+ printf "${cmd1color}"
+echo -e "Executing command ${cmd2color}$2${nocolor}..."
+printf "${soutcolor}"
+ ssh $MSINFO "sudo $2"
+printf "${cmd1color}"
+echo -e "Command Complete."
+ printf "${nocolor}"
+fi
+
+if [ "$1" == "$PLEXNAME" ]; then
+printf "${cmd1color}"
+echo -e "Connecting to remote Server ${servercolor}$PLEXNAME${cmd1color}..."
+ printf "${cmd1color}"
+echo -e "Executing command ${cmd2color}$2${nocolor}..."
+printf "${soutcolor}"
+ ssh $PLEXINFO "sudo $2"
+printf "${cmd1color}"
+echo -e "Command Complete."
+ printf "${nocolor}"
+fi
+
+echo -e "${nocolor}"

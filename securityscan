@@ -1,4 +1,6 @@
 #!/bin/bash
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/opt/galaxymediatools"
+export PATH=$PATH
 
 if mountpoint -q /video
 then
@@ -28,6 +30,7 @@ log "INFO" "---> security scan starting on \"$HOSTNAME\""
 
 ### PLEX SERVER IDLE WAIT
 if [ "$HOSTNAME" == "$PLEXNAME" ]; then
+log "INFO" "Starting plex idle busy detection process..."
 starttimer3
 HOURLOOP=$((WAITHOURS * 6))
 until [ $LOOPCOUNT -eq $HOURLOOP ]; do
@@ -46,16 +49,17 @@ log "INFO" "Plex is idle. Continuing script. Elapsed: $ELAPSED3"
 fi
 
 ### UBUNTU SYSTEM UPDATES
-log "INFO" "Running system updates..."
+log "INFO" "Running OS updates..."
 starttimer2
 apt-get -q update &>> $LOGF
 apt-get upgrade -y --allow-downgrades --allow-remove-essential --allow-change-held-packages &>> $LOGF
 apt-get autoremove -y &>> $LOGF
 ELAPSED2=$(elapsed2)
-log "INFO" "Updates Complete. Elapsed: $ELAPSED2"
+log "INFO" "OS Updates Complete. Elapsed: $ELAPSED2"
 
 ### TRANSCODER SERVER GIT UPDATES
 if [ "$HOSTNAME" == "$T1NAME" ]; then
+log "INFO" "Running Transcoder only Git updates:"
 starttimer2
 log "INFO" "Comskip updating..."
 gitupdate "comskip" "/opt/Comskip"
@@ -66,11 +70,13 @@ log "INFO" "PlexComskip updating..."
 gitupdate "plexcomskip" "/opt/PlexComskip"
 ELAPSED2=$(elapsed2)
 log "INFO" "PlexComskip Updates Complete. Elapsed: $ELAPSED2"
+log "INFO" "Completed Transcoder only Git updates."
 fi
 
 ### MEDIA MANAGER SERVER GIT UPDATES
 if [ "$HOSTNAME" == "$MSNAME" ]; then
 starttimer2
+log "INFO" "Running Media Manager only Git updates:"
 log "INFO" "PlexPy Updating..."
 gitupdate "plexpy" "/opt/plexpy"
 ELAPSED2=$(elapsed2)
@@ -83,6 +89,7 @@ starttimer2
 gitupdate "sickrage" "/opt/sickrage"
 ELAPSED2=$(elapsed2)
 log "INFO" "Sickrage Updates Complete. Elapsed: $ELAPSED2"
+log "INFO" "Completed Media Manager only Git updates."
 fi
 
 ### ALL SERVER GIT UPDATES
