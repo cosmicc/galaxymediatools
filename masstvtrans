@@ -211,10 +211,14 @@ log "INFO" "Plex server full video analyze on $THISSERVER"
 if [[ -z $SIM ]] && [[ $PUPD ]]; then curl "http://172.25.1.26:32400/library/sections/$PLEXCAT/refresh?X-Plex-Token=$PLEXTOKEN" 
 fi
 ELAPSED=$(elapsed)
+V1=`df -h | grep "/video"`
+IFS=' ' read -r -a VDINFO <<< $V1
+VDPERC=${VDINFO[4]}
+VDFREE=${VDINFO[3]}
 if [ ${#file[@]} -eq 0 ]; then
-if [[ -z $SIM ]]; then pushover "transcoder" "TV Transcoder Complete. No episodes to process. Elapsed: $ELAPSED"; fi
+if [[ -z $SIM ]]; then pushover "transcoder" "TV Transcoder Complete. No episodes to process. Elapsed: $ELAPSED - NAS $VDFREE Free, $VDPERC Used."; fi
 else
-if [[ -z $SIM ]]; then pushover "transcoder" "TV Transcoder Complete. ${#file[@]} episodes processed. $RESIZE Resized, $NRESIZE Not-Resized. Elapsed: $ELAPSED"; fi
+if [[ -z $SIM ]]; then pushover "transcoder" "TV Transcoder Complete. ${#file[@]} episodes processed. $RESIZE Resized, $NRESIZE Not-Resized. Elapsed: $ELAPSED - NAS $VDFREE Free, $VDPERC Used."; fi
 fi
 log "INFO" "<--- TV Transcoder Complete on $HOSTNAME. Elapsed Time: $ELAPSED"
 echo "Auto TV Transcode Script Complete."

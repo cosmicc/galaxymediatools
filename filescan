@@ -46,10 +46,9 @@ VDPERC=${VDINFO[4]}
 VDFREE=${VDINFO[3]}
 VDUSED=${VDPERC::-1}
 if [ $VDUSED -gt 98 ];then
- log "WARN" "Low space detected on /video!! $VDFREE Free, $VDPERC Used."
- pushover "security" "Low space detected on /video!! $VDFREE Free, $VDPERC Used."
+ log "WARN" "Low space on NAS!! $VDFREE Free, $VDPERC Used."
+ pushover "security" "Low space on NAS!! $VDFREE Free, $VDPERC Used."
 fi
-######################################
 
 starttimer3
 log "INFO" "Starting Sophos definition update..."
