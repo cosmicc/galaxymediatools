@@ -97,7 +97,7 @@ starttimer2
 log "INFO" "Running Chkrootkit..."
 /usr/sbin/chkrootkit -n | grep 'INFECTED|Vulnerable'
     if [ $? -eq 0 ]; then
-      /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Security threat from chkrootkit found on $HOSTNAME" &> /dev/null
+      pushover "security" "Security threat from chkrootkit found on $HOSTNAME"
     CHKEXIT="Threat Found!!"
     else
     CHKEXIT="No Threats Found."
@@ -107,9 +107,9 @@ log "INFO" "Chkrootkit Updates Complete. Elapsed: $ELAPSED2"
 
 starttimer2
 log "INFO" "Running Lynis..."
-/usr/sbin/lynis audit system --cronjob --quiet &>> $LOGF
+/opt/lynis/lynis audit system -Q --quiet &>> $LOGF
     if [ $? -ne 0 ]; then
-      /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Lynis Execution error on $HOSTNAME. Check $LOGF" &> /dev/null
+      pushover "security" -T "Lynis Execution error on $HOSTNAME. Check $LOGF"
     LYNEXIT="Execution Error!!"
     else
     LYNEXIT="Success"
@@ -121,7 +121,7 @@ starttimer2
 log "INFO" "Running Antivirs/Malware definition update..."
 /opt/sophos-av/bin/savupdate &>> $LOGF
     if [ $? -ne 0 ]; then
-      /opt/galaxymediatools/pushover.sh -T "am4StBRZHw1AFGEkPGdLbh8WHjvf3K" -U "ut5A4ejy2dY6HgVBeEaouYHw6uUFpH" "Sophos definition update error on $HOSTNAME. Check $LOGF" &> /dev/null
+      pushover "security" -T "Sophos definition update error on $HOSTNAME. Check $LOGF"
     SUEXIT="Update Error!!"
     else
     SUEXIT="Success"
@@ -172,7 +172,8 @@ log "INFO" "<--- Security scan completed on \"$HOSTNAME\" Elapsed: $ELAPSED"
 
 ### TRANSCODE SERVER CONTINUES GLOBAL MAINTENANCE
 if [[ "$HOSTNAME" == "$T1NAME" ]]; then
-/opt/galaxymediatools/galaxy_maintenance
+/opt/galaxymediatools/galaxy_maintenance &
+exit 0
 fi
 
 if [ $REBOO -eq 1 ]; then
