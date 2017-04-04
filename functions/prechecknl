@@ -115,11 +115,11 @@ blink='\e[1;05m'
 reverse='\e[1;07m'
 
 servercolor=${magenta} # server name color
-cmd1color=${dcyan} # command 1 color
+cmd1color=${dyellow} # command 1 color
 cmd2color=${pink} # cmmand 2 color
-soutcolor=${dyellow} # Server output color
+soutcolor=${green} # Server output color
 errorcolor=${rred} # error color
-syscolor=${blue} # System color
+syscolor=${cyan} # System color
 
 THISSERVER=$HOSTNAME
 APPDIR="/opt/galaxymediatools"
