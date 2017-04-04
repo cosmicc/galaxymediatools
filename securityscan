@@ -58,6 +58,11 @@ log "INFO" "Comskip updating..."
 gitupdate "comskip" "/opt/Comskip"
 ELAPSED2=$(elapsed2)
 log "INFO" "Comskip Updates Complete. Elapsed: $ELAPSED2"
+starttimer2
+log "INFO" "PlexComskip updating..."
+gitupdate "plexcomskip" "/opt/PlexComskip"
+ELAPSED2=$(elapsed2)
+log "INFO" "PlexComskip Updates Complete. Elapsed: $ELAPSED2"
 fi
 
 if [ "$HOSTNAME" == "$MSNAME" ]; then
