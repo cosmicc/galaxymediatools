@@ -52,9 +52,17 @@ apt-get autoremove -y &>> $LOGF
 ELAPSED2=$(elapsed2)
 log "INFO" "Updates Complete. Elapsed: $ELAPSED2"
 
+if [ "$HOSTNAME" == "$T1NAME" ]; then
+starttimer2
+log "INFO" "Comskip updating..."
+gitupdate "comskip" "/opt/Comskip"
+ELAPSED2=$(elapsed2)
+log "INFO" "Comskip Updates Complete. Elapsed: $ELAPSED2"
+fi
+
 if [ "$HOSTNAME" == "$MSNAME" ]; then
 starttimer2
-log "INFO" "PlexPy Updating.."
+log "INFO" "PlexPy Updating..."
 gitupdate "plexpy" "/opt/plexpy"
 ELAPSED2=$(elapsed2)
 log "INFO" "PlexPy Updates Complete. Elapsed: $ELAPSED2"
