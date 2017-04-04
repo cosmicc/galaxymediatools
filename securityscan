@@ -26,6 +26,7 @@ echo $PLEXBUSY
 starttimer
 log "INFO" "---> security scan starting on \"$HOSTNAME\""
 
+### PLEX SERVER IDLE WAIT
 if [ "$HOSTNAME" == "$PLEXNAME" ]; then
 starttimer3
 HOURLOOP=$((WAITHOURS * 6))
@@ -44,6 +45,7 @@ fi
 log "INFO" "Plex is idle. Continuing script. Elapsed: $ELAPSED3"
 fi
 
+### UBUNTU SYSTEM UPDATES
 log "INFO" "Running system updates..."
 starttimer2
 apt-get -q update &>> $LOGF
@@ -52,6 +54,7 @@ apt-get autoremove -y &>> $LOGF
 ELAPSED2=$(elapsed2)
 log "INFO" "Updates Complete. Elapsed: $ELAPSED2"
 
+### TRANSCODER SERVER GIT UPDATES
 if [ "$HOSTNAME" == "$T1NAME" ]; then
 starttimer2
 log "INFO" "Comskip updating..."
@@ -65,6 +68,7 @@ ELAPSED2=$(elapsed2)
 log "INFO" "PlexComskip Updates Complete. Elapsed: $ELAPSED2"
 fi
 
+### MEDIA MANAGER SERVER GIT UPDATES
 if [ "$HOSTNAME" == "$MSNAME" ]; then
 starttimer2
 log "INFO" "PlexPy Updating..."
@@ -81,6 +85,14 @@ ELAPSED2=$(elapsed2)
 log "INFO" "Sickrage Updates Complete. Elapsed: $ELAPSED2"
 fi
 
+### ALL SERVER GIT UPDATES
+starttimer2
+log "INFO" "Lynis Updating..."
+gitupdate "lynis" "/opt/lynis"
+ELAPSED2=$(elapsed2)
+log "INFO" "Lynis Updates Complete. Elapsed: $ELAPSED2"
+
+### STARTING SECURITY SCAN
 starttimer2
 log "INFO" "Running Chkrootkit..."
 /usr/sbin/chkrootkit -n | grep 'INFECTED|Vulnerable'
@@ -140,7 +152,6 @@ else
 fi
 ELAPSED2=$(elapsed2)
 log "INFO" "Antivirus/Malware scan complete. Elapsed: $ELAPSED2"
-ELAPSED=$(elapsed)
 echo "* Chkrootkit result: $CHKEXIT" >> $LOGF
 echo "* Lynis result: $LYNEXIT" >> $LOGF
 echo "* Sophos definition update result: $SUEXIT" >> $LOGF
@@ -148,6 +159,7 @@ echo "* Sophos scan result: $SAVCODE" >> $LOGF
 
 REBOO=0
 
+### REBOOT CHECK
 if [[ "$HOSTNAME" != "$PLEXNAME" && "$HOSTNAME" != "$T1NAME" ]]; then
 if [ -f /var/run/reboot-required ]; then
  log "WARN" "Reboot required. Rebooting"
@@ -155,8 +167,10 @@ if [ -f /var/run/reboot-required ]; then
 fi
 fi
 
+ELAPSED=$(elapsed)
 log "INFO" "<--- Security scan completed on \"$HOSTNAME\" Elapsed: $ELAPSED"
 
+### TRANSCODE SERVER CONTINUES GLOBAL MAINTENANCE
 if [[ "$HOSTNAME" == "$T1NAME" ]]; then
 /opt/galaxymediatools/galaxy_maintenance
 fi
