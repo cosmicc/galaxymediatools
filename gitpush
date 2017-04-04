@@ -4,7 +4,7 @@ source "/opt/galaxymediatools/functions/prechecknl"
 WASSLEEPING1=0
 cp /root/.ssh/id_rsa /root/.ssh/github_id_rsa -f
 echo -e "${cmd1color}Pushing files to git repository..."
-printf "${cyan}"
+printf "${green}"
 git add *
 git commit -m "working"
 git push origin $GITREPO
