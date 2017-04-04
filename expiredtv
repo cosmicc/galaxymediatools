@@ -5,12 +5,13 @@ LOGF="/video/Incoming/logs/expiredtv.log"
 source "/opt/galaxymediatools/functions/prechecknl"
 
 # Keep 14 days worth
-TV7DAY[0]="/video/TV Series/Vice News Tonight/Season 01"
+TV7DAY[0]="/video/TV Series/Vice News Tonight"
+TV7DAY[1]="/video/Recorded TV/Jimmy Kimmel Live (2003)"
 
 # keep 1 day worth
-TV1DAY[0]="/video/Recorded TV/Local 4 News Today at 6AM (2013)/Season 2017"
-TV1DAY[1]="/video/Recorded TV/Local 4 News at 6 (2005)/Season 2017"
-TV1DAY[2]="/video/Recorded TV/Local 4 News at 11 (2006)/Season 2017"
+TV1DAY[0]="/video/Recorded TV/Local 4 News Today at 6AM (2013)"
+TV1DAY[1]="/video/Recorded TV/Local 4 News at 6 (2005)"
+TV1DAY[2]="/video/Recorded TV/Local 4 News at 11 (2006)"
 
 # begin script
 starttimer
