@@ -45,6 +45,11 @@ log "INFO" "NTFS Fix complete on $MOUNT1 Elapsed: $ELAPSED3"
 if /bin/mount UUID=$DUUID1 "$MOUNT1"; then
 starttimer3
 starttimer2
+log "INFO" "Logs backup starting..."
+/opt/galaxymediatools/backupscripts/backuplogs.exec
+CRESULT=$(backupcomplete "Logs")
+
+starttimer2
 log "INFO" "Stand-Up Comedy Library backup starting..."
 /opt/galaxymediatools/backupscripts/backupcomedy.exec 
 CRESULT=$(backupcomplete "Stand-Up Comedy")
