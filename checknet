@@ -10,7 +10,7 @@ function cleanup {
     if rmdir $LOCKDIR; then
      exit
     else
-        echo "Failed to remove lock directory '$LOCKDIR'"
+        log "ERROR" "Failed to remove lock directory '$LOCKDIR'"
         exit 1
     fi
 }
@@ -36,7 +36,7 @@ if mkdir $LOCKDIR; then
    if [ $PCOUNT -eq 1 ]; then
    log "WARN" "Start of Network Outage Detected."
    starttimer
-   STARTOUT="eval date '+%y/%m/%d %H:%M'"
+   STARTOUT=`date "+%y/%m/%d %H:%M"`
    fi
    ((PCOUNT++))
    sleep 5
@@ -44,11 +44,11 @@ if mkdir $LOCKDIR; then
  done
   if [ $PCOUNT -gt 3 ]; then
   ELAPSED=$(elapsed)
-  log "WARN" "Network Outage Returned. Started at $STARTOUT. Elapsed: $ELAPSED"
-  pushover "connection" "Network Outage Logged started at $STARTOUT. Lasted: $ELAPSED"
+  log "INFO" "Network Outage Returned. Started at $STARTOUT. Elapsed: $ELAPSED"
+  pushover "connection" "Network Outage Restored at $STARTOUT. Lasted: $ELAPSED"
   fi
  fi 
 else
- log "ERROR" "Could not create lock directory '$LOCKDIR'"
+ echo "Could not create lock directory '$LOCKDIR'"
  exit 1
 fi
