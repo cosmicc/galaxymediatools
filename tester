@@ -2,25 +2,13 @@
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
-starttimer
+if [ "$HOSTNAME" != "$MSNAME" ]; then
+ if [ "$1" == "-b" ]; then
+  /usr/sbin/ntpdate $MSIP
+ else
+  /usr/sbin/ntpdate -b $MSIP
+ fi
+fi
 
-/opt/galaxymediatools/mountbakdrives
-
-D1=`df -h | grep "$MOUNT1"`
-IFS=' ' read -r -a D1INFO <<< $D1
-D1PERC=${D1INFO[4]}
-D1FREE=${D1INFO[3]}
-
-D2=`df -h | grep "$MOUNT2"`
-IFS=' ' read -r -a D2INFO <<< $D2
-D2PERC=${D2INFO[4]}
-D2FREE=${D2INFO[3]}
-
-echo "$MOUNT1 - $D1FREE Free, $D1PERC Used."
-echo "$MOUNT2 - $D2FREE Free, $D2PERC Used."
-
-/opt/galaxymediatools/mountbakdrives -u
-
-ELAPSED=$(elapsed)
-
-echo "Elapsed: $ELAPSED"
+cd /opt/galaxymediatools
+./gitpull

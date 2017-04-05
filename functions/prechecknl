@@ -138,6 +138,7 @@ POAK=$T2KEY
 fi
 T1IP=`sed -e 's#.*@\(\)#\1#' <<< "$T1INFO"`
 T2IP=`sed -e 's#.*@\(\)#\1#' <<< "$T2INFO"`
+MSIP=`sed -e 's#.*@\(\)#\1#' <<< "$MSINFO"`
 if [ "$LOGDIR" == "" ] || [ "$TVDIR" == "" ] || [ "$TRANSDIR" == "" ] || [ "$POUK" == "" ] || [ "$PLEXINFO" == "" ] || [ "$PLEXCAT" == "" ]; then
 echo -e "${rred}No config information found in config file. Exiting.${nocolor}"
 exit 1

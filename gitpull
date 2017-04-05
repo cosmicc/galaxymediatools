@@ -12,7 +12,7 @@ exit 1
 fi
 cd "$APPDIR"
 git pull origin $GITREPO
-cp /opt/galaxymediatools/bashrc /home/ip/.bashrc
-cp /opt/galaxymediatools/bashrc.root /root/.bashrc
+cp /opt/galaxymediatools/conf/bashrc /home/ip/.bashrc
+cp /opt/galaxymediatools/conf/bashrc.root /root/.bashrc
 exit 0
 

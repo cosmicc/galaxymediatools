@@ -1,5 +1,0 @@
-#!/bin/bash
-
-source "/opt/galaxymediatools/functions/prechecknl"
-
-pushover "backup" "test"
