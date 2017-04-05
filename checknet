@@ -4,7 +4,7 @@ LOCKDIR=/run/lock/checknet
 APPDIR=/opt/galaxymediatools
 LOGF="/video/Incoming/logs/connection.log"
 
-source="/opt/galaxymediatools/functions/prechcknl"
+source "/opt/galaxymediatools/functions/prechecknl"
 
 function cleanup {
     if rmdir $LOCKDIR; then
@@ -17,7 +17,6 @@ function cleanup {
 
 if mkdir $LOCKDIR; then
  trap "cleanup" EXIT
- STIME=$(date +%s)
  if [ ! -f "$LOGF" ]; then
  /usr/bin/touch "$LOGF"
  fi
@@ -28,27 +27,28 @@ if mkdir $LOCKDIR; then
  else
   RES=0
   PCOUNT=0
-  starttimer
-  sleep 7
+  sleep 5
  while [ $RES -eq 0 ]; do
-  ((PCOUNT++))
   fping -c1 -t3000 www.google.com 2>/dev/null 1>/dev/null
   if [ $? -eq 0 ]; then
    RES=1
    else
    if [ $PCOUNT -eq 1 ]; then
-   log "WARN" "Network Outage Detected."
+   log "WARN" "Start of Network Outage Detected."
+   starttimer
+   STARTOUT="eval date '+%y/%m/%d %H:%M'"
    fi
-   sleep 7
+   ((PCOUNT++))
+   sleep 5
   fi
  done
   if [ $PCOUNT -gt 3 ]; then
   ELAPSED=$(elapsed)
-  log "WARN" "Network Outage Returned. Elapsed: $ELAPSED"
-  pushover "connection" "Network Outage Loagged: $ELAPSED"
+  log "WARN" "Network Outage Returned. Started at $STARTOUT. Elapsed: $ELAPSED"
+  pushover "connection" "Network Outage Logged started at $STARTOUT. Lasted: $ELAPSED"
   fi
  fi 
 else
- echo "Could not create lock directory '$LOCKDIR'"
+ log "ERROR" "Could not create lock directory '$LOCKDIR'"
  exit 1
 fi
