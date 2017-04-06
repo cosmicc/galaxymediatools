@@ -11,8 +11,8 @@ fi
 read -r -p "Would you like to run apt-get system package update and install? [y/N] " response
 response=${response,,}    # tolower
 if [[ $response =~ ^(yes|y)$ ]]; then
-echo "deb http://www.bunkus.org/ubuntu/trusty/ ./" >> /etc/apt/sources.list # for mkvtoolsnix
-echo "deb-src http://www.bunkus.org/ubuntu/trusty/ ./" >> /etc/apt/sources.list # for mkvtoolsnix
+#echo "deb http://www.bunkus.org/ubuntu/trusty/ ./" >> /etc/apt/sources.list # for mkvtoolsnix
+#echo "deb-src http://www.bunkus.org/ubuntu/trusty/ ./" >> /etc/apt/sources.list # for mkvtoolsnix
 echo "Running package update..."
 apt-get update >> /dev/null
 echo "Running Package Installs..."
