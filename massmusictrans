@@ -19,9 +19,9 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         exit 0
 fi
 
-if [ "$1" == "-s" ] || [ "$2" == "-s" ] || [ "$3" == "-s"] || [ "$4" == "-s"] ; then SIM="yes"; fi
-if [ "$1" == "-nid" ] || [ "$2" == "-nid" ] || [ "$3" == "-nid"] || [ "$4" == "-nid"] ; then BID="no"; fi
-if [ "$1" == "-a" ] || [ "$2" == "-a" ] || [ "$3" == "-a"] || [ "$4" == "-a"] ; then BAUTO="yes"; fi
+if [ "$1" == "-s" ] || [ "$2" == "-s" ] || [ "$3" == "-s" ] || [ "$4" == "-s" ] ; then SIM="yes"; fi
+if [ "$1" == "-nid" ] || [ "$2" == "-nid" ] || [ "$3" == "-nid" ] || [ "$4" == "-nid" ] ; then BID="no"; fi
+if [ "$1" == "-a" ] || [ "$2" == "-a" ] || [ "$3" == "-a" ] || [ "$4" == "-a" ] ; then BAUTO="yes"; fi
 
 if [ "$1" != "-d" ] && [ "$2" != "-d" ] && [ "$3" != "-d" ] && [ "$4" != "-d" ]; then
 SOURCEDIR="/music/process/unsorted"
@@ -58,7 +58,7 @@ ELAPSED2=$(elapsed2)
 log "INFO" "File index build complete. Elapsed: $ELAPSED2"
 log "INFO" "Starting transcode process on ${#file[@]} files on $HOSTNAME"
 echo "Starting transcode process on ${#file[@]} files"
-pushover "transcoder" "TV Transcoder Starting in $TMODE on $HOSTNAME - ${#file[@]} Files to process"
+pushover "transcoder" "Music Transcoder Starting in $TMODE on $HOSTNAME - ${#file[@]} Files to process"
 
 starttimer2
 for f in "${file[@]}"; do
@@ -98,27 +98,42 @@ starttimer2
 done
 ELAPSED2=$(elapsed2)
 
-if [[ $BID ]]; then
+if [[ -z $BID ]]; then
 log "INFO" "All music transcoding complete.  Continuing to music identificationi. Elapsed: $ELAPSED2"
-
- if [[ $BAUTO ]]; then
    starttimer3
    log "INFO" "Running Beets music organizer..."
+
+
+ if [[ $BAUTO ]]; then
    beet -c /opt/galaxymediatools/conf/beetsconfig.yaml import $SOURCEDIR &>> $LOGF
-   ELAPSED3=$(elapsed3)
+ else
+   beet -v -c /opt/galaxymediatools/conf/beetsconfig.yaml import $SOURCEDIR 
+ fi
    if [ "$?" != "0" ]; then
+    ELAPSED3=$(elapsed3)
     log "ERROR" "Beets DID NOT complete successfully.  Check Log. Elapsed: $ELAPSED3"
    else
+    ELAPSED3=$(elapsed3)
     log "INFO" "Beets completed successfully. Elapsed: $ELAPSED3"
-    starttimer3
+    
+  if [[ $BAUTO ]]; then
     log "INFO" "Moving remaining files to /music/process/failed_id for further examination"
+    starttimer3
     mv "$SOURCEDIR/*" "/music/process/failed_id"
     ELAPSED3=$(elapsed3)
     log "INFO" "Remaining files moved to /music/process/failed_id. Elapsed: $ELAPSED3"
-   fi
- else
-   beet -v -c /opt/galaxymediatools/conf/beetsconfig.yaml import $SOURCEDIR
- fi
+   else
+    read -r -p "Move all id failed files to /music/process/failed_id? [y/N] " response
+    response=${response,,}    # tolower
+    if [[ $response =~ ^(yes|y)$ ]]; then
+     log "INFO" "Moving remaining files to /music/process/failed_id for further examination"
+     starttimer3
+     mv "$SOURCEDIR/*" "/music/process/failed_id"
+     ELAPSED3=$(elapsed3)
+     log "INFO" "Remaining files moved to /music/process/failed_id. Elapsed: $ELAPSED3"
+    else
+     log "WARN" "NOT moving remaining files to /music/process/failed_id"
+    fi
 
 else
 log "INFO" "Skipping music identification due to command line option -nid. Elapsed: $ELAPSED2"
