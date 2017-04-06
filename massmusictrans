@@ -99,16 +99,29 @@ done
 ELAPSED2=$(elapsed2)
 
 if [[ $BID ]]; then
-log "INFO" "All music transcoding complete.  Continuing to music identification"
+log "INFO" "All music transcoding complete.  Continuing to music identificationi. Elapsed: $ELAPSED2"
 
  if [[ $BAUTO ]]; then
-   beet -c /opt/galaxymediatools/conf/beetsconfig.yaml import $SOURCEDIR
+   starttimer3
+   log "INFO" "Running Beets music organizer..."
+   beet -c /opt/galaxymediatools/conf/beetsconfig.yaml import $SOURCEDIR &>> $LOGF
+   ELAPSED3=$(elapsed3)
+   if [ "$?" != "0" ]; then
+    log "ERROR" "Beets DID NOT complete successfully.  Check Log. Elapsed: $ELAPSED3"
+   else
+    log "INFO" "Beets completed successfully. Elapsed: $ELAPSED3"
+    starttimer3
+    log "INFO" "Moving remaining files to /music/process/failed_id for further examination"
+    mv "$SOURCEDIR/*" "/music/process/failed_id"
+    ELAPSED3=$(elapsed3)
+    log "INFO" "Remaining files moved to /music/process/failed_id. Elapsed: $ELAPSED3"
+   fi
  else
    beet -v -c /opt/galaxymediatools/conf/beetsconfig.yaml import $SOURCEDIR
  fi
 
 else
-log "INFO" "Skipping music identification due to command line option -nid"
+log "INFO" "Skipping music identification due to command line option -nid. Elapsed: $ELAPSED2"
 fi
 
 ELAPSED=$(elapsed)
