@@ -103,7 +103,7 @@ if [[ -z $SIM ]]; then
  nice -n -10 /usr/bin/lame $lamesw "$TRANSDIR/$fil" "$TRANSDIR/$fng.mp3"
  else
  lamesw="-V 2 -q 0 -S" 
- nice -n -10 /usr/bin/lame $lamesw "$TRANSDIR/$fil" "$TRANSDIR/$fng.mp3" < /dev/null &> /dev/null
+ nice -n -10 /usr/bin/lame $lamesw "$TRANSDIR/$fil" "$TRANSDIR/$fng.mp3" &>> $LOGF
  fi
 fi
   if [ "$?" != "0" ]; then
@@ -130,7 +130,7 @@ log "INFO" "All music transcoding complete.  Continuing to music identification.
 
 
  if [[ $BAUTO ]]; then
-   beet -q -c /opt/galaxymediatools/conf/beetsconfig.yaml import $SOURCEDIR # &>> $LOGF
+   beet -c /opt/galaxymediatools/conf/beetsconfig.yaml import -q $SOURCEDIR &>> $LOGF
  else
    beet -c /opt/galaxymediatools/conf/beetsconfig.yaml import $SOURCEDIR 
  fi
