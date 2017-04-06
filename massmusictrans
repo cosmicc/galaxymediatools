@@ -85,6 +85,19 @@ for f in "${file[@]}"; do
  echo "*Processing audio file - $fil..."
 
 if [[ -z $SIM ]]; then
+
+  if [ $EXT == "m4a" ] || [ $EXT == "M4a" ] || [ $EXT == "M4A" ]; then
+  log "INFO" "m4a file detected, converting to wav first..."
+  if [[ -z $BAUTO ]]; then
+   /usr/bin/faad "$TRANSDIR/$fil" -d -o "$TRANSDIR/$fng.wav"
+  else
+   /usr/bin/faad "$TRANSDIR/$fil" -d -q -o "$TRANSDIR/$fng.wav" &>> $LOGF
+  fi
+  log "INFO" "wav converion complete, deleting original..."
+  rm -f "$TRANSDIR/$fil"
+  fil="$fng.wav"
+  fi
+
  if [[ -z $BAUTO ]]; then
  lamesw="-V 2 -q 0 -S --brief"
  nice -n -10 /usr/bin/lame $lamesw "$TRANSDIR/$fil" "$TRANSDIR/$fng.mp3"
@@ -117,7 +130,7 @@ log "INFO" "All music transcoding complete.  Continuing to music identification.
 
 
  if [[ $BAUTO ]]; then
-   beet -c /opt/galaxymediatools/conf/beetsconfig.yaml import $SOURCEDIR &>> $LOGF
+   beet -q -c /opt/galaxymediatools/conf/beetsconfig.yaml import $SOURCEDIR # &>> $LOGF
  else
    beet -c /opt/galaxymediatools/conf/beetsconfig.yaml import $SOURCEDIR 
  fi
