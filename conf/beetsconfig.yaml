@@ -1,0 +1,19 @@
+directory: /music/process/sorted
+library: /video/Other/beets/musiclibrary.dbi
+
+import:
+    move: yes
+    write: yes
+    log: /video/Incoming/logs/beetsimporter.log
+
+threaded: yes
+ui:
+    color: yes
+
+plugins: discogs beatport chroma acousticbrainz duplicates convert badfiles info
+
+paths:
+    default: %left{$albumartist_sort,1}/$albumartist_sort/$album/$track - $albumartist - $title
+    singleton: %left{$artist_sort,1}/$artist_sort/$artist - $title
+    comp: Compilations/$genre/$album/$track - $artist - $title
+    albumtype:soundtrack: Soundtracks/$album/$track - $artist - $title
