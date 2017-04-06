@@ -15,5 +15,15 @@ source "/opt/galaxymediatools/functions/prechecknl"
 if [ "$HOSTNAME" == "$MSNAME" ]; then
 nohup /opt/plexpy/PlexPy.py > /opt/plexpy/plexpy.log &
 fi
+
+if [ "$HOSTNAME" == "$DSNAME" ]; then
+chown ip.root /usr/local/nzbToMedia -R
+fi
+
 /opt/galaxymediatools/timesync -b
+
+if [ "$HOSTNAME" == "$T1NAME" ]; then
+pm-suspend &
+fi
+
 exit 0
