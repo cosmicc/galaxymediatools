@@ -128,7 +128,7 @@ echo "Copying file to local drive for transcoding on $fne..."
   if [ $HEIGHT -gt 406 ]; then
    log "INFO" "Processing video file (Resized) on $THISSERVER - $fil"
    echo "*Processing video file (Resized) - $fil..."
-   ffmpegsw="-c:v libx264 -preset slow -sn -crf $TVQUAL -profile:v high -vf scale=720:400 -codec:a aac -ac 2 -ar 44100 -b:a 128k"
+   ffmpegsw="-c:v libx264 -preset slow -sn -crf $TVQUAL -profile:v high -vf scale=720:480 -codec:a aac -ac 2 -ar 44100 -b:a 128k"
    asd="(Resized)"
   else
    log "INFO" "Processing video file (Not-Resized) on $THISSERVER - $fil" 
