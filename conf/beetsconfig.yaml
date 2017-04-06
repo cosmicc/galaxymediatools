@@ -12,6 +12,9 @@ ui:
 
 plugins: discogs beatport chroma acousticbrainz duplicates convert badfiles info
 
+duplicates:
+    merge: yes
+
 paths:
     default: %left{$albumartist_sort,1}/$albumartist_sort/$album/$track - $albumartist - $title
     singleton: %left{$artist_sort,1}/$artist_sort/$artist - $title
