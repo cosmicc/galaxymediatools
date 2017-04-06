@@ -14,5 +14,6 @@ cd "$APPDIR"
 git pull origin $GITREPO
 cp /opt/galaxymediatools/conf/bashrc /home/ip/.bashrc
 cp /opt/galaxymediatools/conf/bashrc.root /root/.bashrc
+cp /opt/galaxymediatools/conf/rc.local /etc/rc.local
 exit 0
 
