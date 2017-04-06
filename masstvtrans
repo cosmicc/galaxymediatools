@@ -40,17 +40,9 @@ fi
 starttimer
 echo "TV Show Transcoder Starting in $TMODE..."
 log "INFO" "---> TV Show Transcoder in $TMODE Starting on $THISSERVER"
-touch $LOGF
-echo "Resetting transcode directory $TRANSDIR..."
-log "INFO" "Resetting Transcode directory on $THISSERVER"
 if [ "$TRANSDIR" == "" ];then
 log "ERROR" "ERROR! TRANSDIR is null. Exiting."
 exit 1
-fi
-if [ -d $TRANSDIR ]; then
- rm -r $TRANSDIR/* &> /dev/null
-else
- mkdir $TRANSDIR
 fi
 log "INFO" "Building index of files to process on $THISSERVER"
 echo "Building index of files to process..."
