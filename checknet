@@ -33,7 +33,7 @@ if mkdir $LOCKDIR; then
   if [ $? -eq 0 ]; then
    RES=1
    else
-   if [ $PCOUNT -eq 1 ]; then
+   if [ $PCOUNT -eq 2 ]; then
    log "WARN" "Start of Network Outage Detected."
    starttimer
    STARTOUT=`date "+%y/%m/%d %H:%M"`
