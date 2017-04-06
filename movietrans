@@ -28,7 +28,7 @@ if [ "$2" == "-a" ] ||  [ "$3" == "-a" ] ||  [ "$4" == "-a" ]; then KEEPAUDIO="y
 source "/opt/galaxymediatools/functions/prechecknl"
 source "/opt/galaxymediatools/functions/isinteg"
 source "/opt/galaxymediatools/functions/movierename"
-LOGF="$LOGDIR/movietrans.log"
+LOGF="$LOGDIR/movietranscoder.log"
 echo "Script starting up"
 starttimer
 log "INFO" "---> Movie Transcoder Script Start"
