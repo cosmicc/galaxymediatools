@@ -4,7 +4,7 @@ source "/opt/galaxymediatools/functions/prechecknl"
 
 starttimer
 
-/opt/galaxymediatools/mountbakdrives
+/opt/galaxymediatools/usbdrivesmount
 
 D1=`df -h | grep "$MOUNT1"`
 IFS=' ' read -r -a D1INFO <<< $D1
@@ -19,7 +19,7 @@ D2FREE=${D2INFO[3]}
 echo "$MOUNT1 - $D1FREE Free, $D1PERC Used."
 echo "$MOUNT2 - $D2FREE Free, $D2PERC Used."
 
-/opt/galaxymediatools/mountbakdrives -u
+/opt/galaxymediatools/usbdrivesmount -u
 
 ELAPSED=$(elapsed)
 
