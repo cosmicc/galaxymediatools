@@ -1,0 +1,12 @@
+
+
+
+apt-get install python-mutagen python-requests lame -y
+
+pip install mutagen requests beets
+
+cd /opt
+git clone https://github.com/YetAnotherNerd/whatlastgenre.git
+
+cd /opt/whatlastgenre
+python setup.py install

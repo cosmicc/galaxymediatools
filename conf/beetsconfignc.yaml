@@ -18,7 +18,7 @@ import:
 
 threaded: yes
 ui:
-    color: yes
+    color: no
 
 plugins: discogs beatport chroma acousticbrainz duplicates convert badfiles info wlg
 
