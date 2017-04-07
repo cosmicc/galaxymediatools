@@ -24,7 +24,10 @@ if [ "$1" == "-nid" ] || [ "$2" == "-nid" ] || [ "$3" == "-nid" ] || [ "$4" == "
 if [ "$1" == "-a" ] || [ "$2" == "-a" ] || [ "$3" == "-a" ] || [ "$4" == "-a" ] ; then BAUTO="yes"; fi
 
 if [ "$1" != "-d" ] && [ "$2" != "-d" ] && [ "$3" != "-d" ] && [ "$4" != "-d" ]; then
+
+
 SOURCEDIR="/music/process/unsorted"
+echo "Warming Up..."
 chmod ugo+rwx /music/process -R
 else
 SOURCEDIR=`pwd`
@@ -34,9 +37,8 @@ source "/opt/galaxymediatools/functions/prechecknl"
 
 log "INFO" "---> Starting Mass Music Transcoder on $HOSTNAME"
 starttimer
-
 if [ -f "$INDEXFIL" ]; then rm -f $INDEXFIL; fi
-
+echo "Using directory $SOURCEDIR as base for music search."
 log "INFO" "Using directory $SOURCEDIR as base for music search."
 starttimer2
 if [ "$TRANSDIR" == "" ];then
@@ -46,14 +48,14 @@ fi
 starttimer3
 echo "Cleaning out all junk files..."
 log "INFO" "Cleaning out all junk files..."
-find $SOURCEDIR -type f \( -name "*.jpg" -o -name "*.gif" -o -name "*.m3u" -o -name "*.ini" -o -name "*.sfv" -o -name "*.nfo" -o -name "*.asd" -o -name "*.log" -o -name "*.new" -o -name "*.JPG" -o -name "._*" -o -name "*.Jpg" -o -name "*.GIF" -o -name "*.Gif" -o -name "*.txt" \) -exec rm -rf {} \;
+find $SOURCEDIR -type f \( -name "*.jpg" -o -name "*.gif" -o -name "*.m3u" -o -name "*.ini" -o -name "*.sfk" -o -name "*.sfv" -o -name "*.nfo" -o -name "*.asd" -o -name "*.log" -o -name "*.bmp" -o -name "*.Bmp" -o -name "*.BMP" -o -name "*.new" -o -name "*.JPG" -o -name "._*" -o -name "*.Jpg" -o -name "*.GIF" -o -name "*.Gif" -o -name "*.txt" \) -exec rm -rf {} \;
 ELAPSED3=$(elapsed3)
 log "INFO" "ll junk files cleaned out. Elapsed: $ELAPSED3"
 
 log "INFO" "Building index of files to process on $THISSERVER"
 echo "Building index of files to process..."
 
-find $SOURCEDIR -type f \( -name "*.flac" -o -name "*.wma" -o -name "*.WMA" -o -name "*.Wma" -o -name "*.FLAC"  -o -name "*.Flac" -o -name "*.m4a"  -o -name "*.M4a"  -o -name "*.M4A" \) >> $INDEXFIL
+find $SOURCEDIR -type f \( -name "*.flac" -o -name "*.wma" -o -name "*.WMA" -o -name "*.Wma" -o -name "*.FLAC"  -o -name "*.Flac" -o -name "*.m4a"  -o -name "*.M4a" -o -name "*.M4A" -o -name "*.ogg" -o -name "*.Ogg" -o -name "*.OGG" \) >> $INDEXFIL
 i=0
 while read sfile
 do
@@ -64,10 +66,11 @@ do
 done < $INDEXFIL
 ELAPSED2=$(elapsed2)
 log "INFO" "File index build complete. Elapsed: $ELAPSED2"
-NODEAL=`find "$SOURCEDIR" -type f \( -name "*.mp4" -o -name "*.Mp4" -o -name "*.MP4" \) | wc -l`
+NODEAL=`find "$SOURCEDIR" -type f \( -name "*.mp4" -o -name "*.Mp4" -o -name "*.MP4"  -o -name "*.m4p" -o -name "*.M4P" -o -name "*.M4p" \) | wc -l`
 if [ $NODEAL -ne 0 ]; then
+find "$SOURCEDIR" -type f \( -name "*.mp4" -o -name "*.Mp4" -o -name "*.MP4"  -o -name "*.m4p" -o -name "*.M4P" -o -name "*.M4p" \)
+echo " "
 echo "mp4 files found. Deal with this first!!"
-find "$SOURCEDIR" -type f \( -name "*.mp4" -o -name "*.Mp4" -o -name "*.MP4" \)
 log "ERROR" "mp4 files found. Deal with this first!!"
 exit 1
 fi
@@ -105,7 +108,7 @@ if [[ -z $SIM ]]; then
   else
    /usr/bin/faad "$TRANSDIR/$fil" -d -q -o "$TRANSDIR/$fng.wav" &>> $LOGF
   fi
-  if ["$?" == "0" ]; then
+  if [ "$?" == "0" ]; then
   log "INFO" "WAV converion complete, deleting original..."
   rm -f "$TRANSDIR/$fil"
   fil="$fng.wav"
@@ -123,7 +126,7 @@ if [[ -z $SIM ]]; then
   else
    /usr/bin/mplayer -quiet -vo null -vc dummy -af resample=44100 -ao pcm -ao pcm:waveheader -ao pcm:file="$TRANSDIR/$fng.wav" "$TRANSDIR/$fil"
   fi
-  if ["$?" == "0" ]; then
+  if [ "$?" == "0" ]; then
   log "INFO" "WAV conversion complete, deleting original..."
   rm -f "$TRANSDIR/$fil"
   fil="$fng.wav"
@@ -164,6 +167,14 @@ log "INFO" "All music transcoding complete.  Continuing to music identification.
    starttimer3
    log "INFO" "Running Beets music organizer..."
 
+ANYLEFT=`find "$SOURCEDIR" -type f ! -name "*.mp3" | wc -l`
+if [ $ANYLEFT -ne 0 ]; then
+find "$SOURCEDIR" -type f ! -name "*.mp3"
+echo " "
+echo "Erroneous junk files found left after transcoding.  Fix this first!!"
+log "ERROR" "Erroneous junk files found left after transcoding. Exiting"
+exit 1
+fi 
 
  if [[ $BAUTO ]]; then
    beet -c /opt/galaxymediatools/conf/beetsconfignc.yaml import -q $SOURCEDIR &>> $LOGF
@@ -202,6 +213,19 @@ log "INFO" "All music transcoding complete.  Continuing to music identification.
 else
 log "INFO" "Skipping music identification due to command line option -nid. Elapsed: $ELAPSED2"
 fi
+
+ANYLEFT2=`find "/music/process/sorted" -type f ! -name "*.mp3" | wc -l`
+if [ $ANYLEFT2 -ne 0 ]; then
+find "/music/process/sorted" -type f ! -name "*.mp3"
+echo " "
+echo "Erroneous junk files found in /music/process/sorted.  Fix This!!"
+log "WARN" "Erroneous junk files found in /music/process/sorted.  Fix This!!"
+fi
+
+
+echo "Cooling Down..."
+chmod ugo+rwx /music/process -R
+
 sync
 ELAPSED=$(elapsed)
 log "INFO" "<--- Completed Music Transcoder script on $HOSTNAME. Elapsed: $ELAPSED"
