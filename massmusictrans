@@ -43,11 +43,15 @@ if [ "$TRANSDIR" == "" ];then
 log "ERROR" "ERROR! TRANSDIR is null. Exiting."
 exit 1
 fi
+starttimer3
+echo "Cleaning out all junk files..."
+log "INFO" "Cleaning out all junk files..."
+find $SOURCEDIR -type f \( -name "*.jpg" -o -name "*.gif" -o -name "*.m3u" -o -name "*.ini" -o -name "*.sfv" -o -name "*.nfo" -o -name "*.asd" -o -name "*.log" -o -name "*.new" -o -name "*.JPG" -o -name "._*" -o -name "*.Jpg" -o -name "*.GIF" -o -name "*.Gif" -o -name "*.txt" \) -exec rm -rf {} \;
+ELAPSED3=$(elapsed3)
+log "INFO" "ll junk files cleaned out. Elapsed: $ELAPSED3"
+
 log "INFO" "Building index of files to process on $THISSERVER"
 echo "Building index of files to process..."
-
-#-type f \( -name "*cache" -o -name "*xml" -o -name "*html" \)
-find $SOURCEDIR -type f \( -name "*.jpg" -o -name "*.gif" -o -name "*.m3u" -o -name "*.sfv" -o -name "*.nfo" -o -name "*.asd" -o -name "*.log" -o -name "*.new" -o -name "*.JPG" -o -name "._*" -o -name "*.Jpg" -o -name "*.GIF" -o -name "*.Gif" -o -name "*.txt" \) -exec rm -rf {} \;
 
 find $SOURCEDIR -type f \( -name "*.flac" -o -name "*.FLAC"  -o -name "*.Flac" -o -name "*.m4a"  -o -name "*.M4a"  -o -name "*.M4A" \) >> $INDEXFIL
 i=0

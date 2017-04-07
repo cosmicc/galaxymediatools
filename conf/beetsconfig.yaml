@@ -29,6 +29,6 @@ wlg:
 
 paths:
     default: %left{$albumartist_sort,1}/$albumartist_sort/$album%if{$original_year, ($original_year),%if{$year, ($year)}}/$track - $albumartist - $title
-    singleton: %left{$artist_sort,1}/$artist_sort/$artist - $title%if{$year, ($year)}
+    singleton: %upper{%left{$artist_sort,1}}/$artist_sort/$artist - $title%if{$year, ($year)}
     comp: Compilations/$genre/$album%if{$year, ($year)}/$track - $artist - $title
     albumtype:soundtrack: Soundtracks/$album%if{$year, ($year)}/$track - $artist - $title
