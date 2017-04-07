@@ -53,7 +53,7 @@ log "INFO" "ll junk files cleaned out. Elapsed: $ELAPSED3"
 log "INFO" "Building index of files to process on $THISSERVER"
 echo "Building index of files to process..."
 
-find $SOURCEDIR -type f \( -name "*.flac" -o -name "*.FLAC"  -o -name "*.Flac" -o -name "*.m4a"  -o -name "*.M4a"  -o -name "*.M4A" \) >> $INDEXFIL
+find $SOURCEDIR -type f \( -name "*.flac" -o -name "*.wma" -o -name "*.WMA" -o -name "*.Wma" -o -name "*.FLAC"  -o -name "*.Flac" -o -name "*.m4a"  -o -name "*.M4a"  -o -name "*.M4A" \) >> $INDEXFIL
 i=0
 while read sfile
 do
@@ -98,8 +98,8 @@ for f in "${file[@]}"; do
 
 if [[ -z $SIM ]]; then
 
-  if [ $EXT == "m4a" ] || [ $EXT == "M4a" ] || [ $EXT == "M4A" ]; then
-  log "INFO" "m4a file detected, converting to wav first..."
+  if [ $EXT == "m4a" ] || [ $EXT == "M4a" ] || [ $EXT == "M4A" ] || [ $EXT == "wma" ] || [ $EXT == "Wma" ] || [ $EXT == "WMA" ]; then
+  log "INFO" "Apple or Microsoft file detected, converting to wav first..."
   if [[ -z $BAUTO ]]; then
    /usr/bin/faad "$TRANSDIR/$fil" -d -o "$TRANSDIR/$fng.wav"
   else
