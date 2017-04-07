@@ -9,6 +9,8 @@ import:
     write: yes
     log: /video/Incoming/logs/beetsimporter.log
 
+original_date: yes
+
 threaded: yes
 ui:
     color: yes
@@ -19,9 +21,9 @@ duplicates:
     merge: yes
 
 wlg:
-    auto: yes
-    force: yes
-    count: 1
+    auto: no
+    force: no
+    count: 4
     separator: ', '
     whitelist: wlg
 

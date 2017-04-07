@@ -12,7 +12,7 @@
 # By default this script does nothing.
 source "/opt/galaxymediatools/functions/prechecknl"
 
-if [ "$HOSTNAME" == "$MSNAME" ]; then
+if [ "$THISSERVER" == "$MSNAME" ]; then
 nohup /opt/plexpy/PlexPy.py > /opt/plexpy/plexpy.log &
 fi
 

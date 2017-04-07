@@ -47,7 +47,7 @@ log "INFO" "Building index of files to process on $THISSERVER"
 echo "Building index of files to process..."
 
 #-type f \( -name "*cache" -o -name "*xml" -o -name "*html" \)
-find $SOURCEDIR -type f -name "._*" -exec rm -rf {} \; 
+find $SOURCEDIR -type f \( -name "*.jpg" -o -name "*.gif" -o -name "*.m3u" -o -name "*.sfv" -o -name "*.nfo" -o -name "*.asd" -o -name "*.log" -o -name "*.new" -o -name "*.JPG" -o -name "._*" -o -name "*.Jpg" -o -name "*.GIF" -o -name "*.Gif" -o -name "*.txt" \) -exec rm -rf {} \;
 
 find $SOURCEDIR -type f \( -name "*.flac" -o -name "*.FLAC"  -o -name "*.Flac" -o -name "*.m4a"  -o -name "*.M4a"  -o -name "*.M4A" \) >> $INDEXFIL
 i=0
@@ -153,7 +153,7 @@ log "INFO" "All music transcoding complete.  Continuing to music identification.
     log "INFO" "Moving remaining files to /music/process/failed_id for further examination"
     starttimer3
     sync
-    mv -f "$SOURCEDIR/*" "/music/process/failed_id"
+    mv -v -f $SOURCEDIR/* /music/process/failed_id
     ELAPSED3=$(elapsed3)
     log "INFO" "Remaining files moved to /music/process/failed_id. Elapsed: $ELAPSED3"
   else
@@ -163,7 +163,7 @@ log "INFO" "All music transcoding complete.  Continuing to music identification.
      log "INFO" "Moving remaining files to /music/process/failed_id for further examination"
      starttimer3
      sync
-     mv -f "$SOURCEDIR/*" "/music/process/failed_id"
+     mv -v -f $SOURCEDIR/* /music/process/failed_id
      ELAPSED3=$(elapsed3)
      log "INFO" "Remaining files moved to /music/process/failed_id. Elapsed: $ELAPSED3"
     else
