@@ -1,7 +1,7 @@
 
 
 
-apt-get install python-mutagen python-requests lame -y
+apt-get install python-mutagen python-requests lame mplayer -y
 
 pip install mutagen requests beets pylast rauth
 

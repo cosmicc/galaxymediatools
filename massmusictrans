@@ -98,16 +98,40 @@ for f in "${file[@]}"; do
 
 if [[ -z $SIM ]]; then
 
-  if [ $EXT == "m4a" ] || [ $EXT == "M4a" ] || [ $EXT == "M4A" ] || [ $EXT == "wma" ] || [ $EXT == "Wma" ] || [ $EXT == "WMA" ]; then
-  log "INFO" "Apple or Microsoft file detected, converting to wav first..."
+  if [ $EXT == "m4a" ] || [ $EXT == "M4a" ] || [ $EXT == "M4A" ]; then
+  log "INFO" "M4A file detected, converting to WAV first..."
   if [[ -z $BAUTO ]]; then
    /usr/bin/faad "$TRANSDIR/$fil" -d -o "$TRANSDIR/$fng.wav"
   else
    /usr/bin/faad "$TRANSDIR/$fil" -d -q -o "$TRANSDIR/$fng.wav" &>> $LOGF
   fi
-  log "INFO" "wav converion complete, deleting original..."
+  if ["$?" == "0" ]; then
+  log "INFO" "WAV converion complete, deleting original..."
   rm -f "$TRANSDIR/$fil"
   fil="$fng.wav"
+  else
+  log "ERROR" "Something went wrong with conversion. Exiting."
+  echo "Something went wrong with conversion. Exiting."
+  exit 1
+  fi
+  fi
+
+  if [ $EXT == "wma" ] || [ $EXT == "Wma" ] || [ $EXT == "WMA" ]; then
+    log "INFO" "WMA file detected, converting to WAV first..."
+  if [[ -z $BAUTO ]]; then
+   /usr/bin/mplayer -vo null -vc dummy -af resample=44100 -ao pcm -ao pcm:waveheader -ao pcm:file="$TRANSDIR/$fng.wav" "$TRANSDIR/$fil"
+  else
+   /usr/bin/mplayer -quiet -vo null -vc dummy -af resample=44100 -ao pcm -ao pcm:waveheader -ao pcm:file="$TRANSDIR/$fng.wav" "$TRANSDIR/$fil"
+  fi
+  if ["$?" == "0" ]; then
+  log "INFO" "WAV conversion complete, deleting original..."
+  rm -f "$TRANSDIR/$fil"
+  fil="$fng.wav"
+  else
+  log "ERROR" "Something went wrong with conversion. Exiting."
+  echo "Something went wrong with conversion. Exiting."
+  exit 1
+  fi
   fi
 
  if [[ -z $BAUTO ]]; then
