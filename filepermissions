@@ -3,6 +3,7 @@
 if mount|grep "/video" > /dev/null; then
 echo "File permission reset running..."
 
+chmod ugo+rw /music/process -R
 chmod ugo+rw /video/Incoming -R
 chmod ugo+rw "/video/Recorded TV" -R
 chmod ugo+rw "/video/Movies" -R

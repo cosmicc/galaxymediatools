@@ -4,13 +4,6 @@ library: /video/Other/beets/musiclibrary.dbi
 pluginpath:
     /opt/whatlastgenre/plugin/beets/beetsplug
 
-wlg:
-    auto: yes
-    force: yes
-    count: 4
-    separator: ', '
-    whitelist: wlg
-
 import:
     move: yes
     write: yes
@@ -18,15 +11,22 @@ import:
 
 threaded: yes
 ui:
-    color: no
+    color: yes
 
-plugins: discogs beatport chroma acousticbrainz duplicates convert badfiles info wlg
+plugins: discogs beatport chroma acousticbrainz duplicates wlg convert badfiles info
 
 duplicates:
     merge: yes
 
+wlg:
+    auto: yes
+    force: yes
+    count: 4
+    separator: ', '
+    whitelist: wlg
+
 paths:
-    default: %left{$albumartist_sort,1}/$albumartist_sort/$album%if{$year, ($year)}/$track - $albumartist - $title
+    default: %left{$albumartist_sort,1}/$albumartist_sort/$album%if{$original_year, ($original_year),%if{$year, ($year)}}/$track - $albumartist - $title
     singleton: %left{$artist_sort,1}/$artist_sort/$artist - $title%if{$year, ($year)}
     comp: Compilations/$genre/$album%if{$year, ($year)}/$track - $artist - $title
     albumtype:soundtrack: Soundtracks/$album%if{$year, ($year)}/$track - $artist - $title

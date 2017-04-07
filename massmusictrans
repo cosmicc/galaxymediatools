@@ -59,6 +59,12 @@ do
 done < $INDEXFIL
 ELAPSED2=$(elapsed2)
 log "INFO" "File index build complete. Elapsed: $ELAPSED2"
+NODEAL=find $SOURCEDIR -type f \( -name "*.mp4" -o -name "*.Mp4" -o -name "*.MP4" \) | wc -l
+if [ $NODEAL -ne 0 ]; then
+echo "mp4 files found. Deal with this first!!"
+log "ERROR" "mp4 files found. Deal with this first!!"
+exit 1
+fi
 log "INFO" "Starting transcode process on ${#file[@]} files on $HOSTNAME"
 echo "Starting transcode process on ${#file[@]} files"
 ###pushover "transcoder" "Music Transcoder Starting in $TMODE on $HOSTNAME - ${#file[@]} Files to process"

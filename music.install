@@ -3,7 +3,7 @@
 
 apt-get install python-mutagen python-requests lame -y
 
-pip install mutagen requests beets
+pip install mutagen requests beets pylast rauth
 
 cd /opt
 git clone https://github.com/YetAnotherNerd/whatlastgenre.git
