@@ -47,6 +47,7 @@ log "INFO" "Building index of files to process on $THISSERVER"
 echo "Building index of files to process..."
 
 #-type f \( -name "*cache" -o -name "*xml" -o -name "*html" \)
+find $SOURCEDIR -type f -name "._*" -exec rm -rf {} \; 
 
 find $SOURCEDIR -type f \( -name "*.flac" -o -name "*.FLAC"  -o -name "*.Flac" -o -name "*.m4a"  -o -name "*.M4a"  -o -name "*.M4A" \) >> $INDEXFIL
 i=0
@@ -59,9 +60,10 @@ do
 done < $INDEXFIL
 ELAPSED2=$(elapsed2)
 log "INFO" "File index build complete. Elapsed: $ELAPSED2"
-NODEAL=find $SOURCEDIR -type f \( -name "*.mp4" -o -name "*.Mp4" -o -name "*.MP4" \) | wc -l
+NODEAL=`find "$SOURCEDIR" -type f \( -name "*.mp4" -o -name "*.Mp4" -o -name "*.MP4" \) | wc -l`
 if [ $NODEAL -ne 0 ]; then
 echo "mp4 files found. Deal with this first!!"
+find "$SOURCEDIR" -type f \( -name "*.mp4" -o -name "*.Mp4" -o -name "*.MP4" \)
 log "ERROR" "mp4 files found. Deal with this first!!"
 exit 1
 fi
@@ -150,6 +152,7 @@ log "INFO" "All music transcoding complete.  Continuing to music identification.
   if [[ $BAUTO ]]; then
     log "INFO" "Moving remaining files to /music/process/failed_id for further examination"
     starttimer3
+    sync
     mv -f "$SOURCEDIR/*" "/music/process/failed_id"
     ELAPSED3=$(elapsed3)
     log "INFO" "Remaining files moved to /music/process/failed_id. Elapsed: $ELAPSED3"
@@ -159,6 +162,7 @@ log "INFO" "All music transcoding complete.  Continuing to music identification.
     if [[ $response =~ ^(yes|y)$ ]]; then
      log "INFO" "Moving remaining files to /music/process/failed_id for further examination"
      starttimer3
+     sync
      mv -f "$SOURCEDIR/*" "/music/process/failed_id"
      ELAPSED3=$(elapsed3)
      log "INFO" "Remaining files moved to /music/process/failed_id. Elapsed: $ELAPSED3"
@@ -170,6 +174,6 @@ log "INFO" "All music transcoding complete.  Continuing to music identification.
 else
 log "INFO" "Skipping music identification due to command line option -nid. Elapsed: $ELAPSED2"
 fi
-
+sync
 ELAPSED=$(elapsed)
 log "INFO" "<--- Completed Music Transcoder script on $HOSTNAME. Elapsed: $ELAPSED"
