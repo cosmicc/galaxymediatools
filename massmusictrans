@@ -14,7 +14,7 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
         echo "-s  : Simulate only. Dont apply changes"
         echo "-nid : DO NOT run Beets music Identification (Transcode only)"
         echo "-a  : DO NOT have Beets prompt for changes (Automatic mode)"
-        echo "-d  : Use current directory for base of search (instead of /music/process/unsorted)"
+        echo "-d <dir> : Specify a directory for base of search (instead of /music/process/unsorted)"
         echo " "
         exit 0
 fi
@@ -25,12 +25,14 @@ if [ "$1" == "-a" ] || [ "$2" == "-a" ] || [ "$3" == "-a" ] || [ "$4" == "-a" ] 
 
 if [ "$1" != "-d" ] && [ "$2" != "-d" ] && [ "$3" != "-d" ] && [ "$4" != "-d" ]; then
 
-
 SOURCEDIR="/music/process/unsorted"
 echo "Warming Up..."
 chmod ugo+rwx /music/process -R
 else
-SOURCEDIR=`pwd`
+if [ "$1" == "-d" ]; then SOURCEDIR="$2"; fi
+if [ "$2" == "-d" ]; then SOURCEDIR="$3"; fi
+if [ "$3" == "-d" ]; then SOURCEDIR="$4"; fi
+if [ "$4" == "-d" ]; then SOURCEDIR="$5"; fi
 fi
 
 source "/opt/galaxymediatools/functions/prechecknl"
@@ -48,9 +50,18 @@ fi
 starttimer3
 echo "Cleaning out all junk files..."
 log "INFO" "Cleaning out all junk files..."
-find $SOURCEDIR -type f \( -name "*.jpg" -o -name "*.gif" -o -name "*.m3u" -o -name "*.ini" -o -name "*.sfk" -o -name "*.sfv" -o -name "*.nfo" -o -name "*.asd" -o -name "*.log" -o -name "*.bmp" -o -name "*.Bmp" -o -name "*.BMP" -o -name "*.new" -o -name "*.JPG" -o -name "._*" -o -name "*.Jpg" -o -name "*.GIF" -o -name "*.Gif" -o -name "*.txt" \) -exec rm -rf {} \;
+find $SOURCEDIR -type f \( -name "*.jpg" -o -name "*." -o -name "*.wpl" -o -name "*.lnk" -o -name "*.gif" -o -name "*.pls" -o -name "*.png" -o -name "*.jpeg" -o -name "*.db" -o -name "*.m3u" -o -name "*.ini" -o -name "*.sfk" -o -name "*.sfv" -o -name "*.nfo" -o -name "*.asd" -o -name "*.log" -o -name "*.bmp" -o -name "*.Bmp" -o -name "*.BMP" -o -name "*.new" -o -name "*.JPG" -o -name "._*" -o -name "*.Jpg" -o -name "*.GIF" -o -name "*.Gif" -o -name "*.txt" \) -exec rm -rf {} \;
 ELAPSED3=$(elapsed3)
-log "INFO" "ll junk files cleaned out. Elapsed: $ELAPSED3"
+log "INFO" "All junk files cleaned out. Elapsed: $ELAPSED3"
+
+starttimer3
+echo "Removing any commas from filenames..."
+log "INFO" "fixing filenames..."
+find $SOURCEDIR -type f \( -name "*,*.wma" -o -name "*,*.Wma" -o -name "*,*.WMA" \) -exec /opt/galaxymediatools/filedelcommas {} \;
+find $SOURCEDIR -type f \( -name "*,*.Mp3" -o -name "*,*.MP3" \) -exec /opt/galaxymediatools/filedelcommas {} \;
+ELAPSED3=$(elapsed3)
+log "INFO" "Comleted fixing filenames. Elapsed: $ELAPSED3"
+
 
 log "INFO" "Building index of files to process on $THISSERVER"
 echo "Building index of files to process..."

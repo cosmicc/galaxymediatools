@@ -21,14 +21,14 @@ duplicates:
     merge: yes
 
 wlg:
-    auto: yes
+    auto: no
     force: no
     count: 1
     separator: ', '
     whitelist: wlg
 
 paths:
-    default: %upper{%left{$albumartist_sort,1}}/%title{$albumartist_sort}/$album%if{$original_year, ($original_year),%if{$year, ($year)}}/$track - $albumartist - $title
-    singleton: %upper{%left{$artist_sort,1}}/%title{$artist_sort}/$artist - $title%if{$year, ($year)}
-    comp: Compilations/$genre/$album%if{$year, ($year)}/$track - $artist - $title
-    albumtype:soundtrack: Soundtracks/$album%if{$year, ($year)}/$track - $artist - $title
+    default: %upper{%left{$albumartist_sort,1}}/%title{$albumartist_sort}/%title{$album}%if{$original_year, ($original_year),%if{$year, ($year)}}/$track - %title{$albumartist} - %title{$title}
+    singleton: %upper{%left{$artist_sort,1}}/%title{$artist_sort}/%title{$artist} - %title{$title}%if{$year, ($year)}
+    comp: Compilations/$genre/%title{$album}%if{$year, ($year)}/$track - %title{$artist} - %title{$title}
+    albumtype:soundtrack: Compilations/Soundtracks/%title{$album}%if{$year, ($year)}/$track - %title{$artist} - %title{$title}

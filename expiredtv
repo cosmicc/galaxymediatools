@@ -6,13 +6,13 @@ source "/opt/galaxymediatools/functions/prechecknl"
 
 # Keep 14 days worth
 TV7DAY[0]="/video/TV Series/Vice News Tonight"
-TV7DAY[1]="/video/Recorded TV/Jimmy Kimmel Live (2003)"
-TV7DAY[2]="/video/Recorded TV/The Tonight Show Starring Jimmy Fallon (2014)"
+#TV7DAY[1]="/video/Recorded TV/Jimmy Kimmel Live (2003)"
+#TV7DAY[2]="/video/Recorded TV/The Tonight Show Starring Jimmy Fallon (2014)"
 
 # keep 1 day worth
-TV1DAY[0]="/video/Recorded TV/Local 4 News Today at 6AM (2013)"
-TV1DAY[1]="/video/Recorded TV/Local 4 News at 6 (2005)"
-TV1DAY[2]="/video/Recorded TV/Local 4 News at 11 (2006)"
+TV1DAY[0]="/notarealdir"
+#TV1DAY[1]="/video/Recorded TV/Local 4 News at 6 (2005)"
+#TV1DAY[2]="/video/Recorded TV/Local 4 News at 11 (2005)"
 
 # begin script
 starttimer
@@ -53,9 +53,10 @@ ELAPSED2=$(elapsed2)
 log "INFO" "Removed $EPS expired TV episodes. Elapsed: $ELAPSED2"
 log "INFO" "Updating plex libraries"
 
-/usr/bin/curl "http://172.25.1.26:32400/library/sections/$PLEXCAT/refresh?X-Plex-Token=$PLEXTOKEN"
-sleep 10
+
 /usr/bin/curl "http://172.25.1.26:32400/library/sections/$PLEXRCAT/refresh?X-Plex-Token=$PLEXTOKEN"
+sleep 10
+/usr/bin/curl "http://172.25.1.26:32400/library/sections/$PLEXCAT/refresh?X-Plex-Token=$PLEXTOKEN"
 else
 ELAPSED2=$(elapsed2)
 log "INFO" "No expired TV episodes to remove. Elapsed: $ELAPSED2"

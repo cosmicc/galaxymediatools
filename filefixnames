@@ -4,7 +4,7 @@
 
 OLDFILE="$1"
 
-EXT=${OLDFILE: -3}  #Extension only
+EXT="${OLDFILE: -3}"  #Extension only
 FNE="${OLDFILE%.*}"  #Filname with path no extension
 FNG="${FNE##*/}" #Filename no path no extension
 DIR="${OLDFILE%/*}"  #Directory only
@@ -17,7 +17,7 @@ NEWFILE="$DIR/$FNC.$EXT"
 #echo "EXT: $EXT"
 #echo "DIR: $DIR"
 
-mv -f "$OLDFILE" "$NEWFIE"
+mv -f "$OLDFILE" "$NEWFILE"
 
 echo "Removed commas $1 -> $NEWFILE"
 
