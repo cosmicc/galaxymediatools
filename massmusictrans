@@ -57,8 +57,8 @@ log "INFO" "All junk files cleaned out. Elapsed: $ELAPSED3"
 starttimer3
 echo "Removing any commas from filenames..."
 log "INFO" "fixing filenames..."
-find $SOURCEDIR -type f \( -name "*,*.wma" -o -name "*,*.Wma" -o -name "*,*.WMA" \) -exec /opt/galaxymediatools/filedelcommas {} \;
-find $SOURCEDIR -type f \( -name "*,*.Mp3" -o -name "*,*.MP3" \) -exec /opt/galaxymediatools/filedelcommas {} \;
+find $SOURCEDIR -type f \( -name "*,*.wma" -o -name "*,*.Wma" -o -name "*,*.WMA" \) -exec /opt/galaxymediatools/functions/filefixname -rc {} \;
+find $SOURCEDIR -type f \( -name "*,*.Mp3" -o -name "*,*.MP3" \) -exec /opt/galaxymediatools/functions/filefixname -le {} \;
 ELAPSED3=$(elapsed3)
 log "INFO" "Comleted fixing filenames. Elapsed: $ELAPSED3"
 

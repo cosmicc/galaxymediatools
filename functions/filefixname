@@ -2,14 +2,21 @@
 
 #source "/opt/galaxymediatools/functions/prechecknl"
 
-OLDFILE="$1"
+if [ "$2" == "" ]; then
+echo "Filename Fix ERROR! No filename given"
+exit 1
+fi
+
+OLDFILE="$2"
 
 EXT="${OLDFILE: -3}"  #Extension only
 FNE="${OLDFILE%.*}"  #Filname with path no extension
 FNG="${FNE##*/}" #Filename no path no extension
 DIR="${OLDFILE%/*}"  #Directory only
 FNC=`echo $FNG | tr "," " "` #Filename no pth no extension commas removed  
-NEWFILE="$DIR/$FNC.$EXT"
+NOCOMMAS="$DIR/$FNC.$EXT"
+LCE=${EXT,,}
+LOWEREXT="$DIR/$FNG.$LCE"
 
 #echo "FNE: $FNE"
 #echo "FNG: $FNG"
@@ -17,7 +24,15 @@ NEWFILE="$DIR/$FNC.$EXT"
 #echo "EXT: $EXT"
 #echo "DIR: $DIR"
 
-mv -f "$OLDFILE" "$NEWFILE"
+if [ "$1" == "-rc" ]; then
+mv -f "$OLDFILE" "$NOCOMMAS"
+echo "Removed commas $2 -> $NOCOMMAS"
+fi
 
-echo "Removed commas $1 -> $NEWFILE"
+if [ "$1" == "-le" ]; then
+mv -f "$OLDFILE" "$LOWEREXT"
+echo "Lowercased extension $2 -> $LOWEREXT"
+fi
+
+
 
