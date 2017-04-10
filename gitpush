@@ -78,5 +78,7 @@ echo -e "Connecting to remote Server ${servercolor}$PLEXNAME${cmd1color}..."
  ssh $PLEXINFO "sudo $APPDIR/gitpull"
  printf "${nocolor}"
 fi
-
 echo -e "${nocolor}"
+cp /opt/galaxymediatools/conf/bashrc /home/ip/.bashrc
+cp /opt/galaxymediatools/conf/bashrc.root /root/.bashrc
+cp /opt/galaxymediatools/conf/rc.local /etc/rc.local
