@@ -50,17 +50,18 @@ fi
 starttimer3
 echo "Cleaning out all junk files..."
 log "INFO" "Cleaning out all junk files..."
-find $SOURCEDIR -type f \( -name "*.jpg" -o -name "*." -o -name "*.wpl" -o -name "*.lnk" -o -name "*.gif" -o -name "*.pls" -o -name "*.png" -o -name "*.jpeg" -o -name "*.db" -o -name "*.m3u" -o -name "*.ini" -o -name "*.sfk" -o -name "*.sfv" -o -name "*.nfo" -o -name "*.asd" -o -name "*.log" -o -name "*.bmp" -o -name "*.Bmp" -o -name "*.BMP" -o -name "*.new" -o -name "*.JPG" -o -name "._*" -o -name "*.Jpg" -o -name "*.GIF" -o -name "*.Gif" -o -name "*.txt" \) -exec rm -rf {} \;
+find $SOURCEDIR -type f \( -name "*.jpg" -o -name "*.ffp" -o -name "*.html" -o -name "*.cue" -o -name "*.rtf" -o -name "*.md5" -o -name "*.doc" -o -name "*.rar" -o -name "*." -o -name "*.DS_Store" -o -name "*.pdf" -o -name "*.url" -o -name "*.wpl" -o -name "*.lnk" -o -name "*.gif" -o -name "*.pls" -o -name "*.png" -o -name "*.jpeg" -o -name "*.db" -o -name "*.m3u" -o -name "*.ini" -o -name "*.sfk" -o -name "*.sfv" -o -name "*.nfo" -o -name "*.asd" -o -name "*.log" -o -name "*.bmp" -o -name "*.Bmp" -o -name "*.BMP" -o -name "*.new" -o -name "*.JPG" -o -name "._*" -o -name "*.Jpg" -o -name "*.GIF" -o -name "*.Gif" -o -name "*.txt" \) -exec rm -rf {} \;
 ELAPSED3=$(elapsed3)
 log "INFO" "All junk files cleaned out. Elapsed: $ELAPSED3"
 
 starttimer3
-echo "Removing any commas from filenames..."
+echo "fixing filenames..."
 log "INFO" "fixing filenames..."
 find $SOURCEDIR -type f \( -name "*,*.wma" -o -name "*,*.Wma" -o -name "*,*.WMA" \) -exec /opt/galaxymediatools/functions/filefixname -rc {} \;
-find $SOURCEDIR -type f \( -name "*,*.Mp3" -o -name "*,*.MP3" \) -exec /opt/galaxymediatools/functions/filefixname -le {} \;
+find $SOURCEDIR -type f \( -name "*.Mp3" -o -name "*.MP3" \) -exec /opt/galaxymediatools/functions/filefixname -le {} \;
+find $SOURCEDIR -type f \( -name "*.avi" -o -name "*.mkv" -o -name "*.mpg"  \) -exec mv -f {} /music/process/failed_id/videos \;
 ELAPSED3=$(elapsed3)
-log "INFO" "Comleted fixing filenames. Elapsed: $ELAPSED3"
+log "INFO" "Completed fixing filenames. Elapsed: $ELAPSED3"
 
 
 log "INFO" "Building index of files to process on $THISSERVER"
