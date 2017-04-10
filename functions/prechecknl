@@ -1,6 +1,5 @@
-#!/bin/bash
 
-source "/opt/galaxymediatools/functions/logalerts"
+. /opt/galaxymediatools/functions/logalerts
 
 control_c()
 {
@@ -129,7 +128,7 @@ if [ ! -f "/etc/galaxymediatools.conf" ]; then
  echo -e "No config file found. Exiting."
  exit 1
 else
- source "/etc/galaxymediatools.conf"
+ . /etc/galaxymediatools.conf
 fi
 if [ "$THISSERVER" == "$T1NAME" ]; then
 POAK=$T1KEY

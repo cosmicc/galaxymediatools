@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash
 #
 # rc.local
 #
@@ -10,7 +10,7 @@
 # bits.
 #
 # By default this script does nothing.
-source "/opt/galaxymediatools/functions/prechecknl"
+. "/opt/galaxymediatools/functions/prechecknl"
 
 if [ "$THISSERVER" == "$MSNAME" ]; then
 nohup /opt/plexpy/PlexPy.py > /opt/plexpy/plexpy.log &
