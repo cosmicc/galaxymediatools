@@ -32,7 +32,7 @@ TEMP_ROOT_b = os.path.expandvars(os.path.expanduser(config.get('File Manipulatio
 COPY_ORIGINAL = config.getboolean('File Manipulation', 'copy-original')
 SAVE_ALWAYS = config.getboolean('File Manipulation', 'save-always')
 SAVE_FORENSICS = config.getboolean('File Manipulation', 'save-forensics')
-TRANS_OPTIONS = os.path.expandvars(os.path.expanduser(config.get('File Manipulation', 'trans-options')))
+#TRANS_OPTIONS = os.path.expandvars(os.path.expanduser(config.get('File Manipulation', 'trans-options')))
 
 # Logging.
 session_uuid = str(uuid.uuid4())
