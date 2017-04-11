@@ -2,11 +2,11 @@
 
 . /opt/galaxymediatools/functions/prechecknl
 
-echo -e "${magenta}Please wait"
+echo -en "${magenta}Please wait"
 /usr/bin/screen -S "massmusictrans" -t "massmusictrans" -dm bash -c "/opt/galaxymediatools/massmusictrans" &
 LC=0
 while [ $LC -lt 4 ]; do
-echo -e "."
+echo -en "."
 sleep 1
 ((LC++))
 done

@@ -40,7 +40,7 @@ fi
 log "INFO" "---> Starting Mass Music Transcoder on $HOSTNAME"
 starttimer
 if [ -f "$INDEXFIL" ]; then rm -f $INDEXFIL; fi
-echo -e "${green}Using directory $SOURCEDIR as base for music search.${nocolor}"
+echo -e "${green}Using directory ${yellow}$SOURCEDIR${green} as base for music search.${nocolor}"
 log "INFO" "Using directory $SOURCEDIR as base for music search."
 starttimer2
 if [ "$TRANSDIR" == "" ];then
@@ -172,7 +172,7 @@ done
 ELAPSED2=$(elapsed2)
 
 if [[ -z $BID ]]; then
-echo -e "${green}All music transcoding complete.  Continuing to music identification... Elapsed:${nocolor} ${yellow}$ELAPSED2${nocolor}"
+echo -e "${green}All music transcoding complete on ${magenta}${#file[@]}${green} total files.  ${magenta}Elapsed: $ELAPSED2${nocolor}"
 log "INFO" "All music transcoding complete.  Continuing to music identification. Elapsed: $ELAPSED2"
 LC=0
 echo -en "${cyan}Running Beets music organizer"
