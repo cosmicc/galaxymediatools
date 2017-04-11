@@ -201,7 +201,7 @@ fi
     log "INFO" "Moving remaining files to /music/process/failed_id for further examination"
     starttimer3
     sync
-    rsync -vr $SOURCEDIR/* /music/process/failed_id
+    rdiff-backup --force $SOURCEDIR/* /music/process/failed_id
     if [ "$?" == "0" ]; then
     rm -r $SOURCEDIR/*
     else
@@ -218,7 +218,7 @@ fi
      log "INFO" "Moving remaining files to /music/process/failed_id for further examination"
      starttimer3
      sync
-         rsync -vr $SOURCEDIR/* /music/process/failed_id
+    rdiff-backup --force $SOURCEDIR/* /music/process/failed_id
     if [ "$?" == "0" ]; then
     rm -r $SOURCEDIR/*
     else
