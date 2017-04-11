@@ -181,7 +181,7 @@ sleep 1
 echo -en "."
 ((LC++))
 done
-echo " "
+echo -e "${nocolor} "
    starttimer3
    log "INFO" "Running Beets music organizer..."
 ANYLEFT=`find "$SOURCEDIR" -type f ! -name "*.mp3" | wc -l`
