@@ -161,7 +161,7 @@ fi
   ELAPSED3=$(elapsed3)
    log "INFO" "Audio transcode completed successfully on $THISSERVER- Replacing original $fil. Elapsed: $ELAPSED3"
    log "INFO" "Moving transcoded file back to filer on $THISSERVER - $fng.trans.mp4"
-   echo -e "${green}Audio transcode completed successfully. Replacing original $fil. Elapsed:${nocolor} ${yellow}$ELAPSED3${nocolor}"
+   echo -e "${green}Audio transcode completed successfully. Replacing original $fil. ${magenta}Elapsed: $ELAPSED3${nocolor}"
    if [[ -z $SIM ]]; then
     rm -f "$f"
     mv -f "$TRANSDIR/$fng.mp3" "$fne.mp3"
@@ -213,7 +213,7 @@ fi
     ELAPSED3=$(elapsed3)
     log "INFO" "Remaining files moved to /music/process/failed_id. Elapsed: $ELAPSED3"
   else
-    echo -e "${reverse}Move all id failed files to /music/process/failed_id?${nocolor} "
+    echo -e "${rred}Move all id failed files to /music/process/failed_id?${nocolor} "
     read -r -p "[y/N] " response
     response=${response,,}    # tolower
     if [[ $response =~ ^(yes|y)$ ]]; then
@@ -224,8 +224,8 @@ fi
     if [ "$?" == "0" ]; then
     rm -r $SOURCEDIR/*
     else
-    log "ERROR" "File coopy error to failed_id"
-    echo -e "${rred}File coopy error to failed_id${nocolor}"
+    log "ERROR" "File copy error to failed_id"
+    echo -e "${rred}File copy error to failed_id${nocolor}"
     exit 1
     fi
      ELAPSED3=$(elapsed3)
