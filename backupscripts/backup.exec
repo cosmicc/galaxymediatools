@@ -5,7 +5,7 @@ log "INFO" "---> Starting $LIBRARY Library backup"
 if /bin/mountpoint -q $MOUNT
  then
   FILECOUNT=`ls -1qR "$SDIR" | wc -l`
-if [[ $FILECOUNT < $MINFILES ]]; then
+if [ $FILECOUNT -lt $MINFILES ]; then
  log "ERROR" "$LIBRARY library file count too low!! Only $FILECOUNT files found. Exiting."
  log "ERROR" "$LIBRARY library file count too low!! Only $FILECOUNT files found. Exiting." "$LOGM"
  pushover "backup" "$LIBRARY Library Backup ERROR! File Count Too LOW!"
@@ -20,7 +20,7 @@ fi
   if /bin/mountpoint -q $MOUNT
    then
   FILECOUNT=`ls -1qR "$SDIR" | wc -l`
-if [[ $FILECOUNT < $MINFILES ]]; then
+if [ $FILECOUNT -lt $MINFILES ]; then
  log "ERROR" "$LIBRARY library file count too low!! Only $FILECOUNT files found. Exiting."
  log "ERROR" "$LIBRARY library file count too low!! Only $FILECOUNT files found. Exiting." "$LOGM"
  exit 1

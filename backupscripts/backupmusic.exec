@@ -12,6 +12,6 @@ MOUNT=$MOUNT1
 DUUID=$DUUID1
 SDIR="/music"
 DDIR="$MOUNT/Music"
-MINFILES=30000
+MINFILES=100000
 
 source "/opt/galaxymediatools/backupscripts/backup.exec"
