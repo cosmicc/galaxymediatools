@@ -65,7 +65,7 @@ log "INFO" "Completed fixing filenames. Elapsed: $ELAPSED3"
 
 
 log "INFO" "Building index of files to process on $THISSERVER"
-echo -e "${green}Building index of files to process...${nocolor}"
+echo -e "${cyan}Building index of files to process...${nocolor}"
 
 find $SOURCEDIR -type f \( -name "*.flac" -o -name "*.wma" -o -name "*.WMA" -o -name "*.Wma" -o -name "*.FLAC"  -o -name "*.Flac" -o -name "*.m4a"  -o -name "*.M4a" -o -name "*.M4A" -o -name "*.ogg" -o -name "*.Ogg" -o -name "*.OGG" \) >> $INDEXFIL
 i=0
@@ -83,7 +83,7 @@ if [ $NODEAL -ne 0 ]; then
 find "$SOURCEDIR" -type f \( -name "*.mp4" -o -name "*.Mp4" -o -name "*.MP4"  -o -name "*.m4p" -o -name "*.M4P" -o -name "*.M4p" \)  -exec rm -rf {} \;
 fi
 log "INFO" "Starting transcode process on ${#file[@]} files on $HOSTNAME"
-echo -e "${yellow}Starting transcode process on${nocolor} ${green}${#file[@]}${nocolor} ${yellow}files${nocolor}"
+echo -e "${yellow}Starting transcode process on${nocolor} ${magenta}${#file[@]}${nocolor} ${yellow}files${nocolor}"
 ###pushover "transcoder" "Music Transcoder Starting in $TMODE on $HOSTNAME - ${#file[@]} Files to process"
 j=0
 starttimer2
@@ -97,7 +97,7 @@ for f in "${file[@]}"; do
  fne="${f%.*}"
  fng="${fne##*/}"
  fleft=$((${#file[@]}-$j))
- echo -e "${cyan}Copying file to local drive for transcoding on${nocolor} ${green}$fne${nocolor}..."
+ echo -e "${cyan}Copying file to local drive for transcoding on${nocolor} ${magenta}$fne${nocolor}..."
  log "INFO" "Copying file to local drive for transcoding on $THISSERVER $fne"
  starttimer3
  if [[ -z $SIM ]]; then cp -f "$f" "$TRANSDIR"; fi
@@ -105,7 +105,7 @@ for f in "${file[@]}"; do
  log "INFO" "Copy file to local drive for transcoding complete. Elapsed: $ELAPSED3"
  starttimer3
  log "INFO" "Processing audio file on $THISSERVER - $fil"
- echo -e "${yellow}Processing audio file -${nocolor} ${green}$fil${nocolor}..."
+ echo -e "${yellow}Processing audio file -${nocolor} ${magenta}$fil${nocolor}..."
 
 if [[ -z $SIM ]]; then
 
@@ -213,7 +213,8 @@ fi
     ELAPSED3=$(elapsed3)
     log "INFO" "Remaining files moved to /music/process/failed_id. Elapsed: $ELAPSED3"
   else
-    read -r -p "${reverse}Move all id failed files to /music/process/failed_id?${nocolor} ${yellow}[y/N] ${green}" response
+    echo -e "${reverse}Move all id failed files to /music/process/failed_id?${nocolor} "
+    read -r -p "[y/N] " response
     response=${response,,}    # tolower
     if [[ $response =~ ^(yes|y)$ ]]; then
      log "INFO" "Moving remaining files to /music/process/failed_id for further examination"
