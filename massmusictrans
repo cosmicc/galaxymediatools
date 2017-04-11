@@ -56,6 +56,7 @@ log "INFO" "Using directory $SOURCEDIR as base for music search."
 starttimer2
 if [ "$TRANSDIR" == "" ];then
 log "ERROR" "ERROR! TRANSDIR is null. Exiting."
+err_report
 exit 1
 fi
 starttimer3
@@ -134,6 +135,7 @@ if [[ -z $SIM ]]; then
   else
   log "ERROR" "Something went wrong with conversion. Exiting."
   echo -e "${rred}Something went wrong with conversion. Exiting.${nocolor}"
+  err_report
   exit 1
   fi
   fi
@@ -152,6 +154,7 @@ if [[ -z $SIM ]]; then
   else
   log "ERROR" "Something went wrong with conversion. Exiting."
   echo -e "${rred}Something went wrong with conversion. Exiting.${nocolor}"
+  err_report
   exit 1
   fi
   fi
@@ -167,6 +170,7 @@ fi
   if [ "$?" != "0" ]; then
    log "ERROR" "Error transcoding audio file $fil. Exiting."
    echo -e "${rred}Error transcoding audio file $file. Exiting.${nocolor}"
+   err_report
    exit 1
   fi
   ELAPSED3=$(elapsed3)
@@ -201,6 +205,7 @@ find "$SOURCEDIR" -type f ! -name "*.mp3"
 echo " "
 echo -e "${rred}Erroneous junk files found left after transcoding.  Fix this first!!${nocolor}"
 log "ERROR" "Erroneous junk files found left after transcoding. Exiting"
+err_report
 exit 1
 fi 
 
@@ -226,6 +231,7 @@ fi
     else
     log "ERROR" "File coopy error to failed_id"
     echo -e "${rred}File copy error to failed_id${nocolor}"
+    err_report
     exit 1
     fi
     ELAPSED3=$(elapsed3)
@@ -244,6 +250,7 @@ fi
     else
     log "ERROR" "File copy error to failed_id"
     echo -e "${rred}File copy error to failed_id${nocolor}"
+    err_report
     exit 1
     fi
      ELAPSED3=$(elapsed3)
