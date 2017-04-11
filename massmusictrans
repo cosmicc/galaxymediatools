@@ -25,6 +25,8 @@ if [ "$1" == "-a" ] || [ "$2" == "-a" ] || [ "$3" == "-a" ] || [ "$4" == "-a" ] 
 
 if [ "$1" != "-d" ] && [ "$2" != "-d" ] && [ "$3" != "-d" ] && [ "$4" != "-d" ]; then
 
+. /opt/galaxymediatools/functions/prechecknl
+
 SOURCEDIR="/music/process/unsorted"
 echo -e "${yellow}Warming Up...${nocolor}"
 chmod ugo+rwx /music/process -R
@@ -34,8 +36,6 @@ if [ "$2" == "-d" ]; then SOURCEDIR="$3"; fi
 if [ "$3" == "-d" ]; then SOURCEDIR="$4"; fi
 if [ "$4" == "-d" ]; then SOURCEDIR="$5"; fi
 fi
-
-. "/opt/galaxymediatools/functions/prechecknl"
 
 log "INFO" "---> Starting Mass Music Transcoder on $HOSTNAME"
 starttimer

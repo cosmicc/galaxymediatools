@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. /opt/galaxymediatools/functions/prechecknl
+
 echo -e "${yellow}Please wait...${nocolor}"
 /usr/bin/screen -S "massmusictrans" -t "massmusictrans" -dm bash -c "/opt/galaxymediatools/massmusictrans" &
 sleep 3
