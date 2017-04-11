@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Please wait..."
+echo "${yellow}Please wait...${nocolor}"
 /usr/bin/screen -S "massmusictrans" -t "massmusictrans" -dm bash -c "/opt/galaxymediatools/massmusictrans" &
 sleep 3
 /usr/bin/screen -r

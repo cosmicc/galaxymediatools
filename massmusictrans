@@ -26,7 +26,7 @@ if [ "$1" == "-a" ] || [ "$2" == "-a" ] || [ "$3" == "-a" ] || [ "$4" == "-a" ] 
 if [ "$1" != "-d" ] && [ "$2" != "-d" ] && [ "$3" != "-d" ] && [ "$4" != "-d" ]; then
 
 SOURCEDIR="/music/process/unsorted"
-echo "Warming Up..."
+echo "${yellow}Warming Up...${nocolor}"
 chmod ugo+rwx /music/process -R
 else
 if [ "$1" == "-d" ]; then SOURCEDIR="$2"; fi
@@ -40,7 +40,7 @@ source "/opt/galaxymediatools/functions/prechecknl"
 log "INFO" "---> Starting Mass Music Transcoder on $HOSTNAME"
 starttimer
 if [ -f "$INDEXFIL" ]; then rm -f $INDEXFIL; fi
-echo "Using directory $SOURCEDIR as base for music search."
+echo "${green}Using directory $SOURCEDIR as base for music search.${nocolor}"
 log "INFO" "Using directory $SOURCEDIR as base for music search."
 starttimer2
 if [ "$TRANSDIR" == "" ];then
@@ -48,14 +48,14 @@ log "ERROR" "ERROR! TRANSDIR is null. Exiting."
 exit 1
 fi
 starttimer3
-echo "Cleaning out all junk files..."
+echo "${cyan}Cleaning out all junk files...${nocolor}"
 log "INFO" "Cleaning out all junk files..."
 find $SOURCEDIR -type f \( -name "*.jpg" -o -name "*.ffp" -o -name "*.html" -o -name "*.cue" -o -name "*.rtf" -o -name "*.md5" -o -name "*.doc" -o -name "*.rar" -o -name "*." -o -name "*.DS_Store" -o -name "*.pdf" -o -name "*.url" -o -name "*.wpl" -o -name "*.lnk" -o -name "*.gif" -o -name "*.pls" -o -name "*.png" -o -name "*.jpeg" -o -name "*.db" -o -name "*.m3u" -o -name "*.ini" -o -name "*.sfk" -o -name "*.sfv" -o -name "*.nfo" -o -name "*.asd" -o -name "*.log" -o -name "*.bmp" -o -name "*.Bmp" -o -name "*.BMP" -o -name "*.new" -o -name "*.JPG" -o -name "._*" -o -name "*.Jpg" -o -name "*.GIF" -o -name "*.Gif" -o -name "*.txt" \) -exec rm -rf {} \;
 ELAPSED3=$(elapsed3)
 log "INFO" "All junk files cleaned out. Elapsed: $ELAPSED3"
 
 starttimer3
-echo "fixing filenames..."
+echo "${cyan}Fixing filenames...${nocolor}"
 log "INFO" "fixing filenames..."
 find $SOURCEDIR -type f \( -name "*,*.wma" -o -name "*,*.Wma" -o -name "*,*.WMA" \) -exec /opt/galaxymediatools/functions/filefixname -rc {} \;
 find $SOURCEDIR -type f \( -name "*.Mp3" -o -name "*.MP3" \) -exec /opt/galaxymediatools/functions/filefixname -le {} \;
@@ -65,7 +65,7 @@ log "INFO" "Completed fixing filenames. Elapsed: $ELAPSED3"
 
 
 log "INFO" "Building index of files to process on $THISSERVER"
-echo "Building index of files to process..."
+echo "${green}Building index of files to process...${nocolor}"
 
 find $SOURCEDIR -type f \( -name "*.flac" -o -name "*.wma" -o -name "*.WMA" -o -name "*.Wma" -o -name "*.FLAC"  -o -name "*.Flac" -o -name "*.m4a"  -o -name "*.M4a" -o -name "*.M4A" -o -name "*.ogg" -o -name "*.Ogg" -o -name "*.OGG" \) >> $INDEXFIL
 i=0
@@ -83,7 +83,7 @@ if [ $NODEAL -ne 0 ]; then
 find "$SOURCEDIR" -type f \( -name "*.mp4" -o -name "*.Mp4" -o -name "*.MP4"  -o -name "*.m4p" -o -name "*.M4P" -o -name "*.M4p" \)  -exec rm -rf {} \;
 fi
 log "INFO" "Starting transcode process on ${#file[@]} files on $HOSTNAME"
-echo "Starting transcode process on ${#file[@]} files"
+echo "${yellow}Starting transcode process on${nocolor} ${green}${#file[@]}${nocolor} ${yellow}files${nocolor}"
 ###pushover "transcoder" "Music Transcoder Starting in $TMODE on $HOSTNAME - ${#file[@]} Files to process"
 j=0
 starttimer2
@@ -97,7 +97,7 @@ for f in "${file[@]}"; do
  fne="${f%.*}"
  fng="${fne##*/}"
  fleft=$((${#file[@]}-$j))
- echo "Copying file to local drive for transcoding on $fne..."
+ echo "${cyan}Copying file to local drive for transcoding on${nocolor} ${green}$fne${nocolor}..."
  log "INFO" "Copying file to local drive for transcoding on $THISSERVER $fne"
  starttimer3
  if [[ -z $SIM ]]; then cp -f "$f" "$TRANSDIR"; fi
@@ -105,7 +105,7 @@ for f in "${file[@]}"; do
  log "INFO" "Copy file to local drive for transcoding complete. Elapsed: $ELAPSED3"
  starttimer3
  log "INFO" "Processing audio file on $THISSERVER - $fil"
- echo "*Processing audio file - $fil..."
+ echo "${yellow}Processing audio file -${nocolor} ${green}$fil${nocolor}..."
 
 if [[ -z $SIM ]]; then
 
@@ -122,7 +122,7 @@ if [[ -z $SIM ]]; then
   fil="$fng.wav"
   else
   log "ERROR" "Something went wrong with conversion. Exiting."
-  echo "Something went wrong with conversion. Exiting."
+  echo "${rred}Something went wrong with conversion. Exiting.${nocolor}"
   exit 1
   fi
   fi
@@ -140,7 +140,7 @@ if [[ -z $SIM ]]; then
   fil="$fng.wav"
   else
   log "ERROR" "Something went wrong with conversion. Exiting."
-  echo "Something went wrong with conversion. Exiting."
+  echo "${rred}Something went wrong with conversion. Exiting.${nocolor}"
   exit 1
   fi
   fi
@@ -155,12 +155,13 @@ if [[ -z $SIM ]]; then
 fi
   if [ "$?" != "0" ]; then
    log "ERROR" "Error transcoding audio file $fil. Exiting."
+   echo "${rred}Error transcoding audio file $file. Exiting.${nocolor}"
    exit 1
   fi
   ELAPSED3=$(elapsed3)
    log "INFO" "Audio transcode completed successfully on $THISSERVER- Replacing original $fil. Elapsed: $ELAPSED3"
    log "INFO" "Moving transcoded file back to filer on $THISSERVER - $fng.trans.mp4"
-   echo "Audio transcode completed successfully. Replacing original $fil. Elapsed: $ELAPSED3"
+   echo "${green}Audio transcode completed successfully. Replacing original $fil. Elapsed:${nocolor} ${yellow}$ELAPSED3${nocolor}"
    if [[ -z $SIM ]]; then
     rm -f "$f"
     mv -f "$TRANSDIR/$fng.mp3" "$fne.mp3"
@@ -171,16 +172,16 @@ done
 ELAPSED2=$(elapsed2)
 
 if [[ -z $BID ]]; then
-echo "All music transcoding complete.  Continuing to music identification... Elapsed: $ELAPSED2"
+echo "${green}All music transcoding complete.  Continuing to music identification... Elapsed:${nocolor} ${yellow}$ELAPSED2${nocolor}"
 log "INFO" "All music transcoding complete.  Continuing to music identification. Elapsed: $ELAPSED2"
    starttimer3
    log "INFO" "Running Beets music organizer..."
-   echo "Running Beets music organizer..."
+   echo "${cyan}Running Beets music organizer...${nocolor}"
 ANYLEFT=`find "$SOURCEDIR" -type f ! -name "*.mp3" | wc -l`
 if [ $ANYLEFT -ne 0 ]; then
 find "$SOURCEDIR" -type f ! -name "*.mp3"
 echo " "
-echo "Erroneous junk files found left after transcoding.  Fix this first!!"
+echo "${rred}Erroneous junk files found left after transcoding.  Fix this first!!${nocolor}"
 log "ERROR" "Erroneous junk files found left after transcoding. Exiting"
 exit 1
 fi 
@@ -206,13 +207,13 @@ fi
     rm -r $SOURCEDIR/*
     else
     log "ERROR" "File coopy error to failed_id"
-    echo "File coopy error to failed_id"
+    echo "${rred}File copy error to failed_id${nocolor}"
     exit 1
     fi
     ELAPSED3=$(elapsed3)
     log "INFO" "Remaining files moved to /music/process/failed_id. Elapsed: $ELAPSED3"
   else
-    read -r -p "Move all id failed files to /music/process/failed_id? [y/N] " response
+    read -r -p "${reverse}Move all id failed files to /music/process/failed_id?${nocolor} ${yellow}[y/N] ${green}" response
     response=${response,,}    # tolower
     if [[ $response =~ ^(yes|y)$ ]]; then
      log "INFO" "Moving remaining files to /music/process/failed_id for further examination"
@@ -223,7 +224,7 @@ fi
     rm -r $SOURCEDIR/*
     else
     log "ERROR" "File coopy error to failed_id"
-    echo "File coopy error to failed_id"
+    echo "${rred}File coopy error to failed_id${nocolor}"
     exit 1
     fi
      ELAPSED3=$(elapsed3)
@@ -246,7 +247,7 @@ log "WARN" "Erroneous junk files found in /music/process/sorted.  Fix This!!"
 fi
 
 
-echo "Cooling Down..."
+echo "${yellow}Cooling Down...${nocolor}"
 chmod ugo+rwx /music/process -R
 
 sync
