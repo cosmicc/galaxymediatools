@@ -40,15 +40,15 @@ ELAPSED2=$(elapsed2)
 log "INFO" "Scan of $1 complete. Result: $THREAT. Elapsed: $ELAPSED2"
 }
 
-V1=`df -h | grep "/video"`
-IFS=' ' read -r -a VDINFO <<< $V1
-VDPERC=${VDINFO[4]}
-VDFREE=${VDINFO[3]}
-VDUSED=${VDPERC::-1}
-if [ $VDUSED -gt 98 ];then
- log "WARN" "Low space on NAS!! $VDFREE Free, $VDPERC Used."
- pushover "security" "Low space on NAS!! $VDFREE Free, $VDPERC Used."
-fi
+#V1=`df -h | grep "/video"`
+#IFS=' ' read -r -a VDINFO <<< $V1
+#VDPERC=${VDINFO[4]}
+#VDFREE=${VDINFO[3]}
+#VDUSED=${VDPERC::-1}
+#if [ $VDUSED -gt 98 ];then
+# log "WARN" "Low space on NAS!! $VDFREE Free, $VDPERC Used."
+# pushover "security" "Low space on NAS!! $VDFREE Free, $VDPERC Used."
+#fi
 
 starttimer3
 log "INFO" "Starting Sophos definition update..."

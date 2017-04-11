@@ -116,7 +116,7 @@ starttimer2
 log "INFO" "Running Lynis..."
 /opt/lynis/lynis audit system -Q --quiet &>> $LOGF
     if [ $? -ne 0 ]; then
-      pushover "security" -T "Lynis Execution error on $HOSTNAME. Check $LOGF"
+      pushover "security" "Lynis Execution error on $HOSTNAME. Check $LOGF"
     LYNEXIT="Execution Error!!"
     else
     LYNEXIT="Success"
@@ -128,7 +128,7 @@ starttimer2
 log "INFO" "Running Antivirs/Malware definition update..."
 /opt/sophos-av/bin/savupdate &>> $LOGF
     if [ $? -ne 0 ]; then
-      pushover "security" -T "Sophos definition update error on $HOSTNAME. Check $LOGF"
+      pushover "security" "Sophos definition update error on $HOSTNAME. Check $LOGF"
     SUEXIT="Update Error!!"
     else
     SUEXIT="Success"

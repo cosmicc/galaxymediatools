@@ -1,0 +1,44 @@
+#!/bin/bash
+
+LOGF=/dev/null
+
+. /opt/galaxymediatools/functions/prechecknl
+
+if [ "$1" != "-n" ]; then
+echo "Gathering data..."
+fi
+
+PLEX=`ssh $PLEXINFO "df -h / | grep /"`
+MS=`df -h / | grep /`
+DS=`ssh $DSINFO "df -h / | grep /"`
+T1=`ssh $T1INFO "df -h / | grep /"`
+V1=`df -h | grep "/video"`
+
+IFS=' ' read -r -a PINFO <<< $PLEX
+IFS=' ' read -r -a MINFO <<< $MS
+IFS=' ' read -r -a DINFO <<< $DS
+IFS=' ' read -r -a TINFO <<< $T1
+IFS=' ' read -r -a VINFO <<< $V1
+
+PPERC=${PINFO[4]}
+PFREE=${PINFO[3]}
+MPERC=${MINFO[4]}
+MFREE=${MINFO[3]}
+DPERC=${DINFO[4]}
+DFREE=${DINFO[3]}
+TPERC=${TINFO[4]}
+TFREE=${TINFO[3]}
+VPERC=${VINFO[4]}
+VFREE=${VINFO[3]}
+
+if [ "$1" != "-n" ]; then
+echo  " "
+echo "Plex Server ($PLEXNAME): $PFREE Free, $PPERC Available"
+echo "Manager Server ($MSNAME): $MFREE Free, $MPERC Available"
+echo "Download Server ($DSNAME): $DFREE Free, $DPERC Available"
+echo "Transcode Server ($T1NAME): $TFREE Free, $TPERC Available"
+echo "Storage Share: $VFREE Free, $VPERC Available"
+echo " "
+else
+pushover "security" "$PLEXNAME: $PFREE Free, $PPERC Available $MSNAME: $MFREE Free, $MPERC Available $DSNAME: $DFREE Free, $DPERC Available $T1NAME: $TFREE Free, $TPERC Available Storage: $VFREE Free, $VPERC Available"
+fi

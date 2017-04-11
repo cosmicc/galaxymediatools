@@ -80,11 +80,7 @@ ELAPSED2=$(elapsed2)
 log "INFO" "File index build complete. Elapsed: $ELAPSED2"
 NODEAL=`find "$SOURCEDIR" -type f \( -name "*.mp4" -o -name "*.Mp4" -o -name "*.MP4"  -o -name "*.m4p" -o -name "*.M4P" -o -name "*.M4p" \) | wc -l`
 if [ $NODEAL -ne 0 ]; then
-find "$SOURCEDIR" -type f \( -name "*.mp4" -o -name "*.Mp4" -o -name "*.MP4"  -o -name "*.m4p" -o -name "*.M4P" -o -name "*.M4p" \)
-echo " "
-echo "mp4 files found. Deal with this first!!"
-log "ERROR" "mp4 files found. Deal with this first!!"
-exit 1
+find "$SOURCEDIR" -type f \( -name "*.mp4" -o -name "*.Mp4" -o -name "*.MP4"  -o -name "*.m4p" -o -name "*.M4P" -o -name "*.M4p" \)  -exec rm -rf {} \;
 fi
 log "INFO" "Starting transcode process on ${#file[@]} files on $HOSTNAME"
 echo "Starting transcode process on ${#file[@]} files"
@@ -204,7 +200,14 @@ fi
     log "INFO" "Moving remaining files to /music/process/failed_id for further examination"
     starttimer3
     sync
-    mv -v -f $SOURCEDIR/* /music/process/failed_id
+    rsync -vr $SOURCEDIR/* /music/process/failed_id
+    if [ "$?" == "0" ]; then
+    rm -r $SOURCEDIR/*
+    else
+    log "ERROR" "File coopy error to failed_id"
+    echo "File coopy error to failed_id"
+    exit 1
+    fi
     ELAPSED3=$(elapsed3)
     log "INFO" "Remaining files moved to /music/process/failed_id. Elapsed: $ELAPSED3"
   else
@@ -214,7 +217,14 @@ fi
      log "INFO" "Moving remaining files to /music/process/failed_id for further examination"
      starttimer3
      sync
-     mv -v -f $SOURCEDIR/* /music/process/failed_id
+         rsync -vr $SOURCEDIR/* /music/process/failed_id
+    if [ "$?" == "0" ]; then
+    rm -r $SOURCEDIR/*
+    else
+    log "ERROR" "File coopy error to failed_id"
+    echo "File coopy error to failed_id"
+    exit 1
+    fi
      ELAPSED3=$(elapsed3)
      log "INFO" "Remaining files moved to /music/process/failed_id. Elapsed: $ELAPSED3"
     else
