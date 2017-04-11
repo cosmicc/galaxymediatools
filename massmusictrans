@@ -28,7 +28,7 @@ if [ "$1" != "-d" ] && [ "$2" != "-d" ] && [ "$3" != "-d" ] && [ "$4" != "-d" ];
 . /opt/galaxymediatools/functions/prechecknl
 
 SOURCEDIR="/music/process/unsorted"
-echo -e "${yellow}Warming Up...${nocolor}"
+echo -e "${magenta}Warming Up...${nocolor}"
 chmod ugo+rwx /music/process -R
 else
 if [ "$1" == "-d" ]; then SOURCEDIR="$2"; fi
@@ -174,9 +174,16 @@ ELAPSED2=$(elapsed2)
 if [[ -z $BID ]]; then
 echo -e "${green}All music transcoding complete.  Continuing to music identification... Elapsed:${nocolor} ${yellow}$ELAPSED2${nocolor}"
 log "INFO" "All music transcoding complete.  Continuing to music identification. Elapsed: $ELAPSED2"
+LC=0
+echo -en "${cyan}Running Beets music organizer"
+while [ $LC -lt 11 ]; do
+sleep 1
+echo -en "."
+((LC++))
+done
+echo " "
    starttimer3
    log "INFO" "Running Beets music organizer..."
-   echo -e "${cyan}Running Beets music organizer...${nocolor}"
 ANYLEFT=`find "$SOURCEDIR" -type f ! -name "*.mp3" | wc -l`
 if [ $ANYLEFT -ne 0 ]; then
 find "$SOURCEDIR" -type f ! -name "*.mp3"
@@ -248,7 +255,7 @@ log "WARN" "Erroneous junk files found in /music/process/sorted.  Fix This!!"
 fi
 
 
-echo -e "${yellow}Cooling Down...${nocolor}"
+echo -e "${magenta}Cooling Down...${nocolor}"
 chmod ugo+rwx /music/process -R
 
 sync
