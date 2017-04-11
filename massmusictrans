@@ -2,9 +2,6 @@
 
 err_report() {
     echo " "
-    echo -e "${rred}Error on line $1${nocolor}"
-    echo " "
-    rm -r /TRANSCODE
     read -r -p "Press any key to exit"
     exit
 }
