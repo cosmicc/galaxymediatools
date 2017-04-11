@@ -4,7 +4,27 @@ LOGF=/dev/null
 
 . /opt/galaxymediatools/functions/prechecknl
 
-if [ "$1" != "-n" ]; then
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        echo " "
+        echo "Galaxy Media Tools - Server Freespace checker"
+        echo " "
+        echo "${0##*/} [-h] [-q] [-qq] [-n]"
+        echo " "
+        echo "-h or --help : Help"
+        echo "-q : Quieter output"
+        echo "-qq : Totally silent"
+        echo "-n : Send Pushover notification"
+        echo " "
+        exit 0
+fi
+
+if [ "$1" == "-q" ] || [ "$2" == "-q" ] || [ "$3" == "-q" ] || [ "$4" == "-q" ] ; then Q1=1; fi
+if [ "$1" == "-qq" ] || [ "$2" == "-qq" ] || [ "$3" == "-qq" ] || [ "$4" == "-qq" ] ; then Q2=1; fi
+if [ "$1" == "-n" ] || [ "$2" == "-n" ] || [ "$3" == "-n" ] || [ "$4" == "-n" ] ; then NOTIFY=1; fi
+
+## MAIN PROGRAM:
+
+if [ $Q1 -ne 1 ] || [ $Q2 -ne 1 ]; then
 echo "Gathering data..."
 fi
 
@@ -31,7 +51,7 @@ TFREE=${TINFO[3]}
 VPERC=${VINFO[4]}
 VFREE=${VINFO[3]}
 
-if [ "$1" != "-n" ]; then
+if [ $Q2 -ne 1 ]; then
 echo  " "
 echo "Plex Server ($PLEXNAME): $PFREE Free, $PPERC Available"
 echo "Manager Server ($MSNAME): $MFREE Free, $MPERC Available"
@@ -39,6 +59,8 @@ echo "Download Server ($DSNAME): $DFREE Free, $DPERC Available"
 echo "Transcode Server ($T1NAME): $TFREE Free, $TPERC Available"
 echo "Storage Share: $VFREE Free, $VPERC Available"
 echo " "
-else
+fi
+
+if [ $NOTIFY -eq 1 ]; then
 pushover "security" "$PLEXNAME: $PFREE Free, $PPERC Available $MSNAME: $MFREE Free, $MPERC Available $DSNAME: $DFREE Free, $DPERC Available $T1NAME: $TFREE Free, $TPERC Available Storage: $VFREE Free, $VPERC Available"
 fi

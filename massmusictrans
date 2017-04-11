@@ -171,10 +171,11 @@ done
 ELAPSED2=$(elapsed2)
 
 if [[ -z $BID ]]; then
+echo "All music transcoding complete.  Continuing to music identification... Elapsed: $ELAPSED2"
 log "INFO" "All music transcoding complete.  Continuing to music identification. Elapsed: $ELAPSED2"
    starttimer3
    log "INFO" "Running Beets music organizer..."
-
+   echo "Running Beets music organizer..."
 ANYLEFT=`find "$SOURCEDIR" -type f ! -name "*.mp3" | wc -l`
 if [ $ANYLEFT -ne 0 ]; then
 find "$SOURCEDIR" -type f ! -name "*.mp3"

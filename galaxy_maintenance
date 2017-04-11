@@ -50,7 +50,11 @@ RUNCHECK1=`ps uxa | grep "galaxy_maintenance" | wc -l`
   ELAPSED2=$(elapsed2)
   log "INFO" "Mass TV Transcoder complete. Elapsed: $ELAPSED2"
 
-
+  starttimer2
+  log "INFO" "Checking Servers for freespace..."
+  /opt/galaxymediatools/filespacefree -q -n >> $LOGF
+  ELAPSED2=$(elapsed2)
+  log "INFO" "Freespace check complete. Elapsed: $ELAPSED2"
 
   starttimer2
   log "INFO" "Executing master backup script..."
