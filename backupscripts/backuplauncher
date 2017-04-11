@@ -63,6 +63,12 @@ starttimer2
 log "INFO" "UFC Event Library backup starting..."
 /opt/galaxymediatools/backupscripts/backupufc.exec
 URESULT=$(backupcomplete "UFC Events")
+
+starttimer2
+log "INFO" "Music Library backup starting..."
+/opt/galaxymediatools/backupscripts/backupmusic.exec
+FRESULT=$(backupcomplete "Music")
+
 ELAPSED3=$(elapsed3)
 log "INFO" "Backups on $MOUNT1 complete.  Elapsed: $ELAPSED3"
 
