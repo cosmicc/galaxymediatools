@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Please wait..."
-/usr/bin/screen -dm bash -c "/opt/galaxymediatools/massmusictrans" &
+/usr/bin/screen -S "massmusictrans" -t "massmusictrans" -dm bash -c "/opt/galaxymediatools/massmusictrans" &
 sleep 3
 /usr/bin/screen -r
 exit 0
