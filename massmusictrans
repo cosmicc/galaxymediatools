@@ -1,5 +1,13 @@
 #!/bin/bash
 
+err_report() {
+    echo " "
+    echo "Error on line $1"
+    echo " "
+    rm -r /TRANSCODE
+    read -r -p "Press any key to exit"
+}
+
 LOGF="/video/Incoming/logs/musictranscoder.log"
 INDEXFIL="/video/Incoming/logs/musictranscoder.idx"
 TRANSDIR="/TRANSCODE"
@@ -26,6 +34,8 @@ if [ "$1" == "-a" ] || [ "$2" == "-a" ] || [ "$3" == "-a" ] || [ "$4" == "-a" ] 
 if [ "$1" != "-d" ] && [ "$2" != "-d" ] && [ "$3" != "-d" ] && [ "$4" != "-d" ]; then
 
 . /opt/galaxymediatools/functions/prechecknl
+
+trap 'err_report $LINENO' ERR
 
 SOURCEDIR="/music/process/unsorted"
 echo -e "${magenta}Warming Up...${nocolor}"
