@@ -148,7 +148,7 @@ log "DEBUG" "ERRORED=$ERRORED"
 log "INFO" "Backups completed with errors! $ERRORED Libraries failed. Elapsed: $ELAPSED"
 pushover "backup" "Backups completed with errors! $ERRORED Libraries have failed!  Backup1 $D1FREE Free, $D1PERC Used Backup2 $D2FREE Free, $D2PERC Used Elapsed: $ELAPSED"
 fi
-
+/opt/galaxymediatools/filespacefree -n
 log "INFO" "<--- Master Backup script completed. Elapsed: $ELAPSED"
 sleep 10
 if [ "$1" != "-ns" ]; then

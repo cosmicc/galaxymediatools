@@ -12,7 +12,7 @@
 # By default this script does nothing.
 . "/opt/galaxymediatools/functions/prechecknl"
 
-if [ "$THISSERVER" == "$MSNAME" ]; then
+if [ "$HOSTNAME" == "$MSNAME" ]; then
 nohup /opt/plexpy/PlexPy.py > /opt/plexpy/plexpy.log &
 fi
 
@@ -23,7 +23,7 @@ fi
 /opt/galaxymediatools/timesync -b
 
 if [ "$HOSTNAME" == "$T1NAME" ]; then
-pm-suspend &
+/usr/sbin pm-suspend
 fi
 
 exit 0
