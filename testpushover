@@ -1,0 +1,6 @@
+#!/bin/bash
+
+. "/opt/galaxymediatools/functions/prechecknl"
+
+pushover "backup" "Backups completed successfully. Backup1 1.2G Free, 88% Used Backup2 1M Free, 12% Used Elapsed: 1 Hour, 54 Minutes"
+e

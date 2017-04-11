@@ -141,12 +141,12 @@ log "DEBUG" "CRESULT=$CRESULT, MRESULT=$MRESULT, URESULT=$URESULT, TRESULT=$TRES
 
 if (( $CRESULT == 0 && $MRESULT == 0 && $URESULT == 0 && $TRESULT == 0 && $RRESULT == 0 )); then
 log "INFO" "All Library backups completed successfully!"
-pushover "backup" "Library backups completed successfully. Backup1 Used:$D1PERC Free:$D1FREE - Backup2 Used:$D2PERC Free:$D2FREE - Elapsed: $ELAPSED"
+pushover "backup" "Backups completed successfully! Backup1 $D1FREE Free, $D1PERC Used Backup2 $D2FREE Free, $D2PERC Used  Elapsed: $ELAPSED"
 else
 ERRORED=$(($CRESULT+$MRESULT+$URESULT+$TRESULT+$URESULT))
 log "DEBUG" "ERRORED=$ERRORED"
-log "INFO" "Library backups completed with errors! $ERRORED Libraries failed. Elapsed: $ELAPSED"
-pushover "backup" "Library backups completed with errors. $ERRORED Libraries failed. Backup1 Used:$D1PERC Free:$D1FREE - Backup2 Used:$D2PERC Free:$D2FREE - Elapsed: $ELAPSED"
+log "INFO" "Backups completed with errors! $ERRORED Libraries failed. Elapsed: $ELAPSED"
+pushover "backup" "Backups completed with errors! $ERRORED Libraries have failed!  Backup1 $D1FREE Free, $D1PERC Used Backup2 $D2FREE Free, $D2PERC Used Elapsed: $ELAPSED"
 fi
 
 log "INFO" "<--- Master Backup script completed. Elapsed: $ELAPSED"

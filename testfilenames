@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#source "/opt/galaxymediatools/functions/prechecknl"
+
+OLDFILE="$1"
+
+EXT=${OLDFILE: -3}  #Extension only
+FNE="${OLDFILE%.*}"  #Filname with path no extension
+FNG="${FNE##*/}" #Filename no path no extension
+DIR="${OLDFILE%/*}"  #Directory only
+FNC=`echo $FNG | tr "," " "` #Filename no pth no extension commas removed  
+NEWFILE="$DIR/$FNC.$EXT"
+
+#echo "FNE: $FNE"
+#echo "FNG: $FNG"
+#echo "FNC: $FNC"
+#echo "EXT: $EXT"
+#echo "DIR: $DIR"
+
+mv -f "$OLDFILE" "$NEWFIE"
+
+echo "Removed commas $1 -> $NEWFILE"
+
