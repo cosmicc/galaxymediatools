@@ -207,9 +207,9 @@ exit 1
 fi 
 
  if [[ $BAUTO ]]; then
-   beet -c /opt/galaxymediatools/conf/beetsconfignc.yaml import -q $SOURCEDIR &>> $LOGF
+   beet -c /opt/galaxymediatools/conf/beetsconfig_auto.yaml -l /video/Incoming/logs/beetsimport_auto.log import -q $SOURCEDIR &>> $LOGF
  else
-   beet -c /opt/galaxymediatools/conf/beetsconfig.yaml import $SOURCEDIR 
+   beet -c /opt/galaxymediatools/conf/beetsconfig.yaml -l /video/Incoming/logs/beetsimport_manual.log import $SOURCEDIR 
  fi
  
  if [ "$?" != "0" ]; then
