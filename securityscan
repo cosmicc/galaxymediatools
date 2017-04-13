@@ -85,10 +85,10 @@ starttimer2
 gitupdate "headphones" "/usr/local/headphones"
 ELAPSED2=$(elapsed2)
 log "INFO" "Headphones Updates Complete. Elapsed: $ELAPSED2"
-starttimer2
-gitupdate "sickrage" "/opt/sickrage"
-ELAPSED2=$(elapsed2)
-log "INFO" "Sickrage Updates Complete. Elapsed: $ELAPSED2"
+#starttimer2
+#gitupdate "sickrage" "/opt/sickrage"
+#ELAPSED2=$(elapsed2)
+#log "INFO" "Sickrage Updates Complete. Elapsed: $ELAPSED2"
 log "INFO" "Completed Media Manager only Git updates."
 fi
 
