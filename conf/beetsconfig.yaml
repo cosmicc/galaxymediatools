@@ -15,10 +15,13 @@ threaded: yes
 ui:
     color: yes
 
-plugins: discogs beatport chroma acousticbrainz duplicates convert badfiles info
+plugins: discogs beatport chroma acousticbrainz duplicates convert fromfilename badfiles lastgenre scrub info
 
 duplicates:
     merge: yes
+    
+tiebreak: 
+    items: [bitrate]
 
 wlg:
     auto: no
