@@ -15,7 +15,7 @@ threaded: yes
 ui:
     color: yes
 
-plugins: discogs beatport chroma acousticbrainz duplicates wlg convert badfiles info
+plugins: discogs beatport chroma acousticbrainz duplicates convert badfiles info
 
 duplicates:
     merge: yes
