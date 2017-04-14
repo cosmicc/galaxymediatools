@@ -2,5 +2,47 @@
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
-echo -e "${rred}TEST!${nocolor}"
+declare -A SERVERS
+
+SERVERS[0,0]=$MSNAME
+SERVERS[0,1]=$MSIP
+SERVERS[0,2]="Media Manager Server"
+
+SERVERS[1,0]=$DSNAME
+SERVERS[1,1]=$DSIP
+SERVERS[1,2]="Download Server"
+
+SERVERS[2,0]=$PLEXNAME
+SERVERS[2,1]=$PLEXIP
+SERVERS[2,2]="Plex Server"
+
+SERVERS[3,0]=$T1NAME
+SERVERS[3,1]=$T1IP
+SERVERS[3,2]="Transcode Server"
+
+echo "${SERVERS[$A,0]}"
+
+TOTAL=`expr ${#SERVERS[@]} / 2`
+
+A=0
+
+while [ $A -ne 4 ]; do
+echo " "
+echo -e "${cmd1color}Checking ${servercolor}${SERVERS[$A,2]}${cmd1color} Server Status..."
+ fping -c1 -t300 ${SERVERS[$A,1]} 2>/dev/null 1>/dev/null
+  if [ "$?" == "0" ]; then
+   if (ssh $T1INFO '[ -d /var/lock/gtrans.lock ]'); then
+   MSST="${yellow}TRANSCODING"
+   else
+   MSST="${blue}IDLE"
+ fi
+ echo -e "${servercolor}${SERVERS[$A,0]^^}${cmd1color} Server is ${green}UP ${cmd1color}and $MSST."
+ else
+  echo -e "${servercolor}${SERVERS[$A,0]^^}${cmd1color} Server is ${red}DOWN."
+ fi
+echo -e "${nocolor}"
+
+((A++))
+done 
+
 
