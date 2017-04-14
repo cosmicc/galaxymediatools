@@ -5,9 +5,11 @@ echo "File permission reset running..."
 
 chmod ugo+rw /music/process -R
 chmod ugo+rw /video/Incoming -R
+if [ "$1" != "-l" ]; then
 chmod ugo+rw "/video/Recorded TV" -R
 chmod ugo+rw "/video/Movies" -R
 chmod ugo+rw "/video/TV Series" -R
+fi
 
 else
 echo "/video NOT MOUNTED!! Exiting."
