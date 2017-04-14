@@ -17,6 +17,11 @@ ui:
 
 plugins: discogs beatport chroma acousticbrainz duplicates convert fromfilename rewrite ftintitle importadded badfiles lastgenre scrub info
 
+duplicate_action: ask
+
+match:
+    strong_rec_thresh: 0.04
+
 duplicates:
     merge: yes
     
@@ -33,7 +38,7 @@ lastgenre:
 wlg:
     auto: no
     force: no
-    count: 1
+    count: 4
     separator: ', '
     whitelist: wlg
 
