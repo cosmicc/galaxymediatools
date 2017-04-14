@@ -23,7 +23,7 @@ fi
 /opt/galaxymediatools/timesync -b
 
 if [ "$HOSTNAME" == "$T1NAME" ]; then
-/usr/sbin pm-suspend
+/usr/sbin/pm-suspend
 fi
 
 exit 0
