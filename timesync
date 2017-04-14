@@ -10,7 +10,7 @@ log "INFO" "Refreshing Time Server $HOSTNAME..."
 fi
 
 if [ "$HOSTNAME" != "$MSNAME" ]; then
- log "INFO" "Refreshing Time from server $MSNAME/$MSIP..."
+ log "INFO" "$HOSTNAME is refreshing Time from server $MSNAME/$MSIP..."
  if [ "$1" == "-b" ]; then
   /usr/sbin/ntpdate $MSIP &>> $LOGF
  else
