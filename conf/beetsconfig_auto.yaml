@@ -45,6 +45,7 @@ wlg:
 rewrite:
     artist The Jimi Hendrix Experience: Jimi Hendrix
     artist Sonny Moore: Skrillex
+    artist Lorin Ashton: Bassnectar
 
 paths:
     default: %upper{%left{$albumartist_sort,1}}/%title{$albumartist_sort}/%title{$album}%if{$original_year, ($original_year),%if{$year, ($year)}}/$track - %title{$albumartist} - %title{$title}
