@@ -11,7 +11,7 @@ import:
 
 original_date: yes
 
-threaded: no
+threaded: yes
 ui:
     color: yes
 
