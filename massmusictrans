@@ -59,7 +59,14 @@ fi
 starttimer3
 echo -e "${cyan}Cleaning out all junk files...${nocolor}"
 log "INFO" "Cleaning out all junk files..."
-find $SOURCEDIR -type f \( -name "*.jpg" -o -name "*.ffp" -o -name "*.html" -o -name "*.CUE" -o -name "*.cue" -o -name "*.rtf" -o -name "*.md5" -o -name "*.doc" -o -name "*.rar" -o -name "*." -o -name "*.DS_Store" -o -name "*.pdf" -o -name "*.url" -o -name "*.wpl" -o -name "*.lnk" -o -name "*.gif" -o -name "*.pls" -o -name "*.png" -o -name "*.jpeg" -o -name "*.db" -o -name "*.m3u" -o -name "*.ini" -o -name "*.sfk" -o -name "*.sfv" -o -name "*.nfo" -o -name "*.asd" -o -name "*.log" -o -name "*.bmp" -o -name "*.Bmp" -o -name "*.BMP" -o -name "*.new" -o -name "*.JPG" -o -name "._*" -o -name "*.Jpg" -o -name "*.GIF" -o -name "*.Gif" -o -name "*.txt" \) -exec rm -rf {} \;
+
+/music/process/unsorted/O/Outkast/Outkast_-_Aquemini-1998/animate.js
+/music/process/unsorted/O/Outkast/Outkast_-_Aquemini-1998/gangsta_paradise.mid
+/music/process/unsorted/O/Outkast/Outkast_-_Aquemini-1998/Outkast_-_Aquemini-1998-NFO.htm
+/music/process/unsorted/O/Outkast/Outkast_-_Aquemini-1998/Outkast_-_Aquemini.SFV
+
+
+find $SOURCEDIR -type f \( -name "*.jpg" -o -name "*.ffp" -o -name "*.SFV" -o -name "*.mid" -o -name "*.htm" -o -name "*.js" -o -name "*.html" -o -name "*.CUE" -o -name "*.cue" -o -name "*.rtf" -o -name "*.md5" -o -name "*.doc" -o -name "*.rar" -o -name "*." -o -name "*.DS_Store" -o -name "*.pdf" -o -name "*.url" -o -name "*.wpl" -o -name "*.lnk" -o -name "*.gif" -o -name "*.pls" -o -name "*.png" -o -name "*.jpeg" -o -name "*.db" -o -name "*.m3u" -o -name "*.ini" -o -name "*.sfk" -o -name "*.sfv" -o -name "*.nfo" -o -name "*.asd" -o -name "*.log" -o -name "*.bmp" -o -name "*.Bmp" -o -name "*.BMP" -o -name "*.new" -o -name "*.JPG" -o -name "._*" -o -name "*.Jpg" -o -name "*.GIF" -o -name "*.Gif" -o -name "*.txt" \) -exec rm -rf {} \;
 ELAPSED3=$(elapsed3)
 log "INFO" "All junk files cleaned out. Elapsed: $ELAPSED3"
 
