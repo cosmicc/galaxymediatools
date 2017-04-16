@@ -49,7 +49,8 @@ rewrite:
     artist Bsod: Deadmau5
     artist Makaveli: 2Pac
     artist Stevie Ray Vaughan and Double Trouble: Stevie Ray Vaughan
-  
+    artist Prince \& The New Power Generation: Prince
+
 paths:
     default: %upper{%left{$albumartist_sort,1}}/%title{$albumartist_sort}/%title{$album}%if{$original_year, ($original_year),%if{$year, ($year)}}/$track - %title{$albumartist} - %title{$title}
     singleton: %upper{%left{$artist_sort,1}}/%title{$artist_sort}/%title{$artist} - %title{$title}%if{$year, ($year)}
