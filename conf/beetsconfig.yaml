@@ -47,6 +47,7 @@ rewrite:
     artist Sonny Moore: Skrillex
     artist Lorin Ashton: Bassnectar
     artist Bsod: Deadmau5
+    artist Makaveli: 2Pac
 
 paths:
     default: %upper{%left{$albumartist_sort,1}}/%title{$albumartist_sort}/%title{$album}%if{$original_year, ($original_year),%if{$year, ($year)}}/$track - %title{$albumartist} - %title{$title}
