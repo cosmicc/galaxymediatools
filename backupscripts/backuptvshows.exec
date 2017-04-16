@@ -10,7 +10,7 @@ source "/opt/galaxymediatools/functions/prechecknl"
 LIBRARY="TV Show"
 MOUNT=$MOUNT2
 DUUID=$DUUID2
-SDIR="/video/TV Series/"
+SDIR="/mnt/storage/video/TV Series/"
 DDIR="$MOUNT/TV Shows"
 MINFILES=18000
 

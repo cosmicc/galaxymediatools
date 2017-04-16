@@ -10,7 +10,7 @@ source "/opt/galaxymediatools/functions/prechecknl"
 LIBRARY="Stand-Up Comedy"
 MOUNT=$MOUNT1
 DUUID=$DUUID1
-SDIR="/video/Comedy/"
+SDIR="/mnt/storage/video/Comedy/"
 DDIR="$MOUNT/Comedy"
 MINFILES=120
 

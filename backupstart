@@ -19,7 +19,7 @@ echo "backupstart: Invalid option specified.  See backupstart --help"
 exit 1
 fi
 
-if /bin/mountpoint -q /video
+if /bin/mountpoint -q /mnt/storage
 then
 
 log "INFO" "---> Backup script starting"

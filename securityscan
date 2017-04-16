@@ -2,7 +2,7 @@
 PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/opt/galaxymediatools"
 export PATH=$PATH
 
-if mountpoint -q /video
+if mountpoint -q /mnt/storage
 then
 LOGF="/video/Incoming/logs/securityscan-$HOSTNAME.log"
 else

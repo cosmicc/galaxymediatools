@@ -7,7 +7,7 @@ LOGF="/video/Incoming/logs/maintenance.log"
 source "/opt/galaxymediatools/functions/prechecknl"
 
 starttimer
-if mountpoint -q /video
+if mountpoint -q /mnt/storage
 then
 RUNCHECK1=`ps uxa | grep "galaxy_maintenance" | wc -l`
 

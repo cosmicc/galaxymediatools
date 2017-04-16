@@ -10,7 +10,7 @@ source "/opt/galaxymediatools/functions/prechecknl"
 LIBRARY="File"
 MOUNT=$MOUNT1
 DUUID=$DUUID1
-SDIR="/files/"
+SDIR="/mnt/storage/files/"
 DDIR="$MOUNT/Files"
 MINFILES=500
 

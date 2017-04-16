@@ -8,11 +8,11 @@ starttimer
 
 log "INFO" "---> Security file scan starting."
 
-if mountpoint -q /video
+if mountpoint -q /mnt/storage
 then
  echo " "
 else
- log "ERROR" "/video not mounted. Exiting."
+ log "ERROR" "/mnt/storage not mounted. Exiting."
  pushover "security" "NASscan Error: /video not mounted, cannot continue."
  exit 1
 fi
@@ -64,9 +64,9 @@ ELAPSED3=$(elapsed3)
     fi
 
 
-scanfiles /video/Incoming
-scanfiles /pictures
-scanfiles /files
+scanfiles /mnt/storage/video/Incoming
+scanfiles /mnt/storage/pictures
+scanfiles /mnt/storage/files
 
 ELAPSED=$(elapsed)
 #pushover "security" -T "Security file scan complete. $THREAT Elapsed: $ELAPSED" &> /dev/null

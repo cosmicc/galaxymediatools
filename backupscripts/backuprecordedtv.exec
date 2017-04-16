@@ -10,7 +10,7 @@ source "/opt/galaxymediatools/functions/prechecknl"
 LIBRARY="Recorded TV"
 MOUNT=$MOUNT2
 DUUID=$DUUID2
-SDIR="/video/Recorded TV/"
+SDIR="/mnt/storage/video/Recorded TV/"
 DDIR="$MOUNT/Recorded TV"
 MINFILES=1
 
