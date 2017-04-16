@@ -1,42 +1,154 @@
 #!/bin/bash
 
-if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
-        echo " "
-        echo "Galaxy Media Tools - Transcode Server Status"
-        echo " "
-        echo "-h or --help : Help"
-        echo "-u : Upgrade from git only"
-        echo " "
-        exit 0
-fi
-
 source "/opt/galaxymediatools/functions/prechecknl"
+
+echo " "
 
 declare -A SERVERS
 
 SERVERS[0,0]=$MSNAME
 SERVERS[0,1]=$MSIP
+SERVERS[0,2]="Media Manager Server"
+SERVERS[0,3]=$MSINFO
 
 SERVERS[1,0]=$DSNAME
 SERVERS[1,1]=$DSIP
+SERVERS[1,2]="Download Server"
+SERVERS[1,3]=$DSINFO
 
-SERVERS[2]=$PLEXNAME
-SERVERS[3]=$T1NAME
+SERVERS[2,0]=$PLEXNAME
+SERVERS[2,1]=$PLEXIP
+SERVERS[2,2]="Plex Server"
+SERVERS[2,3]=$PLEXINFO
 
-for SERVER in "${SERVERS[@]}"
-do
-echo " "
-echo -e "${cmd1color}Checking ${servercolor}${SERVER^^}${cmd1color} Server Status..."
- fping -c1 -t300 $MSIP 2>/dev/null 1>/dev/null
+SERVERS[3,0]=$T1NAME
+SERVERS[3,1]=$T1IP
+SERVERS[3,2]="Transcode Server"
+SERVERS[3,3]=$T1INFO
+
+TOTAL=`expr ${#SERVERS[@]} / 4`
+
+A=0
+
+while [ "$A" -lt "$TOTAL" ]; do
+echo -e "${cmd1color}Checking ${servercolor}${SERVERS[$A,2]}${cmd1color} Server Status..."
+ fping -c1 -t300 ${SERVERS[$A,1]} 2>/dev/null 1>/dev/null
   if [ "$?" == "0" ]; then
-   if (ssh $T1INFO '[ -d /var/lock/gtrans.lock ]'); then
-   MSST="${yellow}TRANSCODING"
+   FAILEDCOUNT=0
+   if [ "${SERVERS[$A,0]}" == "$DSNAME" ]; then
+      DELUGE=`ssh ${SERVERS[$A,3]} 'sudo pgrep deluged | wc -l'`
+      if [ $DELUGE -eq 1 ]; then 
+        echo -e "${cmd1color}Deluge: ${green}Running${nocolor}"
+      else 
+        ((FAILEDCOUNT++))
+        echo -e "${cmd1color}Deluge: ${rred}NOT RUNNING${nocolor}"
+      fi
+      SABNZBD=`ssh ${SERVERS[$A,3]} 'sudo pgrep sabnzbdplus | wc -l'`
+      if [ $SABNZBD -eq 1 ]; then
+        echo -e "${cmd1color}Sabnzbd: ${green}Running${nocolor}"
+      else
+        ((FAILEDCOUNT++))
+        echo -e "${cmd1color}Sabnzbd: ${rred}NOT RUNNING${nocolor}"
+      fi
+   fi
+   if [ "${SERVERS[$A,0]}" == "$MSNAME" ]; then
+      SICKRAGE=`sudo ps uxa | grep SickBeard.py | wc -l`
+      if [ $SICKRAGE -gt 1 ]; then
+        echo -e "${cmd1color}Sickrage: ${green}Running${nocolor}"
+      else
+        ((FAILEDCOUNT++))
+        echo -e "${cmd1color}Sickrage: ${rred}NOT RUNNING${nocolor}"
+      fi
+      CPOTATO=`sudo ps uxa | grep CouchPotato.py | wc -l`
+      if [ $CPOTATO -gt 1 ]; then
+        echo -e "${cmd1color}Couchpotato: ${green}Running${nocolor}"
+      else
+        ((FAILEDCOUNT++))
+        echo -e "${cmd1color}Couchpotato: ${rred}NOT RUNNING${nocolor}"
+      fi
+      HEADPHONES=`sudo ps uxa | grep Headphones.py | wc -l`
+      if [ $HEADPHONES -gt 1 ]; then
+        echo -e "${cmd1color}Headphones: ${green}Running${nocolor}"
+      else
+        ((FAILEDCOUNT++))
+        echo -e "${cmd1color}Headphones: ${rred}NOT RUNNING${nocolor}"
+      fi
+      JACKETT=`sudo ps uxa | grep JackettConsole.exe | wc -l`
+      if [ $JACKETT -gt 1 ]; then
+        echo -e "${cmd1color}Jackett: ${green}Running${nocolor}"
+      else
+        ((FAILEDCOUNT++))
+        echo -e "${cmd1color}Jackett: ${rred}NOT RUNNING${nocolor}"
+      fi
+      PLEXPY=`sudo ps uxa | grep PlexPy.py | wc -l`
+      if [ $PLEXPY -gt 1 ]; then
+        echo -e "${cmd1color}PlexPy: ${green}Running${nocolor}"
+      else
+        ((FAILEDCOUNT++))
+        echo -e "${cmd1color}PlexPy: ${rred}NOT RUNNING${nocolor}"
+      fi
+   fi   
+   if [ "${SERVERS[$A,0]}" == "$PLEXNAME" ]; then
+      PLEXSERVER=`curl -k "http://$PLEXIP:32400/servers?X-Plex-Token=$PLEXTOKEN" 2> /dev/null | grep 'Galaxy' | wc -l`
+      if [ $PLEXSERVER -eq 1 ]; then
+        echo -e "${cmd1color}Plex Media Server: ${green}Running${nocolor}"
+        PLEXCOUNT=`curl -k "http://$PLEXIP:32400/status/sessions?X-Plex-Token=$PLEXTOKEN" 2> /dev/null | grep 'MediaContainer size=\"1\"' | wc -l`
+      if [ $PLEXCOUNT -eq 0 ]; then
+        echo -e "${cmd1color}Plex: No current streams in progress"
+      else
+        echo -e "${cmd1color}Plex: ${green}$PLEXCOUNT${cmd1color} streams in progress"
+      fi
+      else
+        ((FAILEDCOUNT++))
+        echo -e "${cmd1color}Plex Media Server: ${rred}NOT RUNNING${nocolor}"
+      fi
+       PDVR=`ssh $PLEXINFO 'sudo ps uxa | grep "Plex Transcoder -noaccurate_seek -i http://172.25.1.125" | wc -l'`
+      if [ $PDVR -gt 1 ]; then
+        echo -e "${cmd1color}Plex DVR: ${cyan}RECORDING${nocolor}"
+      else
+        echo -e "${cmd1color}Plex DVR: Not Recording${nocolor}"
+      fi
+   fi            
+   if [ "${SERVERS[$A,0]}" == "$T1NAME" ]; then
+      if (ssh $T1INFO '[ -d /var/lock/gtrans.lock ]'); then
+        echo -e "${cmd1color}TV Transcoding: ${cyan}RUNNING${nocolor}"
+        ((FAILEDCOUNT++))
+      else
+        echo -e "${cmd1color}TV Transcoding: ${blue}Idle${nocolor}"
+      fi
+      BACKUPS=`ssh $T1INFO 'sudo ps uxa | grep backuplauncher | wc -l'`
+      if [ $BACKUPS -gt 1 ]; then
+        echo -e "${cmd1color}USB Backups: ${cyan}RUNNING${nocolor}"
+        ((FAILEDCOUNT++))
+      else
+        echo -e "${cmd1color}USB Backups: ${blue}Idle${nocolor}"
+      fi
+      DVR=`ssh $T1INFO 'sudo ps uxa | grep PlexComskip.py | wc -l'`
+      if [ $DVR -gt 1 ]; then
+        echo -e "${cmd1color}DVR Transcoding: ${cyan}RUNNING${nocolor}"
+        ((FAILEDCOUNT++))
+      else
+        echo -e "${cmd1color}DVR Transcoding: ${blue}Idle${nocolor}"
+      fi
+   fi
+
+ if [ "${SERVERS[$A,0]}" != "$T1NAME" ]; then
+   if [ $FAILEDCOUNT -gt 0 ]; then
+     echo -e "${servercolor}${SERVERS[$A,0]^^}${cmd1color} Server is ${green}UP ${cmd1color}and ${rred}FAILING${nocolor}"
    else
-   MSST="${blue}IDLE"
- fi
- echo -e "${servercolor}${MSNAME^^}${cmd1color} Server is ${green}UP ${cmd1color}and $MSST."
+     echo -e "${servercolor}${SERVERS[$A,0]^^}${cmd1color} Server is ${green}UP ${cmd1color}and ${green}RUNNING${nocolor}"
+   fi
  else
-  echo -e "${servercolor}${MSNAME^^}${cmd1color} Server is ${red}DOWN."
+   if [ $FAILEDCOUNT -gt 0 ]; then MSST="${cyan}BUSY"; else MSST="${blue}IDLE"; fi
+   echo -e "${servercolor}${SERVERS[$A,0]^^}${cmd1color} Server is ${green}UP ${cmd1color}and $MSST${nocolor}"
+ fi
+
+ else
+  echo -e "${servercolor}${SERVERS[$A,0]^^}${cmd1color} Server is ${red}DOWN."
  fi
 echo -e "${nocolor}"
-done
+
+((A++))
+done 
+
+

@@ -1,0 +1,7 @@
+
+. /opt/galaxymediatools/functions/prechecknl
+
+curl -k "http://$PLEXIP:32400/servers?X-Plex-Token=$PLEXTOKEN" 2> /dev/null | grep 'Galaxy' | wc -l
+
+#curl -k "http://$PLEXIP:32400/status/sessions?X-Plex-Token=$PLEXTOKEN" 2> /dev/null | grep 'MediaContainer size=\"1\"' | wc -l
+
