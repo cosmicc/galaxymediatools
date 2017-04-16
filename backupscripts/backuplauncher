@@ -74,6 +74,11 @@ log "INFO" "Pictures Library backup starting..."
 /opt/galaxymediatools/backupscripts/backuppictures.exec
 FRESULT=$(backupcomplete "Pictures")
 
+starttimer2
+log "INFO" "File Library backup starting..."
+/opt/galaxymediatools/backupscripts/backupfiles.exec
+FRESULT=$(backupcomplete "File")
+
 ELAPSED3=$(elapsed3)
 log "INFO" "Backups on $MOUNT1 complete.  Elapsed: $ELAPSED3"
 
