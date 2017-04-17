@@ -41,8 +41,9 @@ wait
 ELAPSED2=$(elapsed2)
 log "INFO" "PlexComskip script complete. Elapsed: $ELAPSED2"
 
-if [ $WASSLEEPING -eq 1 ]; then
-log "INFO" "$T1NAME was originally sleeping, putting back to sleep"
+ISIDLE=`ssh $T1INFO "sudo /opt/galaxymediatools/functions/transidlecheck"`
+if [ $ISIDLE -eq 0 ]; then
+log "INFO" "$T1NAME putting back to sleep"
 ssh $T1INFO "sudo pm-suspend" & 
 fi
 

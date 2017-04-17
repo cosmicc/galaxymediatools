@@ -167,9 +167,12 @@ fi
 log "INFO" "<--- Master Backup script completed. Elapsed: $ELAPSED"
 sleep 10
 if [ "$1" != "-ns" ]; then
+ISIDLE=`/opt/galaxymediatools/functions/transidlecheck`
+if [ $ISIDLE -eq 0 ]; then
 if [ $SUS -eq 1 ]; then
 /usr/sbin/pm-suspend
 else
 /sbin/reboot
+fi
 fi
 fi
