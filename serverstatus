@@ -117,14 +117,14 @@ echo -e "${cmd1color}Checking ${servercolor}${SERVERS[$A,2]}${cmd1color} Server 
         echo -e "${cmd1color}TV Transcoding: ${blue}Idle${nocolor}"
       fi
       BACKUPS=`ssh $T1INFO 'sudo ps uxa | grep backuplauncher | wc -l'`
-      if [ $BACKUPS -gt 1 ]; then
+      if [ $BACKUPS -gt 2 ]; then
         echo -e "${cmd1color}USB Backups: ${cyan}RUNNING${nocolor}"
         ((FAILEDCOUNT++))
       else
         echo -e "${cmd1color}USB Backups: ${blue}Idle${nocolor}"
       fi
       DVR=`ssh $T1INFO 'sudo ps uxa | grep PlexComskip.py | wc -l'`
-      if [ $DVR -gt 1 ]; then
+      if [ $DVR -gt 2 ]; then
         echo -e "${cmd1color}DVR Transcoding: ${cyan}RUNNING${nocolor}"
         ((FAILEDCOUNT++))
       else

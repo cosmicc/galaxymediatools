@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ -d /var/lock/gtrans.lock ]; then echo 1; exit 1; fi
+BACKUPS=`sudo ps uxa | grep backuplauncher | wc -l`
+if [ $BACKUPS -gt 1 ]; then echo 1; exit 1; fi
+DVR=`sudo ps uxa | grep PlexComskip.py | wc -l`
+if [ $DVR -gt 1 ]; then echo 1; exit 1; fi
+SSCAN=`sudo ps uxa | grep securityscan | wc -l`
+if [ $SSCAN -gt 1 ]; then echo 1; exit 1; fi
+MAINT=`sudo ps uxa | grep galaxy_maintenance | wc -l`
+if [ $MAINT -gt 1 ]; then echo 1; exit 1; fi
+echo 0
+exit 0
