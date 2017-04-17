@@ -50,6 +50,8 @@ rewrite:
     artist Makaveli: 2Pac
     artist Stevie Ray Vaughan and Double Trouble: Stevie Ray Vaughan
     artist Prince \& The New Power Generation: Prince
+    artist Marilyn Manson and the Spooky Kids: Marilyn Manson
+    artist Satan on Fire: Marilyn Manson
 
 paths:
     default: %upper{%left{$albumartist_sort,1}}/%title{$albumartist_sort}/%title{$album}%if{$original_year, ($original_year),%if{$year, ($year)}}/$track - %title{$albumartist} - %title{$title}
