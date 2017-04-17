@@ -54,6 +54,7 @@ rewrite:
     artist John Coltrane Quartet: John Coltrane
     artist Satan on Fire: Marilyn Manson
     artist John Scofield Band: John Scofield
+    artist Infiniti: Juan Atkins
 
 paths:
     default: %upper{%left{$albumartist_sort,1}}/%title{$albumartist_sort}/%title{$album}%if{$original_year, ($original_year),%if{$year, ($year)}}/$track - %title{$albumartist} - %title{$title}
