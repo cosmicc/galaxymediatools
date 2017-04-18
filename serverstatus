@@ -103,7 +103,7 @@ echo -e "${cmd1color}Checking ${servercolor}${SERVERS[$A,2]}${cmd1color} Server 
         echo -e "${cmd1color}Plex Media Server: ${rred}NOT RUNNING${nocolor}"
       fi
        PDVR=`ssh $PLEXINFO 'sudo ps uxa | grep "Plex Transcoder -noaccurate_seek -i http://172.25.1.125" | wc -l'`
-      if [ $PDVR -gt 1 ]; then
+      if [ $PDVR -gt 2 ]; then
         echo -e "${cmd1color}Plex DVR: ${cyan}RECORDING${nocolor}"
       else
         echo -e "${cmd1color}Plex DVR: Not Recording${nocolor}"

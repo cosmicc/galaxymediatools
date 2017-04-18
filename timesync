@@ -2,7 +2,7 @@
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
-LOGF="/video/Incoming/logs/timesync.log"
+LOGF="/mnt/storage/video/Incoming/logs/timesync.log"
 
 if [ "$HOSTNAME" == "$MSNAME" ]; then
 log "INFO" "Refreshing Time Server $HOSTNAME..."
