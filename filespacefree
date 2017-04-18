@@ -32,7 +32,7 @@ PLEX=`ssh $PLEXINFO "df -h / | grep /"`
 MS=`df -h / | grep /`
 DS=`ssh $DSINFO "df -h / | grep /"`
 T1=`ssh $T1INFO "df -h / | grep /"`
-V1=`df -h | grep "/video"`
+V1=`df -h | grep "/mnt/storage"`
 
 IFS=' ' read -r -a PINFO <<< $PLEX
 IFS=' ' read -r -a MINFO <<< $MS

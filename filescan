@@ -13,7 +13,7 @@ then
  echo " "
 else
  log "ERROR" "/mnt/storage not mounted. Exiting."
- pushover "security" "NASscan Error: /video not mounted, cannot continue."
+ pushover "security" "NASscan Error: /mnt/storage not mounted, cannot continue."
  exit 1
 fi
 
