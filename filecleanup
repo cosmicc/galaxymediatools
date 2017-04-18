@@ -1,11 +1,11 @@
 #!/bin/bash
 
-if mount|grep "/video" > /dev/null; then
+if mount|grep "/mnt/storage" > /dev/null; then
 echo "File cleanup running..."
-MDIR="/video/Movies/"
+MDIR="/mnt/storage/video/Movies/"
 
-rm -fr /video/Incoming/process/tv/*
-rm -fr /video/Incoming/process/movies/*
+rm -fr /mnt/storage/video/Incoming/process/tv/*
+rm -fr /mnt/storage/video/Incoming/process/movies/*
 
 #find $MDIR -mindepth 2 -type f -print -exec mv {} . \;
 find $MDIR -type d -empty -exec rmdir {} \;
@@ -23,6 +23,6 @@ rm $MDIR*sample* >> /dev/null 2>&1
 rm $MDIR*unknown.ignore >> /dev/null 2>&1
 echo "File cleanup Complete."
 else
-echo "/video NOT MOUNTED!! Exiting."
+echo "/mnt/storage NOT MOUNTED!! Exiting."
 exit 1
 fi

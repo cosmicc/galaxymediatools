@@ -1,18 +1,18 @@
 #!/bin/bash
 
-if mount|grep "/video" > /dev/null; then
+if mount|grep "/mnt/storage" > /dev/null; then
 echo "File permission reset running..."
 
-chmod ugo+rw /music/process -R
-chmod ugo+rw /video/Incoming -R
+chmod ugo+rw /mnt/storage/music/process -R
+chmod ugo+rw /mnt/storage/video/Incoming -R
 if [ "$1" != "-l" ]; then
-chmod ugo+rw "/video/Recorded TV" -R
-chmod ugo+rw "/video/Movies" -R
-chmod ugo+rw "/video/TV Series" -R
+chmod ugo+rw "/mnt/storage/video/Recorded TV" -R
+chmod ugo+rw "/mnt/storage/video/Movies" -R
+chmod ugo+rw "/mnt/storage/video/TV Series" -R
 fi
 
 else
-echo "/video NOT MOUNTED!! Exiting."
+echo "/mnt/storage NOT MOUNTED!! Exiting."
 exit 1
 fi
 
