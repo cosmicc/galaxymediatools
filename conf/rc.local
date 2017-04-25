@@ -13,6 +13,7 @@
 . "/opt/galaxymediatools/functions/prechecknl"
 
 if [ "$HOSTNAME" == "$MSNAME" ]; then
+/usr/local/headphones//Headphones.py -q -d --datadir /opt/headphones --config /opt/headphones/config.ini
 nohup /opt/plexpy/PlexPy.py > /opt/plexpy/plexpy.log &
 fi
 

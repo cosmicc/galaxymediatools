@@ -5,7 +5,7 @@ echo "File permission reset running..."
 
 chmod ugo+rw /mnt/storage/music/process -R
 chmod ugo+rw /mnt/storage/video/Incoming -R
-if [ "$1" != "-l" ]; then
+if [ "$1" != "-l" ] || [ "$1" != "-n" ]; then
 chmod ugo+rw "/mnt/storage/video/Recorded TV" -R
 chmod ugo+rw "/mnt/storage/video/Movies" -R
 chmod ugo+rw "/mnt/storage/video/TV Series" -R
@@ -18,3 +18,6 @@ fi
 
 echo "File permission reset Complete."
 exit 0
+
+# add x to dirs not files:
+# find . -type d -exec chmod u+x {} \;
