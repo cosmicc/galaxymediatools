@@ -56,11 +56,11 @@ RUNCHECK1=`ps uxa | grep "galaxy_maintenance" | wc -l`
   ELAPSED2=$(elapsed2)
   log "INFO" "Freespace check complete. Elapsed: $ELAPSED2"
 
-  starttimer2
-  log "INFO" "Executing master backup script..."
-  /opt/galaxymediatools/backupstart &> /dev/null
-  ELAPSED2=$(elapsed2)
-  log "INFO" "Master backup script complete. Elapsed: $ELAPSED2 *This process branchs off"
+#  starttimer2
+#  log "INFO" "Executing master backup script..."
+#  /opt/galaxymediatools/backupstart &> /dev/null
+#  ELAPSED2=$(elapsed2)
+#  log "INFO" "Master backup script complete. Elapsed: $ELAPSED2 *This process branchs off"
 
   else
    log "WARN" "Maintenance script already running.  Not executing another session."
