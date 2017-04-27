@@ -32,7 +32,7 @@ LOOPCOUNT=$HOURLOOP
 fi
 done
 ELAPSED3=$((elapsed3))
-NEWST=$(HOURLOOP-1)
+NEWST=$((HOURLOOP-1))
 if [ $LOOPCOUNT -gt $NEWST ]; then
 log "ERROR" "Plex still busy after $WAITHOURS Hours. Skipping plex upgrade. Elapsed: $ELAPSED3"
 exit 1
