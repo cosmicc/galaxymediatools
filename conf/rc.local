@@ -12,6 +12,15 @@
 # By default this script does nothing.
 . "/opt/galaxymediatools/functions/prechecknl"
 
+
+if [ "$HOSTNAME" == "$PLEXNAME" ]; then
+ethtool -G ens160 rx 4096 tx 4096
+ethtool -G ens192 rx 4096 tx 4096 rx-jumbo 2048
+else
+ethtool -G eth0 rx 4096 tx 4096
+ethtool -G eth1 rx 4096 tx 4096 rx-jumbo 2048
+fi
+
 if [ "$HOSTNAME" == "$MSNAME" ]; then
 /usr/local/headphones//Headphones.py -q -d --datadir /opt/headphones --config /opt/headphones/config.ini
 nohup /opt/plexpy/PlexPy.py > /opt/plexpy/plexpy.log &
