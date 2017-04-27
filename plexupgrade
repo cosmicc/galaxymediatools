@@ -21,6 +21,8 @@ fi
 echo $PLEXBUSY
 }
 
+ALIVE=1
+
 starttimer
 log "INFO" "---> Starting Plex Media Server upgrade"
 starttimer3
@@ -30,6 +32,7 @@ echo $LOOPCOUNT
 PCHECK=$(checkplex)
 ((LOOPCOUNT++))
 if [ $PCHECK -eq 0 ]; then
+ALIVE=0
 LOOPCOUNT=$HOURLOOP
 else
 sleep 60
@@ -37,7 +40,7 @@ fi
 done
 ELAPSED3=$((elapsed3))
 NEWST=$((HOURLOOP-1))
-if [ $LOOPCOUNT -gt $NEWST ]; then
+if [ $ALIVE -eq 1 ]; then
 log "ERROR" "Plex still busy after $WAITHOURS Hours. Skipping plex upgrade. Elapsed: $ELAPSED3"
 exit 1
 fi
