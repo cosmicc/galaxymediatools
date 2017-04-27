@@ -24,11 +24,15 @@ echo $PLEXBUSY
 starttimer
 log "INFO" "---> Starting Plex Media Server upgrade"
 starttimer3
-HOURLOOP=$((WAITHOURS * 6))
+HOURLOOP=$((WAITHOURS * 60))
 until [ $LOOPCOUNT -eq $HOURLOOP ]; do
+echo $LOOPCOUNT
 PCHECK=$(checkplex)
+((LOOPCOUNT++))
 if [ $PCHECK -eq 0 ]; then
 LOOPCOUNT=$HOURLOOP
+else
+sleep 60
 fi
 done
 ELAPSED3=$((elapsed3))
