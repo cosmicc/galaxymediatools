@@ -196,7 +196,7 @@ fi
 j=$(($j+1))
 done
 
-rm -r $TRANSDIR/* &> /dev/null
+#rm -r $TRANSDIR/* &> /dev/null
 echo "Starting Plex server TV section full video analyze..."
 log "INFO" "Plex server full video analyze on $THISSERVER"
 
