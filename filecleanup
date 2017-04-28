@@ -4,8 +4,8 @@ if mount|grep "/mnt/storage" > /dev/null; then
 echo "File cleanup running..."
 MDIR="/mnt/storage/video/Movies/"
 
-rm -fr /mnt/storage/video/Incoming/process/tv/*
-rm -fr /mnt/storage/video/Incoming/process/movies/*
+#rm -fr /mnt/storage/video/Incoming/process/tv/*
+#rm -fr /mnt/storage/video/Incoming/process/movies/*
 
 #find $MDIR -mindepth 2 -type f -print -exec mv {} . \;
 find $MDIR -type d -empty -exec rmdir {} \;
