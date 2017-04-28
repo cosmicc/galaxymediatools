@@ -53,14 +53,14 @@ VFREE=${VINFO[3]}
 
 if [ $Q2 -ne 1 ]; then
 echo  " "
-echo "Plex Server ($PLEXNAME): $PFREE Free, $PPERC Available"
-echo "Manager Server ($MSNAME): $MFREE Free, $MPERC Available"
-echo "Download Server ($DSNAME): $DFREE Free, $DPERC Available"
-echo "Transcode Server ($T1NAME): $TFREE Free, $TPERC Available"
-echo "Storage Share: $VFREE Free, $VPERC Available"
+echo "Plex Server ($PLEXNAME): $PFREE Free, $PPERC Used"
+echo "Manager Server ($MSNAME): $MFREE Free, $MPERC Used"
+echo "Download Server ($DSNAME): $DFREE Free, $DPERC Used"
+echo "Transcode Server ($T1NAME): $TFREE Free, $TPERC Used"
+echo "Storage Share: $VFREE Free, $VPERC Used"
 echo " "
 fi
 
 if [ $NOTIFY -eq 1 ]; then
-pushover "security" "$PLEXNAME: $PFREE Free, $PPERC Available $MSNAME: $MFREE Free, $MPERC Available $DSNAME: $DFREE Free, $DPERC Available $T1NAME: $TFREE Free, $TPERC Available Storage: $VFREE Free, $VPERC Available"
+pushover "security" "$PLEXNAME: $PFREE Free, $PPERC Used    $MSNAME: $MFREE Free, $MPERC Used    $DSNAME: $DFREE Free, $DPERC Used    $T1NAME: $TFREE Free, $TPERC Used    Array: $VFREE Free, $VPERC Used"
 fi

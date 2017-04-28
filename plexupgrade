@@ -55,7 +55,7 @@ log "INFO" "Plexupdate Updates Complete. Elapsed: $ELAPSED2"
 
 starttimer2
 log "INFO" "Starting Plexupdate..."
-/opt/plexupdate/plexupdate.sh -d --notify-success --config /etc/plexupdate.conf -u &>> $LOGF
+/opt/plexupdate/plexupdate.sh -a -d --notify-success --config /etc/plexupdate.conf -u &>> $LOGF
 ELAPSED2=$(elapsed2)
 log "INFO" "Plexupdate complete. Elapsed: $ELAPSED2"
 
