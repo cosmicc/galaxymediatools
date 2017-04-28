@@ -32,6 +32,7 @@ LOGF="$LOGDIR/movietranscoder.log"
 echo "Script starting up"
 starttimer
 log "INFO" "---> Movie Transcoder Script Start"
+TRANSDIR=/TRANSCODE2
 if [ "$TRANSDIR" == "" ];then
 echo -e "${errorcolor}ERROR! TRANSDIR is null. Exiting."
 exit 1
