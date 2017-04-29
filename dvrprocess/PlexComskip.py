@@ -215,7 +215,8 @@ try:
   if input_size and 1.01 > float(output_size) / float(input_size) > 0.99:
     logging.info('Output file size was too similar (doesn\'t look like we did much); we won\'t replace the original: %s -> %s' % (sizeof_fmt(input_size), sizeof_fmt(output_size)))
     cleanup_and_exit(temp_dir, SAVE_ALWAYS)
-  elif input_size and 1.1 > float(output_size) / float(input_size) > 0.5:
+  else:
+  #elif input_size and 1.1 > float(output_size) / float(input_size) > 0.5:
     #
     #  attempting to add x264 compression to the stripped commercial file before overiding the origional
     #  ffmpeg -i inputfile.mkv -crf 18 -map 0 -acodec copy -scodec copy -c:v libx264 -threads 0 -preset veryslow outputfile.mkv
@@ -232,7 +233,7 @@ try:
     # shutil.copy(os.path.join(temp_dir, video_basename), original_video_dir)
     cleanup_and_exit(temp_dir, SAVE_ALWAYS)
     cleanup_and_exit(temp_dir_b, SAVE_ALWAYS)
-  #else:
+#  else:
   #  logging.info('Output file size looked wonky (too big or too small); we won\'t replace the original: %s -> %s' % (sizeof_fmt(input_size), sizeof_fmt(output_size)))
   #  cleanup_and_exit(temp_dir, SAVE_ALWAYS or SAVE_FORENSICS)
   #  cleanup_and_exit(temp_dir_b, SAVE_ALWAYS or SAVE_FORENSICS)
