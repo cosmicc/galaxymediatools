@@ -1,4 +1,4 @@
-directory: /music/process/sorted
+directory: /mnt/storage/music
 library: /video/Other/beets/musiclibrary.dbi
 
 pluginpath:
@@ -7,7 +7,7 @@ pluginpath:
 import:
     move: yes
     write: yes
-    log: /video/Incoming/logs/beetsimporter.log
+    log: /mnt/storage/video/Incoming/logs/beetsimporter.log
 
 original_date: yes
 
