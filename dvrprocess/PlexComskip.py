@@ -232,11 +232,11 @@ try:
     # shutil.copy(os.path.join(temp_dir, video_basename), original_video_dir)
     cleanup_and_exit(temp_dir, SAVE_ALWAYS)
     cleanup_and_exit(temp_dir_b, SAVE_ALWAYS)
-  else:
-    logging.info('Output file size looked wonky (too big or too small); we won\'t replace the original: %s -> %s' % (sizeof_fmt(input_size), sizeof_fmt(output_size)))
-    cleanup_and_exit(temp_dir, SAVE_ALWAYS or SAVE_FORENSICS)
-    cleanup_and_exit(temp_dir_b, SAVE_ALWAYS or SAVE_FORENSICS)
-except Exception, e:
-  logging.error('Something went wrong during sanity check: %s' % e)
-  cleanup_and_exit(temp_dir, SAVE_ALWAYS or SAVE_FORENSICS)
-  cleanup_and_exit(temp_dir_b, SAVE_ALWAYS or SAVE_FORENSICS)
+  #else:
+  #  logging.info('Output file size looked wonky (too big or too small); we won\'t replace the original: %s -> %s' % (sizeof_fmt(input_size), sizeof_fmt(output_size)))
+  #  cleanup_and_exit(temp_dir, SAVE_ALWAYS or SAVE_FORENSICS)
+  #  cleanup_and_exit(temp_dir_b, SAVE_ALWAYS or SAVE_FORENSICS)
+#except Exception, e:
+#  logging.error('Something went wrong during sanity check: %s' % e)
+#  cleanup_and_exit(temp_dir, SAVE_ALWAYS or SAVE_FORENSICS)
+#  cleanup_and_exit(temp_dir_b, SAVE_ALWAYS or SAVE_FORENSICS)
