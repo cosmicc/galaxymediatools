@@ -144,6 +144,9 @@ fi
   mv -f "$fwewp" "$TRASHDIR"
   fi
   rm -r "$TRANSDIR/$fwenp" &> /dev/null
+
+  curl "http://172.25.1.26:32400/library/sections/$PLEXMCAT/refresh?X-Plex-Token=$PLEXTOKEN"
+
   ELAPSED=$(elapsed)
   log "INFO" "<--- Movie Transcoder Script End - Elapsed Time: $ELAPSED"
   echo "Script ended."
