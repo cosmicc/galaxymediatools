@@ -6,8 +6,8 @@ err_report() {
     exit
 }
 
-LOGF="/video/Incoming/logs/musictranscoder.log"
-INDEXFIL="/video/Incoming/logs/musictranscoder.idx"
+LOGF="/mnt/storage/video/Incoming/logs/musictranscoder.log"
+INDEXFIL="/mnt/storage/video/Incoming/logs/musictranscoder.idx"
 TRANSDIR="/TRANSCODE"
 
 if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
@@ -35,9 +35,9 @@ if [ "$1" != "-d" ] && [ "$2" != "-d" ] && [ "$3" != "-d" ] && [ "$4" != "-d" ];
 
 trap 'err_report $LINENO' SIGHUP SIGINT SIGTERM
 
-SOURCEDIR="/music/process/unsorted"
+SOURCEDIR="/mnt/storage/video/Incoming/musicprocess/unsorted"
 echo -e "${magenta}Warming Up...${nocolor}"
-chmod ugo+rwx /music/process -R
+chmod ugo+rwx /mnt/storage/video/Incoming/musicprocess -R
 else
 if [ "$1" == "-d" ]; then SOURCEDIR="$2"; fi
 if [ "$2" == "-d" ]; then SOURCEDIR="$3"; fi
@@ -69,7 +69,7 @@ echo -e "${cyan}Fixing filenames...${nocolor}"
 log "INFO" "fixing filenames..."
 find $SOURCEDIR -type f \( -name "*,*.wma" -o -name "*,*.Wma" -o -name "*,*.WMA" \) -exec /opt/galaxymediatools/functions/filefixname -rc {} \;
 find $SOURCEDIR -type f \( -name "*.Mp3" -o -name "*.MP3" \) -exec /opt/galaxymediatools/functions/filefixname -le {} \;
-find $SOURCEDIR -type f \( -name "*.avi" -o -name "*.mkv" -o -name "*.Avi" -o -name "*.AVI" -o -name "*.mpg"  \) -exec mv -f {} /music/process/failed_id/videos \;
+find $SOURCEDIR -type f \( -name "*.avi" -o -name "*.mkv" -o -name "*.Avi" -o -name "*.AVI" -o -name "*.mpg"  \) -exec mv -f {} /mnt/storage/video/Incoming/musicprocess/failed_id/videos \;
 ELAPSED3=$(elapsed3)
 log "INFO" "Completed fixing filenames. Elapsed: $ELAPSED3"
 
@@ -208,9 +208,9 @@ exit 1
 fi 
 
  if [[ $BAUTO ]]; then
-   beet -c /opt/galaxymediatools/conf/beetsconfig_auto.yaml -l /video/Incoming/logs/beetsimport_auto.log import -q $SOURCEDIR &>> $LOGF
+   beet -c /opt/galaxymediatools/conf/beetsconfig_auto.yaml -l /mnt/storage/video/Incoming/logs/beetsimport_auto.log import -q $SOURCEDIR &>> $LOGF
  else
-   beet -c /opt/galaxymediatools/conf/beetsconfig.yaml -l /video/Incoming/logs/beetsimport_manual.log import $SOURCEDIR 
+   beet -c /opt/galaxymediatools/conf/beetsconfig.yaml -l /mnt/storage/video/Incoming/logs/beetsimport_manual.log import $SOURCEDIR 
  fi
  
  if [ "$?" != "0" ]; then
@@ -220,10 +220,10 @@ fi
     ELAPSED3=$(elapsed3)
     log "INFO" "Beets completed successfully. Elapsed: $ELAPSED3"    
   if [[ $BAUTO ]]; then
-    log "INFO" "Moving remaining files to /music/process/failed_id for further examination"
+    log "INFO" "Moving remaining files to /video/Incoming/musicprocess/failed_id for further examination"
     starttimer3
     sync
-    rsync -r --progress $SOURCEDIR/* /music/process/failed_id
+    rsync -r --progress $SOURCEDIR/* /mnt/storage/video/Incoming/musicprocess/failed_id
     if [ "$?" == "0" ]; then
     rm -r $SOURCEDIR/*
     else
@@ -233,16 +233,16 @@ fi
     exit 1
     fi
     ELAPSED3=$(elapsed3)
-    log "INFO" "Remaining files moved to /music/process/failed_id. Elapsed: $ELAPSED3"
+    log "INFO" "Remaining files moved to /video/Incoming/musicprocess/failed_id. Elapsed: $ELAPSED3"
   else
-    echo -e "${rred}Move all id failed files to /music/process/failed_id?${nocolor} "
+    echo -e "${rred}Move all id failed files to /video/Incoming/musicprocess/failed_id?${nocolor} "
     read -r -p "[y/N] " response
     response=${response,,}    # tolower
     if [[ $response =~ ^(yes|y)$ ]]; then
-     log "INFO" "Moving remaining files to /music/process/failed_id for further examination"
+     log "INFO" "Moving remaining files to /video/Incoming/musicprocess/failed_id for further examination"
      starttimer3
      sync
-    rsync -r --progress $SOURCEDIR/* /music/process/failed_id
+    rsync -r --progress $SOURCEDIR/* /mnt/storage/video/Incoming/musicprocess/failed_id
     if [ "$?" == "0" ]; then
     rm -r $SOURCEDIR/*
     else
@@ -252,9 +252,9 @@ fi
     exit 1
     fi
      ELAPSED3=$(elapsed3)
-     log "INFO" "Remaining files moved to /music/process/failed_id. Elapsed: $ELAPSED3"
+     log "INFO" "Remaining files moved to /video/Incoming/musicprocess/failed_id. Elapsed: $ELAPSED3"
     else
-     log "WARN" "NOT moving remaining files to /music/process/failed_id"
+     log "WARN" "NOT moving remaining files to /video/Incoming/musicprocess/failed_id"
     fi
   fi
  fi
@@ -262,17 +262,17 @@ else
 log "INFO" "Skipping music identification due to command line option -nid. Elapsed: $ELAPSED2"
 fi
 
-ANYLEFT2=`find "/music/process/sorted" -type f ! -name "*.mp3" | wc -l`
+ANYLEFT2=`find "/mnt/storage/music" -type f ! -name "*.mp3" | wc -l`
 if [ $ANYLEFT2 -ne 0 ]; then
-find "/music/process/sorted" -type f ! -name "*.mp3"
+find "/mnt/storage/music" -type f ! -name "*.mp3"
 echo " "
-echo -e "${rred}Erroneous junk files found in /music/process/sorted.  Fix This!!${nocolor}"
-log "WARN" "Erroneous junk files found in /music/process/sorted.  Fix This!!"
+echo -e "${rred}Erroneous junk files found in /music.  Fix This!!${nocolor}"
+log "WARN" "Erroneous junk files found in /music.  Fix This!!"
 fi
 
 
 echo -e "${magenta}Cooling Down...${nocolor}"
-chmod ugo+rwx /music/process -R
+chmod ugo+rwx /mnt/storage/video/Incoming/musicprocess -R
 
 sync
 ELAPSED=$(elapsed)
