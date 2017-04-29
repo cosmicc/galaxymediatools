@@ -34,7 +34,7 @@ done
 starttimer2
 log "INFO" "Executing remote PlexComskip script"
 
-ssh $T1INFO "sudo /opt/galaxymediatools/dvrprocess/PlexComskip.py \"$1\"" &
+sudo ssh $T1INFO "sudo /opt/galaxymediatools/dvrprocess/PlexComskip.py \"$1\"" &
 
 wait
 
