@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOGF="/video/Incoming/logs/dvrpostprocess.log"
+LOGF="/mnt/storage/video/Incoming/logs/dvrpostprocess.log"
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
