@@ -11,7 +11,8 @@ echo "$1 + $2"
 echo "to"
 echo "$DIR/$FNPNE.merged.$EXT"
 
-mencoder -quiet -oac copy -ovc copy "$1" "$2" -o "$DIR/$FNPNE.merged.$EXT"
+mencoder -quiet -ni "$1" "$2" -o "$DIR/$FNPNE.merged.$EXT"
+#mencoder -quiet -oac copy -ovc copy "$1" "$2" -ni -o "$DIR/$FNPNE.merged.$EXT"
 
 if [ $? -ne 0 ]; then
   echo "MERGE ERROR!! Keeping original files"

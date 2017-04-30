@@ -1,15 +1,16 @@
 #!/bin/bash
 
-LOGF="/export/incoming/logs/backup_music.log"
+LOGF="/export/incoming/logs/backup_ufc.log"
 LOGM="/export/incoming/logs/backupmaster.log"
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
-LIBRARY="Music"
+LIBRARY="Documentaries"
 MOUNT=$MOUNT1
 DUUID=$DUUID1
-SDIR="/export/storage/music"
+SDIR="/export/storage/video/Documentaries"
 DDIR="$MOUNT1"
-MINFILES=100000
+MINFILES=10
 
 source "/opt/galaxymediatools/backupscripts/backup.exec"
+

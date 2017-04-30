@@ -1,17 +1,15 @@
 #!/bin/bash
 
-# Find UUID: ls -l /dev/disk/by-uuid 
-
-LOGF="/video/Incoming/logs/backup_tv.log"
-LOGM="/video/Incoming/logs/backupmaster.log"
+LOGF="/export/incoming/logs/backup_tv.log"
+LOGM="/export/incoming/logs/backupmaster.log"
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
 LIBRARY="TV Show"
 MOUNT=$MOUNT2
 DUUID=$DUUID2
-SDIR="/mnt/storage/video/TV Series/"
-DDIR="$MOUNT/TV Shows"
+SDIR="/export/storage/video/TV Series"
+DDIR="$MOUNT2"
 MINFILES=18000
 
 source "/opt/galaxymediatools/backupscripts/backup.exec"

@@ -2,7 +2,7 @@
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
-LOGF="/video/Incoming/logs/backupmaster.log"
+LOGF="/export/incoming/logs/backupmaster.log"
 
 backupcomplete() {
 ELAPSED2=$(elapsed2)
@@ -30,19 +30,19 @@ log "WARN" "Backup2 was mounted already, unmouting for health checks"
 umount $MOUNT2
 fi
 
-starttimer3
-log "INFO" "SMART drive check starting on $MOUNT1"
-smartctl -T permissive -a -d sat,auto /dev/disk/by-uuid/$DUUID1 &>> $LOGF
-ELAPSED3=$(elapsed3)
-log "INFO" "SMART drive check complete on $MOUNT1 Elapsed: $ELAPSED3"
+#starttimer3
+#log "INFO" "SMART drive check starting on $MOUNT1"
+#smartctl -T permissive -a -d sat,auto /dev/disk/by-uuid/$DUUID1 &>> $LOGF
+#ELAPSED3=$(elapsed3)
+#log "INFO" "SMART drive check complete on $MOUNT1 Elapsed: $ELAPSED3"
 
 starttimer3
 log "INFO" "Running NTFS Fix on $MOUNT1"
-ntfsfix /dev/disk/by-uuid/$DUUID1 &>> $LOGF 
+ntfsfix $DUUID1 &>> $LOGF 
 ELAPSED3=$(elapsed3)
 log "INFO" "NTFS Fix complete on $MOUNT1 Elapsed: $ELAPSED3"
 
-if /bin/mount UUID=$DUUID1 "$MOUNT1"; then
+if /bin/mount "$MOUNT1"; then
 starttimer3
 starttimer2
 log "INFO" "Logs backup starting..."
@@ -60,9 +60,19 @@ log "INFO" "Movie Library backup starting..."
 MRESULT=$(backupcomplete "Movie")
 
 starttimer2
+log "INFO" "Documentary Library backup starting..."
+/opt/galaxymediatools/backupscripts/backupdocumentaries.exec
+FRESULT=$(backupcomplete "Documentary")
+
+starttimer2
 log "INFO" "UFC Event Library backup starting..."
 /opt/galaxymediatools/backupscripts/backupufc.exec
 URESULT=$(backupcomplete "UFC Events")
+
+starttimer2
+log "INFO" "Short Film Library backup starting..."
+/opt/galaxymediatools/backupscripts/backupshortfilms.exec
+FRESULT=$(backupcomplete "Short Film")
 
 starttimer2
 log "INFO" "Music Library backup starting..."
@@ -79,6 +89,11 @@ log "INFO" "File Library backup starting..."
 /opt/galaxymediatools/backupscripts/backupfiles.exec
 FRESULT=$(backupcomplete "File")
 
+starttimer2
+log "INFO" "Logs backup starting..."
+/opt/galaxymediatools/backupscripts/backuplogs.exec
+FRESULT=$(backupcomplete "Logs")
+
 ELAPSED3=$(elapsed3)
 log "INFO" "Backups on $MOUNT1 complete.  Elapsed: $ELAPSED3"
 
@@ -94,19 +109,19 @@ else
  pushover "backup" "Backup Error, Backup1 not mounting!"
 fi
 
-starttimer3
-log "INFO" "SMART drive check starting on $MOUNT2"
-smartctl -T permissive -a -d sat,auto /dev/disk/by-uuid/$DUUID2 &>> $LOGF
-ELAPSED3=$(elapsed3)
-log "INFO" "SMART drive check complete on $MOUNT2 Elapsed: $ELAPSED3"
+#starttimer3
+#log "INFO" "SMART drive check starting on $MOUNT2"
+#smartctl -T permissive -a -d sat,auto /dev/disk/by-uuid/$DUUID2 &>> $LOGF
+#ELAPSED3=$(elapsed3)
+#log "INFO" "SMART drive check complete on $MOUNT2 Elapsed: $ELAPSED3"
 
 starttimer3
 log "INFO" "Running NTFS Fix on $MOUNT2"
-ntfsfix /dev/disk/by-uuid/$DUUID2 &>> $LOGF
+ntfsfix $DUUID2 &>> $LOGF
 ELAPSED3=$(elapsed3)
 log "INFO" "NTFS Fix complete on $MOUNT2 Elapsed: $ELAPSED3"
 
-if /bin/mount UUID=$DUUID2 "$MOUNT2"; then
+if /bin/mount "$MOUNT2"; then
 starttimer3
 starttimer2
 log "INFO" "TV Show Library backup starting..."
@@ -133,22 +148,6 @@ else
  pushover "backup" "Backup Error, Backup2 not mounting!"
 fi
 
-if [ -f /var/run/reboot-required ]; then
-  if [ "$1" != "-ns" ]; then
-  log "WARN" "Reboot required. Rebooting..."
-  else
-  log "WARN" "Reboot required. But skipping due to NO SLEEP option"
-  fi
-  SUS=2
-else
-  if [ "$1" != "-ns" ]; then
-  log "WARN" "No Reboot needed. Suspending machine."
-  else
-  log "INFO" "No Reboot needed. But not Suspending machine due to NO SLEEP option"
-  fi
-SUS=1
-fi
-
 log "INFO" "USB drive $MOUNT1 - $D1FREE Free, $D1PERC Used."
 log "INFO" "USB drive $MOUNT2 - $D2FREE Free, $D2PERC Used."
 
@@ -165,14 +164,3 @@ log "INFO" "Backups completed with errors! $ERRORED Libraries failed. Elapsed: $
 pushover "backup" "Backups completed with errors! $ERRORED Libraries have failed!  Backup1 $D1FREE Free, $D1PERC Used Backup2 $D2FREE Free, $D2PERC Used Elapsed: $ELAPSED"
 fi
 log "INFO" "<--- Master Backup script completed. Elapsed: $ELAPSED"
-sleep 10
-if [ "$1" != "-ns" ]; then
-ISIDLE=`/opt/galaxymediatools/functions/transidlecheck`
-if [ $ISIDLE -eq 0 ]; then
-if [ $SUS -eq 1 ]; then
-/usr/sbin/pm-suspend
-else
-/sbin/reboot
-fi
-fi
-fi

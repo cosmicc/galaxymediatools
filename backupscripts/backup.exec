@@ -14,9 +14,9 @@ else
  log "INFO" "Found $FILECOUNT files in library to backup."
 fi
   log "INFO" "Executing rsync..."
-  /usr/bin/rsync -arhv --stats --delete "$SDIR" "$DDIR" 2>&1 | tee -a $LOGF
+  /usr/bin/rsync -arhv --stats --delete --append-verify "$SDIR" "$DDIR" 2>&1 | tee -a $LOGF
  else
-  /bin/mount UUID=$DUUID $MOUNT
+  /bin/mount $MOUNT
   if /bin/mountpoint -q $MOUNT
    then
   FILECOUNT=`ls -1qR "$SDIR" | wc -l`
@@ -28,11 +28,11 @@ else
  log "INFO" "Found $FILECOUNT files in library to backup."
 fi
     log "INFO" "Executing rsync..."
-    /usr/bin/rsync -arhv --stats --delete "$SDIR" "$DDIR" 2>&1 | tee -a $LOGF
+    /usr/bin/rsync -arhv --stats --delete --append-verify "$SDIR" "$DDIR" 2>&1 | tee -a $LOGF
    else
     log "INFO" "Backup Drive $MOUNT not mounted. Exiting"
     log "INFO" "Backup Drive $MOUNT not mounted. Exiting $LIBRARY library backup." "$LOGM"
-    #pushover "backup" "$LIBRRY Library Backup ERROR! $MOUNT Not Mounted!"
+    pushover "backup" "$LIBRRY Library Backup ERROR! $MOUNT Not Mounted!"
  log "INFO" "Ended $LIBRARY Library backup"
    exit 1
    fi
