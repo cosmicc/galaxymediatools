@@ -2,6 +2,6 @@
 
 #source "/opt/galaxymediatools/functions/prechecknl"
 
-cp $LOGDIR/galaxymediatools.conf /etc/galaxymediatools.conf -f
+cp /mnt/storage/video/Incoming/logs/galaxymediatools.conf /etc/galaxymediatools.conf -f
 
 echo "Config file copied."
