@@ -18,6 +18,20 @@ fi
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
+if [ "$1" == "quantum" ] || [ "$1" == "all" ]; then
+ fping -c1 -t300 172.25.1.99 2>/dev/null 1>/dev/null
+ if [ "$?" == "0" ]; then
+  echo "Quantum already running."
+ else
+  echo "Waking workstation Quantum..."
+  wakeonlan "D0:50:99:04:E3:1A" 2>/dev/null 1>/dev/null
+  sleep 3
+  echo -e "Workstation Quantum started."
+  exit 0
+ fi
+fi
+
+
 if [ "$1" == "$T1NAME" ] || [ "$1" == "all" ]; then
  fping -c1 -t300 $T1IP 2>/dev/null 1>/dev/null
  if [ "$?" == "0" ]; then
