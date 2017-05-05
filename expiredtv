@@ -4,18 +4,18 @@ LOGF="/video/Incoming/logs/expiredtv.log"
 
 source "/opt/galaxymediatools/functions/prechecknl"
 
-# Keep 14 days worth
+# Keep 7 days worth
 TV7DAY[0]="/video/TV Series/Vice News Tonight"
-TV7DAY[1]="/video/Recorded TV/Jimmy Kimmel Live (2003)"
-TV7DAY[2]="/video/Recorded TV/The Tonight Show Starring Jimmy Fallon (2014)"
-TV7DAY[3]="/video/Recorded TV/NBC Nightly News (1970)"
+#TV7DAY[1]="/video/Recorded TV/Jimmy Kimmel Live (2003)"
+#TV7DAY[2]="/video/Recorded TV/The Tonight Show Starring Jimmy Fallon (2014)"
+#TV7DAY[3]="/video/Recorded TV/NBC Nightly News (1970)"
 
 # keep 1 day worth
-TV1DAY[0]="/video/Recorded TV/Local 4 News at 4 (2007)"
-TV1DAY[1]="/video/Recorded TV/Local 4 News at 6 (2005)"
-TV1DAY[2]="/video/Recorded TV/Local 4 News at 11 (2006)"
-TV1DAY[3]="/video/Recorded TV/Local 4 News at Noon (2014)"
-TV1DAY[4]="/video/Recorded TV/Local 4 News Today at 6AM (2013)"
+#TV1DAY[0]="/video/Recorded TV/Local 4 News at 4 (2007)"
+#TV1DAY[1]="/video/Recorded TV/Local 4 News at 6 (2005)"
+#TV1DAY[2]="/video/Recorded TV/Local 4 News at 11 (2006)"
+#TV1DAY[3]="/video/Recorded TV/Local 4 News at Noon (2014)"
+#TV1DAY[4]="/video/Recorded TV/Local 4 News Today at 6AM (2013)"
 
 # begin script
 starttimer
