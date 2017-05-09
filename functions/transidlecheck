@@ -1,8 +1,6 @@
 #!/bin/bash
 
 if [ -d /var/lock/gtrans.lock ]; then echo 1; exit 1; fi
-BACKUPS=`sudo ps uxa | grep backuplauncher | wc -l`
-if [ $BACKUPS -gt 1 ]; then echo 1; exit 1; fi
 DVR=`sudo ps uxa | grep PlexComskip.py | wc -l`
 if [ $DVR -gt 1 ]; then echo 1; exit 1; fi
 SSCAN=`sudo ps uxa | grep securityscan | wc -l`
