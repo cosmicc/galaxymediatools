@@ -51,7 +51,7 @@ TFREE=${TINFO[3]}
 VPERC=${VINFO[4]}
 VFREE=${VINFO[3]}
 
-if [[ -z $Q ]]); then
+if [[ -z $Q ]]; then
 echo  " "
 echo "Plex Server ($PLEXNAME): $PFREE Free, $PPERC Used"
 echo "Manager Server ($MSNAME): $MFREE Free, $MPERC Used"
