@@ -52,7 +52,7 @@ if [ -f "$LOGDIR/$INDXFIL" ]; then rm -f $LOGDIR/$INDXFIL; fi
 if [[ $CURD ]]; then
 FINDVARS="\"$CURD\" -type f ! -name *.ntrans.* ! -name *.trans.* -size +100M"
 else
-FINDVARS="\"$TVDIR\" -type f ! -path \"$EXPATH1/*\" ! -path \"$EXPATH2/*\" ! -path \"$EXPATH3/*\" ! -path \"$EXPATH4/*\" ! -path \"$EXPATH5/*\" ! -path \"$EXPATH6/*\" ! -path \"$EXPATH7/*\" ! -path \"$EXPATH8/*\" ! -path \"$EXPATH9/*\" ! -path \"$EXPATH10/*\" ! -name *.ntrans.* ! -name *.trans.* $ATTRANS"
+FINDVARS="\"$TVDIR\" -type f ! -path \"$EXPATH1/*\" ! -path \"$EXPATH2/*\" ! -path \"$EXPATH3/*\" ! -path \"$EXPATH4/*\" ! -path \"$EXPATH5/*\" ! -path \"$EXPATH6/*\" ! -path \"$EXPATH7/*\" ! -path \"$EXPATH8/*\" ! -path \"$EXPATH9/*\" ! -path \"$EXPATH10/*\" ! -path \"$EXPATH11/*\" ! -name *.ntrans.* ! -name *.trans.* $ATTRANS"
 fi
 FCNT=`eval /usr/bin/find "$FINDVARS" | wc -l`
 

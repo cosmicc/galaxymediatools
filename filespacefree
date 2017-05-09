@@ -24,7 +24,7 @@ if [ "$1" == "-n" ] || [ "$2" == "-n" ] || [ "$3" == "-n" ] || [ "$4" == "-n" ] 
 
 ## MAIN PROGRAM:
 
-if [ $Q1 -ne 1 ] || [ $Q2 -ne 1 ]; then
+if [[ -z $Q1 ]] || [[ -z $Q2 ]]; then
 echo "Gathering data..."
 fi
 
@@ -51,7 +51,7 @@ TFREE=${TINFO[3]}
 VPERC=${VINFO[4]}
 VFREE=${VINFO[3]}
 
-if [ $Q2 -ne 1 ]; then
+if [[ -z $Q ]]); then
 echo  " "
 echo "Plex Server ($PLEXNAME): $PFREE Free, $PPERC Used"
 echo "Manager Server ($MSNAME): $MFREE Free, $MPERC Used"
@@ -62,5 +62,5 @@ echo " "
 fi
 
 if [ $NOTIFY -eq 1 ]; then
-pushover "security" "$PLEXNAME: $PFREE Free, $PPERC Used    $MSNAME: $MFREE Free, $MPERC Used    $DSNAME: $DFREE Free, $DPERC Used    $T1NAME: $TFREE Free, $TPERC Used    Array: $VFREE Free, $VPERC Used"
+pushover "security" "$PLEXNAME:  $PFREE Free - $PPERC Used    $MSNAME:  $MFREE Free - $MPERC Used     $DSNAME: $DFREE Free $DPERC Used     $T1NAME:  $TFREE Free - $TPERC Used      Array:  $VFREE Free - $VPERC Used"
 fi
