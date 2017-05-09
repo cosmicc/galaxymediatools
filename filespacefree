@@ -29,16 +29,18 @@ echo "Gathering data..."
 fi
 
 PLEX=`ssh $PLEXINFO "df -h / | grep /"`
-MS=`df -h / | grep /`
+MS=`ssh $MSINFO "df -h / | grep /"`
 DS=`ssh $DSINFO "df -h / | grep /"`
-T1=`ssh $T1INFO "df -h / | grep /"`
+T1=`df -h / | grep /`
 V1=`df -h | grep "/mnt/storage"`
+I1=`df -h | grep "/mnt/incoming"`
 
 IFS=' ' read -r -a PINFO <<< $PLEX
 IFS=' ' read -r -a MINFO <<< $MS
 IFS=' ' read -r -a DINFO <<< $DS
 IFS=' ' read -r -a TINFO <<< $T1
 IFS=' ' read -r -a VINFO <<< $V1
+IFS=' ' read -r -a IINFO <<< $I1
 
 PPERC=${PINFO[4]}
 PFREE=${PINFO[3]}
@@ -50,6 +52,8 @@ TPERC=${TINFO[4]}
 TFREE=${TINFO[3]}
 VPERC=${VINFO[4]}
 VFREE=${VINFO[3]}
+IPERC=${IINFO[4]}
+IFREE=${IINFO[3]}
 
 if [[ -z $Q ]]; then
 echo  " "
@@ -58,9 +62,10 @@ echo "Manager Server ($MSNAME): $MFREE Free, $MPERC Used"
 echo "Download Server ($DSNAME): $DFREE Free, $DPERC Used"
 echo "Transcode Server ($T1NAME): $TFREE Free, $TPERC Used"
 echo "Storage Share: $VFREE Free, $VPERC Used"
+echo "Incoming Share: $IFREE Free, $IPERC Used"
 echo " "
 fi
 
 if [ $NOTIFY -eq 1 ]; then
-pushover "security" "$PLEXNAME:  $PFREE Free - $PPERC Used    $MSNAME:  $MFREE Free - $MPERC Used     $DSNAME: $DFREE Free $DPERC Used     $T1NAME:  $TFREE Free - $TPERC Used      Array:  $VFREE Free - $VPERC Used"
+pushover "security" "$PLEXNAME:  $PFREE Free - $PPERC Used    $MSNAME:  $MFREE Free - $MPERC Used     $DSNAME: $DFREE Free $DPERC Used     $T1NAME:  $TFREE Free - $TPERC Used      Incoming:  $IFREE Free $IPERC Used Array:  $VFREE Free - $VPERC Used"
 fi
