@@ -42,7 +42,7 @@ ELAPSED2=$(elapsed2)
 log "INFO" "PlexComskip script complete. Elapsed: $ELAPSED2"
 
 sleep 10
-ssh $T1INFO "sudo /opt/galaxymediatools/functions/transidlecheck -s" &
+ssh $T1INFO "sudo /opt/galaxymediatools/functions/transidlecheck -s -w" &
 
 ELAPSED=$(elapsed)
 log "INFO" "<--- Completed Recorded TV post process. Elapsed: $ELAPSED"

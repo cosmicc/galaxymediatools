@@ -56,6 +56,7 @@ RUNCHECK1=`ps uxa | grep "galaxy_maintenance" | wc -l`
   ELAPSED2=$(elapsed2)
   log "INFO" "Freespace check complete. Elapsed: $ELAPSED2"
 
+/opt/galaxymediatools/functions/transidlecheck -s -w &
 #  starttimer2
 #  log "INFO" "Executing master backup script..."
 #  /opt/galaxymediatools/backupstart &> /dev/null
