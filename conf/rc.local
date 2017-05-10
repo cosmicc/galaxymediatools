@@ -33,7 +33,7 @@ fi
 /opt/galaxymediatools/timesync -b
 
 if [ "$HOSTNAME" == "$T1NAME" ]; then
-/usr/sbin/pm-suspend
+/opt/galaxymediatools/functions/transidlecheck -s -w &
 fi
 
 exit 0

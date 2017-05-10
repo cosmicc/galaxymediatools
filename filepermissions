@@ -4,7 +4,7 @@ if mount|grep "/mnt/storage" > /dev/null; then
 echo "File permission reset running..."
 
 chmod ugo+rw /mnt/storage/music/process -R
-chmod ugo+rw /mnt/storage/video/Incoming -R
+chmod ugo+rw /mnt/incoming -R
 if [ "$1" != "-l" ] || [ "$1" != "-n" ]; then
 chmod ugo+rw "/mnt/storage/video/Recorded TV" -R
 chmod ugo+rw "/mnt/storage/video/Movies" -R
