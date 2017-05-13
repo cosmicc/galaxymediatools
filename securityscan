@@ -52,7 +52,7 @@ fi
 log "INFO" "Running OS updates..."
 starttimer2
 apt-get -q update &>> $LOGF
-apt-get upgrade -y --allow-downgrades --allow-remove-essential --allow-change-held-packages &>> $LOGF
+apt-get upgrade -y &>> $LOGF
 apt-get autoremove -y &>> $LOGF
 ELAPSED2=$(elapsed2)
 log "INFO" "OS Updates Complete. Elapsed: $ELAPSED2"
