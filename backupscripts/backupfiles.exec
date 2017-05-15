@@ -6,10 +6,10 @@ LOGM="/export/incoming/logs/backupmaster.log"
 source "/opt/galaxymediatools/functions/prechecknl"
 
 LIBRARY="File"
-MOUNT=$MOUNT1
-DUUID=$DUUID1
+MOUNT=$MOUNT2
+DUUID=$DUUID2
 SDIR="/export/storage/files"
-DDIR="$MOUNT1"
+DDIR="$MOUNT2"
 MINFILES=500
 
 source "/opt/galaxymediatools/backupscripts/backup.exec"

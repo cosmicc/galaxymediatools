@@ -85,11 +85,6 @@ log "INFO" "Pictures Library backup starting..."
 FRESULT=$(backupcomplete "Pictures")
 
 starttimer2
-log "INFO" "File Library backup starting..."
-/opt/galaxymediatools/backupscripts/backupfiles.exec
-FRESULT=$(backupcomplete "File")
-
-starttimer2
 log "INFO" "Other files backup starting..."
 /opt/galaxymediatools/backupscripts/backupother.exec
 FRESULT=$(backupcomplete "Other")
@@ -137,6 +132,11 @@ starttimer2
 log "INFO" "Recorded TV Library backup starting..."
 /opt/galaxymediatools/backupscripts/backuprecordedtv.exec
 RRESULT=$(backupcomplete "Recorded TV")
+
+starttimer2
+log "INFO" "File Library backup starting..."
+/opt/galaxymediatools/backupscripts/backupfiles.exec
+FRESULT=$(backupcomplete "File")
 
 ELAPSED3=$(elapsed3)
 log "INFO" "Backups on $MOUNT2 complete.  Elapsed: $ELAPSED3"
