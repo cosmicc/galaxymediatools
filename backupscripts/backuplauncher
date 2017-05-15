@@ -90,6 +90,11 @@ log "INFO" "File Library backup starting..."
 FRESULT=$(backupcomplete "File")
 
 starttimer2
+log "INFO" "Other files backup starting..."
+/opt/galaxymediatools/backupscripts/backupother.exec
+FRESULT=$(backupcomplete "Other")
+
+starttimer2
 log "INFO" "Logs backup starting..."
 /opt/galaxymediatools/backupscripts/backuplogs.exec
 FRESULT=$(backupcomplete "Logs")
