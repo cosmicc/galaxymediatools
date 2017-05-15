@@ -1,0 +1,15 @@
+#!/bin/bash
+
+LOGF="/export/incoming/logs/backup_other.log"
+LOGM="/export/incoming/logs/backupmaster.log"
+
+source "/opt/galaxymediatools/functions/prechecknl"
+
+LIBRARY="Other"
+MOUNT=$MOUNT1
+DUUID=$DUUID1
+SDIR="/export/storage/video/Other"
+DDIR="$MOUNT1"
+MINFILES=5
+
+source "/opt/galaxymediatools/backupscripts/backup.exec"
