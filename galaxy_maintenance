@@ -68,6 +68,8 @@ RUNCHECK1=`ps uxa | grep "galaxy_maintenance" | wc -l`
    exit 1
  fi
 
+rm /ffmpegtmp/* -r
+
 ELAPSED=$(elapsed)
 
 log "INFO" "<--- Completed galaxy maintenance script. Elapsed: $ELAPSED"
