@@ -44,10 +44,6 @@ log "INFO" "NTFS Fix complete on $MOUNT1 Elapsed: $ELAPSED3"
 
 if /bin/mount "$MOUNT1"; then
 starttimer3
-starttimer2
-log "INFO" "Logs backup starting..."
-/opt/galaxymediatools/backupscripts/backuplogs.exec
-CRESULT=$(backupcomplete "Logs")
 
 starttimer2
 log "INFO" "Stand-Up Comedy Library backup starting..."
@@ -83,16 +79,6 @@ starttimer2
 log "INFO" "Pictures Library backup starting..."
 /opt/galaxymediatools/backupscripts/backuppictures.exec
 FRESULT=$(backupcomplete "Pictures")
-
-starttimer2
-log "INFO" "Other files backup starting..."
-/opt/galaxymediatools/backupscripts/backupother.exec
-FRESULT=$(backupcomplete "Other")
-
-starttimer2
-log "INFO" "Logs backup starting..."
-/opt/galaxymediatools/backupscripts/backuplogs.exec
-FRESULT=$(backupcomplete "Logs")
 
 ELAPSED3=$(elapsed3)
 log "INFO" "Backups on $MOUNT1 complete.  Elapsed: $ELAPSED3"
@@ -134,9 +120,19 @@ log "INFO" "Recorded TV Library backup starting..."
 RRESULT=$(backupcomplete "Recorded TV")
 
 starttimer2
+log "INFO" "Other files backup starting..."
+/opt/galaxymediatools/backupscripts/backupother.exec
+FRESULT=$(backupcomplete "Other")
+
+starttimer2
 log "INFO" "File Library backup starting..."
 /opt/galaxymediatools/backupscripts/backupfiles.exec
 FRESULT=$(backupcomplete "File")
+
+starttimer2
+log "INFO" "Logs backup starting..."
+/opt/galaxymediatools/backupscripts/backuplogs.exec
+CRESULT=$(backupcomplete "Logs")
 
 ELAPSED3=$(elapsed3)
 log "INFO" "Backups on $MOUNT2 complete.  Elapsed: $ELAPSED3"
