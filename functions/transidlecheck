@@ -1,20 +1,94 @@
 #!/bin/bash
 
-if [ "$2" == "-w" ]; then
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        echo " "
+        echo "Galaxy Media Tools - Transcode Server Idle Check"
+        echo " "
+        echo "-h or --help : Help"
+        echo "-s  : Sleep if idle"
+        echo "-f  : Run as a function (no text respose)"
+        echo "-w  : Wait 10 seconds before checking"
+        echo " "
+        exit 0
+fi
+
+if [ "$1" == "-f" ] || [ "$2" == "-f" ] || [ "$3" == "-f" ]; then
+FU=1
+fi
+
+if [ "$1" == "-w" ] || [ "$2" == "-w" ] || [ "$3" == "-w" ]; then
 sleep 10
 fi
 
-if [ -d /var/lock/gtrans.lock ]; then echo 1; exit 1; fi
+if [ -d /var/lock/gtrans.lock ]; then 
+if [ $FU -eq 1 ]; then
+echo 1 
+else
+echo "G-Trans Lock enabled. Transcoding is running."
+fi
+exit 1
+fi
+
 DVR=`sudo ps uxa | grep PlexComskip.py | wc -l`
-if [ $DVR -gt 1 ]; then echo 1; exit 1; fi
+if [ $DVR -gt 1 ]; then 
+if [ $FU -eq 1 ]; then
+echo 1
+else
+echo "PlexComskip is running."
+fi
+exit 1
+fi
+
 SSCAN=`sudo ps uxa | grep securityscan | wc -l`
-if [ $SSCAN -gt 1 ]; then echo 1; exit 1; fi
+if [ $SSCAN -gt 1 ]; then
+if [ $FU -eq 1 ]; then
+echo 1
+else
+echo "SecurityScan is running."
+fi
+exit 1
+fi
+
 MAINT=`sudo ps uxa | grep galaxy_maintenance | wc -l`
-if [ $MAINT -gt 1 ]; then echo 1; exit 1; fi
+if [ $MAINT -gt 1 ]; then
+if [ $FU -eq 1 ]; then
+echo 1
+else
+echo "Galaxy Maintenance is running."
+fi
+exit 1
+fi
+
 FFMPEG=`sudo ps uxa | grep ffmpeg | wc -l`
-if [ $FFMPEG -gt 1 ]; then echo 1; exit 1; fi
+if [ $FFMPEG -gt 1 ]; then
+if [ $FU -eq 1 ]; then
+echo 1
+else
+echo "FFMpeg is doing something."
+fi
+exit 1
+fi
+
+MUSIC=`sudo ps uxa | grep massmusictrans | wc -l`
+if [ $MUSIC -gt 1 ]; then
+if [ $FU -eq 1 ]; then
+echo 1
+else
+echo "Music transcoder is running."
+fi
+exit 1
+fi
+
+if [ $FU -eq 1 ]; then
 echo 0
-if [ "$1" == "-s" ]; then
+else
+echo "Nothing is running. Server is idle."
+fi
+
+if [ "$1" == "-s" ] || [ "$2" == "-s" ] || [ "$3" == "-s" ]; then
+if [ $FU -ne 1 ]; then
+echo "Putting Server to sleep..."
+fi
 pm-suspend &
 fi
 exit 0
