@@ -1,0 +1,8 @@
+#!/bin/bash
+fping -q 8.8.8.8
+if [[ $? == 1 ]]; then
+echo "VPN Down. Restarting"
+service vpn stop
+sleep 1
+service vpn start
+fi
