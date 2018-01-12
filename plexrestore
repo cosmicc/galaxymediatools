@@ -17,7 +17,7 @@ backupDirectory="/mnt/storage/video/Other/plexbackups/"
 # Log file for script's output named with
 # the script's name, date, and time of execution.
 scriptName=$(basename ${0})
-log="/mnt/usb/logs/${scriptName}_`date +%m%d%y%H%M%S`.log"
+log="/mnt/storage/video/Incoming/logs/plex/plexrestore.log"
 
 # Check for root permissions
 if [[ $EUID -ne 0 ]]; then

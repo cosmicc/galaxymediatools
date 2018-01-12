@@ -34,7 +34,7 @@ if [ $PCHECK -eq 0 ]; then
 
  fi
  LOOPCOUNT=99
- /sbin/reboot
+ /sbin/reboot --reboot
  exit 0
 fi
 done
