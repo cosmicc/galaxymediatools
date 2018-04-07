@@ -34,6 +34,7 @@ if [ $PCHECK -eq 0 ]; then
 
  fi
  LOOPCOUNT=99
+ log "INFO" "Server is rebooting."
  /sbin/reboot --reboot
  exit 0
 fi
